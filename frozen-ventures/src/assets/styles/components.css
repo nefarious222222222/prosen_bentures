@@ -1,0 +1,161 @@
+/* Navbar css */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: var(--color-violet);
+  z-index: 999;
+
+  .title {
+    color: white;
+  }
+
+  p {
+    color: var(--color-primary-text);
+    font-size: 2rem;
+    font-weight: 900;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .title-container {
+    display: flex;
+    gap: 10px;
+
+    img {
+      width: 40px;
+    }
+  }
+
+  input {
+    font-size: 1.25rem;
+    font-weight: 400;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 10px;
+    outline: none;
+    min-width: 500px;
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .fake-button {
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .fake-button:hover {
+    box-shadow: 0 10px 40px rgba(255, 255, 255, 0.5);
+  }
+
+  button {
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: var(--color-white);
+    background-color: var(--color-violet);
+    border: solid 2px var(--color-white);
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    color: var(--color-violet);
+    background-color: var(--color-white);
+    cursor: pointer;
+  }
+}
+
+/* Confirmation Popup css */
+.confirmation-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-violet);
+  }
+
+  p {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 120px;
+      color: var(--color-white);
+      background-color: var(--color-violet);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--color-light-violet);
+    }
+  }
+}
+
+/* Message css */
+.message {
+  position: fixed;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 20px 30px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 999;
+
+  p {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+}
+
+.error {
+  color: var(--color-dark-red);
+  background-color: var(--color-pale-red);
+  border: solid 2px var(--color-dark-red);
+}
+
+.success {
+  color: var(--color-dark-green);
+  background-color: var(--color-pale-green);
+  border: solid 2px var(--color-dark-green);
+}

@@ -1,0 +1,45 @@
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap");
+
+:root {
+  --color-light-violet: #700092E6;
+  --color-violet: #533d70;
+  --color-pale-violet: #ccc4e0;
+  --color-stone: #7ea6bd;
+  --color-pale-stone: #becdd6;
+  --color-white: #fff;
+  --color-light-gray: #e7e7e7;
+  --color-dark-red: #721111;
+  --color-pale-red: #f5abab;
+  --color-dark-green: #117211;
+  --color-pale-green: #abf5ab;
+
+  --color-primary-text: #111111;
+  --color-secondary-text: #363636;
+
+  --font-primary: "Inconsolata";
+}
+
+* {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  padding: 10vh 2vw 3vh 2vw;
+}
+
+body {
+  min-height: 90vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
