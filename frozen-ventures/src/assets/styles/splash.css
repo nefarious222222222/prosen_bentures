@@ -1,0 +1,26 @@
+.loading {
+  display: flex;
+  flex-direction: column;
+  gap: 10vh;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url(../images/sign-bg.jpg);
+
+  .header {
+    margin-top: -20vh;
+    display: flex;
+    align-items: center;
+    gap: 2vw;
+
+    img {
+      width: 7vw;
+    }
+
+    p {
+      font-size: 5rem;
+      font-weight: 800;
+      color: var(--color-violet);
+    }
+  }
+}

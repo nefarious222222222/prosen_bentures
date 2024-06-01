@@ -3,7 +3,7 @@ import { UserContext } from "../context/user-context";
 import "../assets/styles/components.css";
 import logo from "../assets/images/logo.jpg";
 import { Link, useLocation } from "react-router-dom";
-import { Storefront, UserCircle } from "phosphor-react";
+import { Storefront, ShoppingCart, Cube, UserCircle } from "phosphor-react";
 
 export const Navbar = () => {
   const { user } = useContext(UserContext);
@@ -18,8 +18,13 @@ export const Navbar = () => {
   return (
     <div className="navbar">
       <div className="title-container">
-        <img src={logo} alt="Sharsh" />
-        <p className="link title">FrozenVentures</p>
+        <Link
+          className="link-container"
+          to={userRole === "retailer" ? "/home-reseller" : "/"}
+        >
+          <img src={logo} alt="Sharsh" />
+          <p className="link title">FrozenVentures</p>
+        </Link>
       </div>
 
       <input type="text" placeholder="Search" />
@@ -31,9 +36,25 @@ export const Navbar = () => {
           </Link>
         ) : null}
 
+        {userRole === "customer" ? (
+          <>
+            <Link to="/cart" title="Cart">
+              <ShoppingCart
+                className="link fake-button"
+                size={30}
+                color={"#fff"}
+              />
+            </Link>
+
+            <Link to="/history" title="History">
+              <Cube className="link fake-button" size={30} color={"#fff"} />
+            </Link>
+          </>
+        ) : null}
+
         {userRole != null ? (
           <Link to="/menu" title="Menu">
-            <UserCircle size={40} color="white" />
+            <UserCircle className="link fake-button" size={40} color="white" />
           </Link>
         ) : (
           <Link to="/sign">

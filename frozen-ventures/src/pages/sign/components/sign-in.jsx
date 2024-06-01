@@ -32,7 +32,7 @@ export const SignIn = () => {
           addUser(response.data.user.accountID, response.data.user.userRole);
           setShowSuccessMessage(true);
           setTimeout(() => {
-            navigate("/");
+            navigate("/splash");
           }, 3000);
         } else {
           setShowErrorMessage(true);

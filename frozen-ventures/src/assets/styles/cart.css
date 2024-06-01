@@ -1,0 +1,269 @@
+/* Cart Items Css */
+.cart {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .cart-header {
+    display: flex;
+    justify-content: space-between;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--color-violet);
+    }
+
+    .checkout {
+      display: flex;
+      align-items: center;
+      gap: 2vw;
+
+      p,
+      span {
+        font-size: 1.5rem;
+        font-weight: 500;
+
+        span {
+          font-weight: 700;
+        }
+      }
+
+      button {
+        font-size: 1.25rem;
+        font-weight: 800;
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: solid 2px var(--color-violet);
+        color: var(--color-violet);
+        cursor: pointer;
+        background-color: white;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        color: white;
+        background-color: var(--color-violet);
+      }
+    }
+  }
+
+  .cart-container {
+    .label {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: solid 2px gray;
+      padding: 20px 0;
+
+      p {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 20px 0 0 0;
+      }
+
+      .item {
+        width: 300px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.cart-item {
+  table {
+    width: 100%;
+
+    thead tr {
+      border-bottom: solid 2px gray;
+    }
+
+    tr {
+      display: flex;
+      width: inherit;
+      justify-content: space-between;
+
+      th {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 20vw;
+        font-size: 1.5rem;
+        padding: 20px 0;
+        color: gray;
+      }
+
+      td {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 20vw;
+        padding: 20px 0;
+
+        p {
+          font-size: 1.25rem;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .information {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+
+    img {
+      width: 200px;
+      border-radius: 20px;
+    }
+
+    .description {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+
+      p {
+        font-size: 1.25rem;
+        font-weight: 500;
+      }
+
+      p:first-child {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .quantity {
+    display: flex;
+    gap: 10px;
+
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      text-align: center;
+      border-radius: 5px;
+      width: 10vw;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    input:focus {
+      outline: 2px solid var(--color-violet);
+    }
+  }
+
+  .delete {
+    button {
+      border: none;
+      background: none;
+      color: var(--color-violet);
+      padding: 5px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--color-pale-violet);
+      color: var(--color-violet);
+    }
+  }
+
+  .button-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+
+    button {
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--color-violet);
+      background-color: var(--color-pale-stone);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      color: var(--color-pale-stone);
+      background-color: var(--color-violet);
+    }
+  }
+}
+
+/* Empty Cart Css */
+.empty-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  margin: 25vh 0 0 0;
+
+  .message-one {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+
+    h2,
+    span {
+      font-size: 3rem;
+    }
+
+    span {
+      color: var(--color-violet);
+    }
+  }
+
+  .message-two {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    p,
+    span {
+      font-size: 1.5rem;
+    }
+
+    span {
+      font-weight: 600;
+      color: var(--color-violet);
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      border: none;
+      cursor: pointer;
+      font-size: 1.25rem;
+      font-weight: 800;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: var(--color-violet);
+      background-color: var(--color-pale-stone);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      color: var(--color-pale-stone);
+      background-color: var(--color-violet);
+    }
+  }
+}

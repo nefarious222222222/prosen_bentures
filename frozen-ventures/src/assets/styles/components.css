@@ -12,8 +12,14 @@
   background-color: var(--color-violet);
   z-index: 999;
 
-  .title {
-    color: white;
+  .link-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .title {
+      color: white;
+    }
   }
 
   p {
