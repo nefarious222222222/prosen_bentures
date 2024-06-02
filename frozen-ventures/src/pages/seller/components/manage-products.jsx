@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { UserContext } from "../../../context/user-context";
 import { AddProduct } from "../../../components/add-product";
+import { ConfirmationPopUp } from "../../../components/confirmation-popup";
 
 export const ManageProducts = () => {
   const { user } = useContext(UserContext);
@@ -20,17 +21,26 @@ export const ManageProducts = () => {
   const [imagePreview, setImagePreview] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost/api/getProducts.php?accountId=${accountId}`)
-      .then((response) => {
-        setProducts(Array.isArray(response.data) ? response.data : []);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setProducts([]);
-      });
+    const fetchProducts = () => {
+      axios
+        .get(
+          `http://localhost/api/getProducts.php?accountId=${accountId}&status=1`
+        )
+        .then((response) => {
+          setProducts(Array.isArray(response.data) ? response.data : []);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setProducts([]);
+        });
+    };
+    fetchProducts();
+    const intervalId = setInterval(fetchProducts, 2500);
+    return () => clearInterval(intervalId);
   }, [accountId]);
 
   const handleImageChange = (e) => {
@@ -80,7 +90,7 @@ export const ManageProducts = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
     formData.append("productImage", imageFile);
     formData.append("productImageName", imageFile.name);
@@ -137,6 +147,34 @@ export const ManageProducts = () => {
     }, 2000);
   };
 
+  const handleRemoveProduct = (productId) => {
+    setSelectedProductId(productId);
+    setShowConfirmationPopup(true);
+  };
+
+  const cancelRemoveProduct = () => {
+    setShowConfirmationPopup(false);
+  };
+
+  const confirmRemoveProduct = () => {
+    axios.post(`http://localhost/api/removeProduct.php?productId=${selectedProductId}`)
+      .then(response => {
+        console.log(response.data);
+        if (response.data.status === 1) {
+          setSuccessMessage("Product removed successfully");
+        } else {
+          setErrorMessage("Failed to remove product");
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        setErrorMessage("An error occurred while removing the product");
+      })
+      .finally(() => {
+        setShowConfirmationPopup(false);
+      });
+  };
+
   return (
     <div className="manage-products">
       <div className="header">
@@ -163,7 +201,7 @@ export const ManageProducts = () => {
 
               <div className="product">
                 <img
-                  src={`http://localhost/api/getProductImage.php?productId=${product.productID}`}
+                  src={`http://localhost/api/productImages/${product.productImage}`}
                   alt=""
                 />
                 <div className="product-text">
@@ -177,7 +215,11 @@ export const ManageProducts = () => {
 
                 <div className="group-button">
                   <button>Edit</button>
-                  <button>Remove</button>
+                  <button
+                    onClick={() => handleRemoveProduct(product.productID)}
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
             </div>
@@ -196,6 +238,15 @@ export const ManageProducts = () => {
           handleProductFormChange={handleProductFormChange}
           handleCancelAddProduct={handleCancelAddProduct}
           setShowAddProductPopup={setShowAddProductPopup}
+        />
+      )}
+
+      {showConfirmationPopup && (
+        <ConfirmationPopUp
+          confirmTitle="Remove Product"
+          confirmMessage="Are you sure you want to remove this product?"
+          handleConfirm={confirmRemoveProduct}
+          handleCancel={cancelRemoveProduct}
         />
       )}
     </div>

@@ -1,43 +1,22 @@
 import React from "react";
-import "../assets/styles/components.css";
 import { ErrorMessage } from "./error-message";
 import { SuccessMessage } from "./success-message";
 
-export const AddProduct = ({
+export const EditProduct = ({
+  editTitle,
   errorMessage,
   successMessage,
-  newProductData,
-  showAddProductPopup,
-  handleSubmit,
-  handleImageChange,
-  imagePreview,
-  handleProductFormChange,
-  handleCancelAddProduct,
+  editProductData,
+  handleEditFormChange,
+  handleCancelEditProduct,
+  handleSubmitEdit,
 }) => {
   return (
-    <div className="add-product">
+    <div className="edit-product">
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
-      <h2>Add Product</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="input-field">
-          <label htmlFor="productImage">Product Image:</label>
-          <input
-            type="file"
-            id="productImage"
-            name="productImage"
-            onChange={handleImageChange}
-            accept=".jpg, .jpeg, .png"
-            required={showAddProductPopup}
-          />
-        </div>
-
-        <div className="image-preview">
-          {newProductData.productImage && (
-            <img src={imagePreview} alt="Product" />
-          )}
-        </div>
-
+      <h2>{editTitle}</h2>
+      <form onSubmit={handleSubmitEdit}>
         <div className="input-container">
           <div className="input-field">
             <label htmlFor="productName">Product Name:</label>
@@ -45,8 +24,8 @@ export const AddProduct = ({
               type="text"
               id="productName"
               name="productName"
-              value={newProductData.productName}
-              onChange={handleProductFormChange}
+              value={editProductData.productName}
+              onChange={handleEditFormChange}
               required
             />
           </div>
@@ -58,14 +37,14 @@ export const AddProduct = ({
             <textarea
               id="productDescription"
               name="productDescription"
-              value={newProductData.productDescription}
-              onChange={handleProductFormChange}
+              value={editProductData.productDescription}
+              onChange={handleEditFormChange}
               required
             ></textarea>
           </div>
         </div>
         <div className="button-group">
-          <button type="button" onClick={handleCancelAddProduct}>
+          <button type="button" onClick={handleCancelEditProduct}>
             Cancel
           </button>
           <button type="submit">Add</button>

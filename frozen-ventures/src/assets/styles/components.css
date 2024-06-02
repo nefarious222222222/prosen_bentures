@@ -89,7 +89,7 @@
 
 /* Confirmation Popup css */
 .confirmation-popup {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -99,6 +99,7 @@
   background-color: white;
   padding: 30px 40px;
   border-radius: 20px;
+  border: solid 3px var(--color-violet);
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.2);
   z-index: 999;
 
@@ -177,6 +178,7 @@
   z-index: 999;
   padding: 40px;
   border-radius: 20px;
+  border: solid 3px var(--color-violet);
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.2);
   background-color: var(--color-white);
 

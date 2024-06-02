@@ -3,6 +3,12 @@
   padding: 0;
   height: 88vh;
   position: relative;
+  
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-violet);
+  }
 
   .side-bar {
     display: flex;
@@ -122,6 +128,7 @@
   /* Manage products css */
   .manage-products {
     padding: 20px;
+
     .header {
       display: flex;
       justify-content: space-between;
@@ -240,6 +247,28 @@
           }
         }
       }
+    }
+  }
+
+  /* Manage inventory css */
+  .manage-inventory {
+    padding: 20px;
+
+    h1 {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: solid 2px var(--color-violet);
+    }
+  }
+
+  /* Manage shop css */
+  .manage-shop {
+    padding: 20px;
+
+    h1 {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: solid 2px var(--color-violet);
     }
   }
 }

@@ -3,6 +3,8 @@ import { UserContext } from "../../context/user-context";
 import "../../assets/styles/seller.css";
 import { ShopPerformance } from "./components/shop-performance";
 import { ManageProducts } from "./components/manage-products";
+import { ManageInventory } from "./components/manage-inventory";
+import { ManageShop } from "./components/manage-shop";
 import { useNavigate } from "react-router-dom";
 import {
   Gauge,
@@ -144,6 +146,8 @@ export const HomeSeller = () => {
       >
         {activeItem === "performance" && <ShopPerformance />}
         {activeItem === "manage-products" && <ManageProducts />}
+        {activeItem === "manage-inventory" && <ManageInventory />}
+        {activeItem === "manage-shop" && <ManageShop />}
       </div>
     </div>
   );
