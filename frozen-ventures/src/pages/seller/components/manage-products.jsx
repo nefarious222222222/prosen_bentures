@@ -16,6 +16,7 @@ export const ManageProducts = () => {
     productDescription: "",
     status: "1",
   });
+  const [imageFile, setImageFile] = useState([]);
   const [imagePreview, setImagePreview] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -44,6 +45,7 @@ export const ManageProducts = () => {
             ...prevData,
             productImage: file.name,
           }));
+          setImageFile(file);
           setImagePreview(img.src);
           setErrorMessage("");
         } else {
@@ -78,20 +80,47 @@ export const ManageProducts = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append("productImage", imageFile);
+    formData.append("productImageName", imageFile.name);
+    formData.append("productImageType", imageFile.type);
 
     axios
-      .post("http://localhost/api/addProduct.php", newProductData)
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.status === 1) {
-          setSuccessMessage("Product added successfully");
+      .post("http://localhost/api/uploadImage.php", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((uploadResponse) => {
+        if (uploadResponse.data.status === 1) {
+          const imagePath = uploadResponse.data.imagePath;
+          setNewProductData((prevData) => ({
+            ...prevData,
+            productImage: imagePath,
+          }));
+
+          axios
+            .post("http://localhost/api/addProduct.php", newProductData)
+            .then((response) => {
+              console.log(response.data);
+              if (response.data.status === 1) {
+                setSuccessMessage("Product added successfully");
+              } else {
+                setErrorMessage("Failed to add product");
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("An error occurred while adding the product");
+            });
         } else {
-          setErrorMessage("Failed to add product");
+          setErrorMessage("Failed to upload image");
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("An error occurred while adding the product");
+        alert("An error occurred while uploading the image");
       });
 
     setTimeout(() => {
