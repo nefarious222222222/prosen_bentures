@@ -169,7 +169,7 @@
 
 
 /* Add product css */
-.add-product {
+.add-product, .edit-product {
   width: 40vw;
   position: fixed;
   top: 50%;
@@ -207,7 +207,7 @@
 
     label {
       font-size: 1.25rem;
-      font-weight: 500;
+      font-weight: 700;
       margin-bottom: 5px;
     }
 

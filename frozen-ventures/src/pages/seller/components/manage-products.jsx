@@ -3,6 +3,7 @@ import axios from "axios";
 import { UserContext } from "../../../context/user-context";
 import { AddProduct } from "../../../components/add-product";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
+import { EditProduct } from "../../../components/edit-product";
 
 export const ManageProducts = () => {
   const { user } = useContext(UserContext);
@@ -10,6 +11,13 @@ export const ManageProducts = () => {
 
   const [products, setProducts] = useState([]);
   const [showAddProductPopup, setShowAddProductPopup] = useState(false);
+  const [showEditProductPopup, setShowEditProductPopup] = useState(false);
+  const [editProductData, setEditProductData] = useState({
+    accountID: accountId,
+    productID: "",
+    productName: "",
+    productDescription: "",
+  });
   const [newProductData, setNewProductData] = useState({
     accountID: accountId,
     productImage: "",
@@ -17,7 +25,7 @@ export const ManageProducts = () => {
     productDescription: "",
     status: "1",
   });
-  const [imageFile, setImageFile] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -75,6 +83,14 @@ export const ManageProducts = () => {
     }));
   };
 
+  const handleEditFormChange = (e) => {
+    const { name, value } = e.target;
+    setEditProductData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   const handleCancelAddProduct = () => {
     setNewProductData({
       accountID: accountId,
@@ -88,8 +104,25 @@ export const ManageProducts = () => {
     setErrorMessage("");
   };
 
+  const handleCancelEditProduct = () => {
+    setEditProductData({
+      accountID: accountId,
+      productID: "",
+      productName: "",
+      productDescription: "",
+    });
+    setShowEditProductPopup(false);
+    setSuccessMessage("");
+    setErrorMessage("");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!imageFile) {
+      setErrorMessage("Please select an image");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("productImage", imageFile);
@@ -122,7 +155,7 @@ export const ManageProducts = () => {
             })
             .catch((error) => {
               console.error("Error:", error);
-              alert("An error occurred while adding the product");
+              setErrorMessage("An error occurred while adding the product");
             });
         } else {
           setErrorMessage("Failed to upload image");
@@ -130,7 +163,7 @@ export const ManageProducts = () => {
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("An error occurred while uploading the image");
+        setErrorMessage("An error occurred while uploading the image");
       });
 
     setTimeout(() => {
@@ -147,6 +180,40 @@ export const ManageProducts = () => {
     }, 2000);
   };
 
+  const handleEditProduct = (product) => {
+    setEditProductData({
+      accountID: accountId,
+      productID: product.productID,
+      productName: product.productName,
+      productDescription: product.productDescription,
+    });
+    setShowEditProductPopup(true);
+  };
+
+  const handleSubmitEdit = (e) => {
+    e.preventDefault();
+
+    if (!editProductData.productID) {
+      setErrorMessage("Product ID is missing");
+      return;
+    }
+
+    axios
+      .post("http://localhost/api/editProduct.php", editProductData)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status === 1) {
+          setSuccessMessage("Product updated successfully");
+        } else {
+          setErrorMessage("Failed to update product: " + response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setErrorMessage("An error occurred while updating the product");
+      });
+  };
+
   const handleRemoveProduct = (productId) => {
     setSelectedProductId(productId);
     setShowConfirmationPopup(true);
@@ -157,8 +224,11 @@ export const ManageProducts = () => {
   };
 
   const confirmRemoveProduct = () => {
-    axios.post(`http://localhost/api/removeProduct.php?productId=${selectedProductId}`)
-      .then(response => {
+    axios
+      .post(
+        `http://localhost/api/removeProduct.php?productId=${selectedProductId}`
+      )
+      .then((response) => {
         console.log(response.data);
         if (response.data.status === 1) {
           setSuccessMessage("Product removed successfully");
@@ -166,7 +236,7 @@ export const ManageProducts = () => {
           setErrorMessage("Failed to remove product");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
         setErrorMessage("An error occurred while removing the product");
       })
@@ -214,7 +284,9 @@ export const ManageProducts = () => {
                 </div>
 
                 <div className="group-button">
-                  <button>Edit</button>
+                  <button onClick={() => handleEditProduct(product)}>
+                    Edit
+                  </button>
                   <button
                     onClick={() => handleRemoveProduct(product.productID)}
                   >
@@ -238,6 +310,18 @@ export const ManageProducts = () => {
           handleProductFormChange={handleProductFormChange}
           handleCancelAddProduct={handleCancelAddProduct}
           setShowAddProductPopup={setShowAddProductPopup}
+        />
+      )}
+
+      {showEditProductPopup && (
+        <EditProduct
+          editTitle="Edit Product"
+          errorMessage={errorMessage}
+          successMessage={successMessage}
+          editProductData={editProductData}
+          handleEditFormChange={handleEditFormChange}
+          handleCancelEditProduct={handleCancelEditProduct}
+          handleSubmitEdit={handleSubmitEdit}
         />
       )}
 

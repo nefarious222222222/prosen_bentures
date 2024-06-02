@@ -1,4 +1,5 @@
 import React from "react";
+import "../assets/styles/components.css";
 import { ErrorMessage } from "./error-message";
 import { SuccessMessage } from "./success-message";
 
@@ -47,7 +48,7 @@ export const EditProduct = ({
           <button type="button" onClick={handleCancelEditProduct}>
             Cancel
           </button>
-          <button type="submit">Add</button>
+          <button type="submit">Edit</button>
         </div>
       </form>
     </div>
