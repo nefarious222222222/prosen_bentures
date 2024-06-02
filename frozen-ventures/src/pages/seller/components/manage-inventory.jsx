@@ -23,7 +23,6 @@ export const ManageInventory = () => {
         console.error("Error fetching inventory:", error);
       }
     };
-
     fetchInventory();
   }, [user.accountId]);
 
@@ -50,6 +49,10 @@ export const ManageInventory = () => {
     };
   }, []);
 
+  const handleCancelClick = () => {
+    setShowProductStock(false);
+  }
+
   return (
     <div className="manage-inventory">
       <h1>Manage Inventory</h1>
@@ -61,7 +64,9 @@ export const ManageInventory = () => {
             <div
               key={product.productID}
               className="product"
-              onClick={() => handleShowProductStock(product.productName, product.productID)}
+              onClick={() =>
+                handleShowProductStock(product.productName, product.productID)
+              }
             >
               <div className="header">
                 <p>
@@ -78,14 +83,25 @@ export const ManageInventory = () => {
                 src={`http://localhost/api/productImages/${product.productImage}`}
               />
 
-              <p>{product.productName}</p>
+              <div className="product-details">
+                <p>{product.productName}</p>
+                <p>
+                  <span>Remaining Stock: </span>
+                  {product.totalStock}
+                </p>
+              </div>
             </div>
           ))}
         </div>
       )}
       {showProductStock && (
         <div className="product-stock" ref={productStockRef}>
-          <ProductStock productName={selectedProductName} productId={selectedProductId} accountId={selectedAccountId} />
+          <ProductStock
+            handleCancelClick={handleCancelClick}
+            productName={selectedProductName}
+            productId={selectedProductId}
+            accountId={selectedAccountId}
+          />
         </div>
       )}
     </div>
