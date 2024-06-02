@@ -135,7 +135,7 @@ export const ManageProducts = () => {
       formData.append("productImageType", imageFile.type);
 
       axios
-        .post("http://localhost/api/uploadImage.php", formData, {
+        .post("http://localhost/api/uploadProductImage.php", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

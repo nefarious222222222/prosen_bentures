@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./assets/styles/products.css"
+import "./assets/styles/products.css";
 import axios from "axios";
 
 export const Products = () => {
@@ -10,7 +10,7 @@ export const Products = () => {
       axios
         .get("http://localhost/api/getProductsForCustomer.php")
         .then((response) => {
-          setProducts(response.data);
+          setProducts(Array.isArray(response.data) ? response.data : []);
         })
         .catch((error) => {
           console.error("Error fetching products:", error);
@@ -30,7 +30,16 @@ export const Products = () => {
             alt={product.productName}
           />
           <div className="product-details">
-            <h3>{product.productName}</h3>
+            <p className="product-name">{product.productName}</p>
+
+            <p>
+              <span>Available: </span>
+              {product.totalStock}
+            </p>
+            <div className="details">
+              <p>{product.productSize}</p>
+              <p>Php {product.productPrice.toFixed(2)}</p>
+            </div>
           </div>
         </div>
       ))}
