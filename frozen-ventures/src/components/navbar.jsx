@@ -11,7 +11,7 @@ export const Navbar = () => {
 
   const userRole = user?.userRole;
 
-  if (location.pathname === "/sign") {
+  if (location.pathname === "/sign" || location.pathname === "/splash") {
     return null;
   }
 
@@ -20,7 +20,7 @@ export const Navbar = () => {
       <div className="title-container">
         <Link
           className="link-container"
-          to={userRole === "retailer" ? "/home-reseller" : "/"}
+          to={userRole === "retailer" ? "/home-seller" : "/"}
         >
           <img src={logo} alt="Sharsh" />
           <p className="link title">FrozenVentures</p>

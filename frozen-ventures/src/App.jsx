@@ -10,6 +10,7 @@ import { Menu } from "./pages/menu/menu";
 import { Shop } from "./pages/shop/shop";
 import { Cart } from "./pages/cart/cart";
 import { History } from "./pages/history/history";
+import { HomeSeller } from "./pages/seller/home-seller";
 
 function App() {
   return (
@@ -25,6 +26,8 @@ function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/history" element={<History />} />
+
+            <Route path="/home-seller" element={<HomeSeller />} />
           </Routes>
         </Router>
       </UserContextProvider>

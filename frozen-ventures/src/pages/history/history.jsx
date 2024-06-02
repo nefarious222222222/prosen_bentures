@@ -62,18 +62,6 @@ export const History = () => {
             To Receive
           </button>
           <button
-            className={filter === "cancel requested" ? "active" : ""}
-            onClick={() => setFilter("cancel requested")}
-          >
-            Cancel Request
-          </button>
-          <button
-            className={filter === "cancelled" ? "active" : ""}
-            onClick={() => setFilter("cancelled")}
-          >
-            Cancelled
-          </button>
-          <button
             className={filter === "completed" ? "active" : ""}
             onClick={() => setFilter("completed")}
           >

@@ -1,0 +1,245 @@
+.seller {
+  margin-top: 8vh;
+  padding: 0;
+  height: 88vh;
+  position: relative;
+
+  .side-bar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 7vh;
+    left: 0;
+    width: 5vw;
+    min-width: 100px;
+    height: 95vh;
+    z-index: 2;
+    border-right: solid 2px var(--color-violet);
+    transition: all 0.5s ease;
+    overflow: visible;
+
+    &.expanded {
+      width: 15vw;
+      min-width: 200px;
+
+      &::after {
+        opacity: 0;
+      }
+    }
+
+    ul {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 60px 30px 60px 10px;
+      list-style-type: none;
+
+      li {
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+
+        svg {
+          min-width: 20px;
+          min-height: 20px;
+        }
+
+        p {
+          margin-left: 10px;
+          transition: opacity 0.3s;
+          opacity: 0;
+          font-size: 1.25rem;
+          font-weight: 600;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        &:not(.expanded)::after {
+          content: attr(data-tooltip);
+          position: absolute;
+          left: 105%;
+          white-space: nowrap;
+          background-color: var(--color-violet);
+          color: white;
+          padding: 5px 10px;
+          border-radius: 5px;
+          opacity: 0;
+          z-index: 999;
+          transform: translateX(10px);
+          transition: opacity 0.3s, transform 0.3s;
+          pointer-events: none;
+        }
+
+        &:not(.expanded):hover::after {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      li:hover {
+        color: white;
+        background-color: var(--color-violet);
+      }
+
+      li.active {
+        color: white;
+        background-color: var(--color-violet);
+      }
+    }
+
+    &.expanded li:hover::after {
+      display: none;
+    }
+
+    &.expanded ul li p {
+      opacity: 1;
+    }
+
+    .toggle-sidebar {
+      position: absolute;
+      right: -20px;
+      bottom: 55%;
+      border-radius: 50%;
+      background-color: white;
+      padding: 5px;
+      cursor: pointer;
+      border: solid 2px var(--color-violet);
+    }
+  }
+
+  .selected-item {
+    position: relative;
+    padding: 10px;
+    transition: all 0.5s ease;
+  }
+
+  /* Manage products css */
+  .manage-products {
+    padding: 20px;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: solid 2px var(--color-violet);
+      padding-bottom: 20px;
+
+      button {
+        padding: 10px 20px;
+        font-weight: 800;
+        border-radius: 10px;
+        cursor: pointer;
+        border: solid 2px var(--color-violet);
+        color: var(--color-violet);
+        background-color: white;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background-color: var(--color-violet);
+        color: white;
+      }
+    }
+
+    .products-container {
+      padding: 20px 0;
+
+      .product-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .product-item {
+        display: flex;
+        flex-direction: column;
+        padding: 40px;
+        border-radius: 20px;
+        margin-bottom: 40px;
+        box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
+
+        .product-info {
+          display: flex;
+          justify-content: space-between;
+          padding-bottom: 20px;
+          margin-bottom: 20px;
+          border-bottom: solid 2px gray;
+
+          p,
+          span {
+            font-size: 1.5rem;
+            font-weight: 500;
+
+            span {
+              font-weight: 700;
+            }
+          }
+        }
+
+        .product {
+          display: flex;
+          align-items: center;
+          gap: 1vw;
+
+          img {
+            width: 200px;
+            border-radius: 20px;
+          }
+
+          .product-text {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 0 20px;
+            gap: 3vh;
+
+            p,
+            span {
+              font-size: 1.25rem;
+              font-weight: 500;
+
+              span {
+                font-weight: 700;
+              }
+            }
+
+            .info {
+              display: flex;
+              justify-content: space-between;
+            }
+
+            .description {
+              text-align: justify;
+            }
+          }
+
+          .group-button {
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+            button {
+              width: 100%;
+              padding: 10px 20px;
+              border: none;
+              border-radius: 10px;
+              font-size: 1.25rem;
+              font-weight: 800;
+              cursor: pointer;
+              color: var(--color-violet);
+              background-color: var(--color-pale-stone);
+              transition: all 0.3s ease;
+            }
+
+            button:hover {
+              background-color: var(--color-violet);
+              color: var(--color-pale-stone);
+            }
+          }
+        }
+      }
+    }
+  }
+}
