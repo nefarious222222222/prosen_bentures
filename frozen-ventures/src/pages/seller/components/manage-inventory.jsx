@@ -9,14 +9,14 @@ export const ManageInventory = () => {
   const [showProductStock, setShowProductStock] = useState(false);
   const [selectedProductName, setSelectedProductName] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
-  const [selectedAccountId, setSelectedAccountId] = useState(null);
+  const [selectedShopId, setSelectedShopId] = useState(null);
   const productStockRef = useRef(null);
 
   useEffect(() => {
     const fetchInventory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost/api/getProducts.php?accountId=${user.accountId}`
+          `http://localhost/api/getProducts.php?shopId=${user.shopId}`
         );
         setInventory(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
@@ -24,12 +24,12 @@ export const ManageInventory = () => {
       }
     };
     fetchInventory();
-  }, [user.accountId]);
+  }, [user.shopId]);
 
   const handleShowProductStock = (productName, productId) => {
     setSelectedProductName(productName);
     setSelectedProductId(productId);
-    setSelectedAccountId(user.accountId);
+    setSelectedShopId(user.shopId);
     setShowProductStock(true);
   };
 
@@ -100,7 +100,7 @@ export const ManageInventory = () => {
             handleCancelClick={handleCancelClick}
             productName={selectedProductName}
             productId={selectedProductId}
-            accountId={selectedAccountId}
+            shopId={selectedShopId}
           />
         </div>
       )}

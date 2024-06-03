@@ -4,7 +4,7 @@ import { ErrorMessage } from "../../../components/error-message";
 import { SuccessMessage } from "../../../components/success-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
 
-export const ProductStock = ({ handleCancelClick, productName, productId, accountId }) => {
+export const ProductStock = ({ handleCancelClick, productName, productId, shopId }) => {
   const [inventory, setInventory] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -20,7 +20,7 @@ export const ProductStock = ({ handleCancelClick, productName, productId, accoun
     const fetchInventory = () => {
       axios
         .get(
-          `http://localhost/api/manageInventory.php?productId=${productId}&accountId=${accountId}`
+          `http://localhost/api/manageInventory.php?productId=${productId}&shopId=${shopId}`
         )
         .then((response) => {
           if (response.data.status === 0) {
@@ -39,7 +39,7 @@ export const ProductStock = ({ handleCancelClick, productName, productId, accoun
     fetchInventory();
     const intervalId = setInterval(fetchInventory, 3000);
     return () => clearInterval(intervalId);
-  }, [productId, accountId]);
+  }, [productId, shopId]);
 
   const handleAddSize = () => {
     setShowAddForm(true);
@@ -76,7 +76,7 @@ export const ProductStock = ({ handleCancelClick, productName, productId, accoun
         newSize: newSize,
         newPrice: newPrice,
         newStock: newStock,
-        accountId: accountId,
+        shopId: shopId,
         productId: productId,
       };
       axios
@@ -151,7 +151,7 @@ export const ProductStock = ({ handleCancelClick, productName, productId, accoun
               <th>Size</th>
               <th>Price</th>
               <th>Stock</th>
-              <th></th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>

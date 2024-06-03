@@ -9,19 +9,19 @@ import { SuccessMessage } from "../../../components/success-message";
 
 export const ManageProducts = () => {
   const { user } = useContext(UserContext);
-  const accountId = user.accountId;
+  const shopId = user.shopId;
 
   const [products, setProducts] = useState([]);
   const [showAddProductPopup, setShowAddProductPopup] = useState(false);
   const [showEditProductPopup, setShowEditProductPopup] = useState(false);
   const [editProductData, setEditProductData] = useState({
-    accountID: accountId,
+    shopID: shopId,
     productID: "",
     productName: "",
     productDescription: "",
   });
   const [newProductData, setNewProductData] = useState({
-    accountID: accountId,
+    shopID: shopId,
     productImage: "",
     productName: "",
     productDescription: "",
@@ -38,7 +38,7 @@ export const ManageProducts = () => {
     const fetchProducts = () => {
       axios
         .get(
-          `http://localhost/api/getProducts.php?accountId=${accountId}&status=1`
+          `http://localhost/api/getProducts.php?shopId=${shopId}&status=1`
         )
         .then((response) => {
           setProducts(Array.isArray(response.data) ? response.data : []);
@@ -51,7 +51,7 @@ export const ManageProducts = () => {
     fetchProducts();
     const intervalId = setInterval(fetchProducts, 2500);
     return () => clearInterval(intervalId);
-  }, [accountId]);
+  }, [shopId]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -95,7 +95,7 @@ export const ManageProducts = () => {
 
   const handleCancelAddProduct = () => {
     setNewProductData({
-      accountID: accountId,
+      shopID: shopId,
       productImage: "",
       productName: "",
       productDescription: "",
@@ -108,7 +108,7 @@ export const ManageProducts = () => {
 
   const handleCancelEditProduct = () => {
     setEditProductData({
-      accountID: accountId,
+      shopID: shopId,
       productID: "",
       productName: "",
       productDescription: "",
@@ -173,7 +173,7 @@ export const ManageProducts = () => {
 
       setTimeout(() => {
         setNewProductData({
-          accountID: accountId,
+          shopID: shopId,
           productImage: "",
           productName: "",
           productDescription: "",
@@ -188,7 +188,7 @@ export const ManageProducts = () => {
 
   const handleEditProduct = (product) => {
     setEditProductData({
-      accountID: accountId,
+      shopID: shopId,
       productID: product.productID,
       productName: product.productName,
       productDescription: product.productDescription,

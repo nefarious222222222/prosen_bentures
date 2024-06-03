@@ -36,6 +36,10 @@ export const Products = () => {
               <span>Available: </span>
               {product.totalStock}
             </p>
+            <p>
+              <span>Shop: </span>
+              {product.shopName}
+            </p>
             <div className="details">
               <p>{product.productSize}</p>
               <p>Php {product.productPrice.toFixed(2)}</p>
