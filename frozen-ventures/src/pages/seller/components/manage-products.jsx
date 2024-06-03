@@ -31,10 +31,12 @@ export const ManageProducts = () => {
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [confirmTitle, setConfirmTitle] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
 
   useEffect(() => {
     const fetchProducts = () => {
@@ -106,7 +108,14 @@ export const ManageProducts = () => {
     setErrorMessage("");
   };
 
-  const handleCancelEditProduct = () => {
+  const handleEditProductClick = (productId) => {
+    setConfirmTitle("Edit Product");
+    setConfirmMessage("Are you sure you want to edit this product?");
+    setSelectedProductId(productId);
+    setShowConfirmationPopup(true);
+  };
+
+  const handleCancelEditProductClick = () => {
     setEditProductData({
       shopID: shopId,
       productID: "",
@@ -115,8 +124,25 @@ export const ManageProducts = () => {
       productDescription: "",
     });
     setShowEditProductPopup(false);
-    setSuccessMessage("");
     setErrorMessage("");
+  };
+
+  const handleEditProduct = (product) => {
+    setEditProductData({
+      shopID: shopId,
+      productID: product.productID,
+      productName: product.productName,
+      productFlavor: product.productFlavor,
+      productDescription: product.productDescription,
+    });
+    setShowEditProductPopup(true);
+  };
+
+  const handleRemoveClick = (productId) => {
+    setConfirmTitle("Remove Product");
+    setConfirmMessage("Are you sure you want to remove this product?");
+    setSelectedProductId(productId);
+    setShowConfirmationPopup(true);
   };
 
   const handleSubmitAddProduct = (e) => {
@@ -187,19 +213,7 @@ export const ManageProducts = () => {
     }
   };
 
-  const handleEditProduct = (product) => {
-    setEditProductData({
-      shopID: shopId,
-      productID: product.productID,
-      productName: product.productName,
-      productFlavor: product.productFlavor,
-      productDescription: product.productDescription,
-    });
-    setShowEditProductPopup(true);
-  };
-
-  const handleSubmitEdit = (e) => {
-    e.preventDefault();
+  const handleSubmitEditProduct = (e) => {
 
     if (!editProductData.productID) {
       setErrorMessage("Product ID is missing");
@@ -211,9 +225,9 @@ export const ManageProducts = () => {
       .then((response) => {
         console.log(response.data);
         if (response.data.status === 1) {
-          setSuccessMessage("Product updated successfully");
+          setSuccessMessage(response.data.message);
         } else {
-          setErrorMessage("Failed to update product: " + response.data.message);
+          setErrorMessage(response.data.message);
         }
       })
       .catch((error) => {
@@ -228,40 +242,44 @@ export const ManageProducts = () => {
     }, 2500);
   };
 
-  const handleRemoveProduct = (productId) => {
-    setSelectedProductId(productId);
-    setShowConfirmationPopup(true);
+  const handleConfirmAction = () => {
+    if (confirmTitle === "Edit Product") {
+      handleSubmitEditProduct();
+      setShowConfirmationPopup(false);
+    } else if (confirmTitle === "Add Product") {
+      
+    } else if (confirmTitle === "Remove Product") {
+      axios
+        .post(
+          `http://localhost/api/removeProduct.php?productId=${selectedProductId}`
+        )
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.status === 1) {
+            setSuccessMessage("Product removed successfully");
+          } else {
+            setErrorMessage("Failed to remove product");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setErrorMessage("An error occurred while removing the product");
+        })
+        .finally(() => {
+          setShowConfirmationPopup(false);
+        });
+
+      setTimeout(() => {
+        setErrorMessage("");
+        setSuccessMessage("");
+      }, 2500);
+    }
   };
 
-  const cancelRemoveProduct = () => {
+  const handleCancelAction = () => {
+    setConfirmTitle("");
+    setConfirmMessage("");
     setShowConfirmationPopup(false);
-  };
-
-  const confirmRemoveProduct = () => {
-    axios
-      .post(
-        `http://localhost/api/removeProduct.php?productId=${selectedProductId}`
-      )
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.status === 1) {
-          setSuccessMessage("Product removed successfully");
-        } else {
-          setErrorMessage("Failed to remove product");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setErrorMessage("An error occurred while removing the product");
-      })
-      .finally(() => {
-        setShowConfirmationPopup(false);
-      });
-
-    setTimeout(() => {
-      setErrorMessage("");
-      setSuccessMessage("");
-    }, 2500);
   };
 
   return (
@@ -311,9 +329,7 @@ export const ManageProducts = () => {
                   <button onClick={() => handleEditProduct(product)}>
                     Edit
                   </button>
-                  <button
-                    onClick={() => handleRemoveProduct(product.productID)}
-                  >
+                  <button onClick={() => handleRemoveClick(product.productID)}>
                     Remove
                   </button>
                 </div>
@@ -344,17 +360,18 @@ export const ManageProducts = () => {
           successMessage={successMessage}
           editProductData={editProductData}
           handleEditFormChange={handleEditFormChange}
-          handleCancelEditProduct={handleCancelEditProduct}
-          handleSubmitEdit={handleSubmitEdit}
+          handleCancelClick={handleCancelEditProductClick}
+          handleEditClick={handleEditProductClick}
+          handleSubmitEdit={handleSubmitEditProduct}
         />
       )}
 
       {showConfirmationPopup && (
         <ConfirmationPopUp
-          confirmTitle="Remove Product"
-          confirmMessage="Are you sure you want to remove this product?"
-          handleConfirm={confirmRemoveProduct}
-          handleCancel={cancelRemoveProduct}
+          confirmTitle={confirmTitle}
+          confirmMessage={confirmMessage}
+          handleConfirm={handleConfirmAction}
+          handleCancel={handleCancelAction}
         />
       )}
     </div>

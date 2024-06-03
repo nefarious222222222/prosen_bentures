@@ -5,7 +5,8 @@ export const EditProduct = ({
   editTitle,
   editProductData,
   handleEditFormChange,
-  handleCancelEditProduct,
+  handleCancelClick,
+  handleEditClick,
   handleSubmitEdit,
 }) => {
   return (
@@ -47,13 +48,11 @@ export const EditProduct = ({
             ></textarea>
           </div>
         </div>
-        <div className="button-group">
-          <button type="button" onClick={handleCancelEditProduct}>
-            Cancel
-          </button>
-          <button type="submit">Edit</button>
-        </div>
       </form>
+      <div className="button-group">
+        <button onClick={handleCancelClick}>Cancel</button>
+        <button onClick={handleEditClick}>Edit</button>
+      </div>
     </div>
   );
 };
