@@ -39,9 +39,7 @@ export const ManageProducts = () => {
   useEffect(() => {
     const fetchProducts = () => {
       axios
-        .get(
-          `http://localhost/api/manageProduct.php?shopId=${shopId}&status=1`
-        )
+        .get(`http://localhost/api/manageProduct.php?shopId=${shopId}&status=1`)
         .then((response) => {
           setProducts(Array.isArray(response.data) ? response.data : []);
         })
@@ -121,7 +119,7 @@ export const ManageProducts = () => {
     setErrorMessage("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmitAddProduct = (e) => {
     e.preventDefault();
 
     if (!imageFile) {
@@ -152,13 +150,13 @@ export const ManageProducts = () => {
             }));
 
             axios
-              .post("http://localhost/api/manageProduct.php", newProductData)
+              .post("http://localhost/api/addProduct.php", newProductData)
               .then((response) => {
                 console.log(response.data);
                 if (response.data.status === 1) {
-                  setSuccessMessage("Product added successfully");
+                  setSuccessMessage(response.data.message);
                 } else {
-                  setErrorMessage("Failed to add product");
+                  setErrorMessage(response.data.message);
                 }
               })
               .catch((error) => {
@@ -260,10 +258,10 @@ export const ManageProducts = () => {
         setShowConfirmationPopup(false);
       });
 
-      setTimeout(() => {
-        setErrorMessage("");
-        setSuccessMessage("");
-      }, 2500);
+    setTimeout(() => {
+      setErrorMessage("");
+      setSuccessMessage("");
+    }, 2500);
   };
 
   return (
@@ -332,7 +330,7 @@ export const ManageProducts = () => {
           successMessage={successMessage}
           handleImageChange={handleImageChange}
           imagePreview={imagePreview}
-          handleSubmit={handleSubmit}
+          handleSubmit={handleSubmitAddProduct}
           handleProductFormChange={handleProductFormChange}
           handleCancelAddProduct={handleCancelAddProduct}
           setShowAddProductPopup={setShowAddProductPopup}

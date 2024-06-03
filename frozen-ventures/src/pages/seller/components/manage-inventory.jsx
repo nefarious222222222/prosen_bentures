@@ -5,6 +5,8 @@ import { ProductStock } from "./product-stock";
 
 export const ManageInventory = () => {
   const { user } = useContext(UserContext);
+  const shopId = user.shopId;
+
   const [inventory, setInventory] = useState([]);
   const [showProductStock, setShowProductStock] = useState(false);
   const [selectedProductName, setSelectedProductName] = useState(null);
@@ -16,7 +18,7 @@ export const ManageInventory = () => {
     const fetchInventory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost/api/manageProduct.php?shopId=${user.shopId}`
+          `http://localhost/api/manageInventory.php?shopId=${shopId}&status=1`
         );
         setInventory(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
@@ -24,6 +26,8 @@ export const ManageInventory = () => {
       }
     };
     fetchInventory();
+    const intervalId = setInterval(fetchInventory, 2500);
+    return () => clearInterval(intervalId);
   }, [user.shopId]);
 
   const handleShowProductStock = (productName, productId) => {
@@ -51,7 +55,7 @@ export const ManageInventory = () => {
 
   const handleCancelClick = () => {
     setShowProductStock(false);
-  }
+  };
 
   return (
     <div className="manage-inventory">
