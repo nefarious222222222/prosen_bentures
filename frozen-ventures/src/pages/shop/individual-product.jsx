@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from "react";
-import "../../assets/styles/individual-product.css"
+import React, { useContext, useState, useEffect } from "react";
+import { UserContext } from "../../context/user-context";
+import "../../assets/styles/individual-product.css";
 import axios from "axios";
-import { ArrowRight, Minus, Plus, UserCircle } from "phosphor-react";
+import { SuccessMessage } from "../../components/success-message";
+import { ErrorMessage } from "../../components/error-message";
+import { Minus, Plus, UserCircle } from "phosphor-react";
 import { useParams } from "react-router-dom";
 
 export const IndividualProduct = () => {
-  const [product, setProduct] = useState(null);
+  const { user } = useContext(UserContext);
   const { productId } = useParams();
+  const [product, setProduct] = useState(null);
+  const [price, setPrice] = useState([]);
+  const [selectedPrice, setSelectedPrice] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -14,9 +23,7 @@ export const IndividualProduct = () => {
         const response = await axios.get(
           "http://localhost/api/getIndividualProduct.php",
           {
-            params: {
-              productId: productId,
-            },
+            params: { productId: productId },
           }
         );
         setProduct(response.data);
@@ -25,21 +32,99 @@ export const IndividualProduct = () => {
       }
     };
 
-    fetchProduct();
-  }, []);
+    const fetchPrice = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost/api/getProductPrice.php",
+          {
+            params: { productId: productId },
+          }
+        );
+        setPrice(response.data);
+        if (response.data.length > 0) {
+          setSelectedPrice(response.data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching product prices:", error);
+      }
+    };
 
-  console.log(product)
+    fetchProduct();
+    fetchPrice();
+  }, [productId]);
+
+  const handleSizeChange = (event) => {
+    const selectedSize = event.target.value;
+    const selected = price.find((p) => p.productSize === selectedSize);
+    setSelectedPrice(selected);
+    setQuantity(1);
+  };
+
+  const handleQuantityChange = (event) => {
+    const value = Math.max(1, Math.min(selectedPrice.productStock, Number(event.target.value)));
+    setQuantity(value);
+  };
+
+  const incrementQuantity = () => {
+    setQuantity((prevQuantity) => Math.min(selectedPrice.productStock, prevQuantity + 1));
+  };
+
+  const decrementQuantity = () => {
+    setQuantity((prevQuantity) => Math.max(1, prevQuantity - 1));
+  };
+
+  const totalPrice = selectedPrice ? selectedPrice.productPrice * quantity : 0;
+
+  const handleAddToCartClick = () => {
+    if (user?.accountId == null) {
+      setErrorMessage("You must be signed in to add items to your cart");
+    } else {
+      setSuccessMessage(`${product.productName} has been added to cart`);
+      // ADD TO DB
+    }
+
+    setTimeout(() => {
+      setErrorMessage("");
+      setSuccessMessage("");
+    }, 2500);
+  }
+
+  const handleBuyNowClick = () => {
+    if (user?.accountId == null) {
+      setErrorMessage("You must be signed in to buy this product");
+    } else {
+      setSuccessMessage(`${product.productName} has been added to cart`);
+      // ADD TO DB
+    }
+
+    setTimeout(() => {
+      setErrorMessage("");
+      setSuccessMessage("");
+    }, 3000);
+  }
 
   return (
     <div className="container individual-product">
-      {product ? (
+      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
+      {product && selectedPrice ? (
         <div className="product-details">
-          <div className="product-header">
-            <div className="product-seller">
-              <UserCircle size={60} />
+          <div className="header-container">
+            <div className="product-header">
+              {product.shopLogo ? (
+                <img
+                  src={`http://localhost/api/${product.shopLogo}`}
+                  alt="Shop Logo"
+                />
+              ) : (
+                <UserCircle size={60} />
+              )}
               <p>{product.shopName}</p>
             </div>
-            <ArrowRight size={50} />
+
+            <p>
+              <span>Total Price: </span>Php {totalPrice}
+            </p>
           </div>
 
           <div className="product">
@@ -47,48 +132,68 @@ export const IndividualProduct = () => {
               src={`http://localhost/api/productImages/${product.productImage}`}
               alt={product.productName}
             />
-
             <div className="product-info">
               <div className="info">
                 <p className="name">{product.productName}</p>
-                <p className="price">Php {product.productPrice}</p>
+                <p className="price">Php {selectedPrice.productPrice}</p>
               </div>
 
               <div className="info">
-                <div className="group">
-                  <p>
-                    <span>Flavor:</span> {product.productFlavor}
-                  </p>
-                  <p>
-                    <span>Size:</span> {product.productSize}
-                  </p>
-                  <p>
-                    <span>Stocks:</span> {product.productStock}
-                  </p>
+                <p>
+                  <span>Flavor:</span> {product.productFlavor}
+                </p>
+                <p>
+                  <span>Stocks:</span> {selectedPrice.productStock}
+                </p>
+
+                <div className="input-container">
+                  <label>Size:</label>
+                  <select
+                    name="productSize"
+                    id="productSize"
+                    onChange={handleSizeChange}
+                  >
+                    <option value="" disabled>
+                      Select a size
+                    </option>
+                    {price.map((p) => (
+                      <option key={p.priceID} value={p.productSize}>
+                        {p.productSize}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-
-                <div className="quantity-container">
-                  <span>Quantity:</span>
-
-                  <div className="quantity">
-                    <button>
-                      <Minus size={25} />
-                    </button>
-                    <input type="number" />
-                    <button>
-                      <Plus size={25} />
-                    </button>
-                  </div>
-                </div>
-
-                <p className="description">{product.productDescription}</p>
               </div>
+
+              <p className="description">{product.productDescription}</p>
             </div>
           </div>
 
-          <div className="button-group">
-            <button>Add to Cart</button>
-            <button>Buy Now</button>
+          <div className="footer-container">
+            <div className="quantity-container">
+              <p>Quantity:</p>
+
+              <div className="quantity">
+                <button onClick={decrementQuantity}>
+                  <Minus size={25} />
+                </button>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  min="1"
+                  max={selectedPrice.productStock}
+                />
+                <button onClick={incrementQuantity}>
+                  <Plus size={25} />
+                </button>
+              </div>
+            </div>
+
+            <div className="button-group">
+              <button onClick={handleAddToCartClick}>Add to Cart</button>
+              <button onClick={handleBuyNowClick}>Buy Now</button>
+            </div>
           </div>
         </div>
       ) : (

@@ -81,7 +81,7 @@ export const UserList = () => {
         <table>
           <thead>
             <tr>
-              <th>User ID</th>
+              <th>Account ID</th>
               <th>Role</th>
               <th>First Name</th>
               <th>Last Name</th>

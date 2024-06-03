@@ -1,26 +1,46 @@
 .individual-product {
-  padding: 15vh 6vw;
+  padding-top: 20vh;
+  display: flex;
+  justify-content: center;
 
   .product-details {
     display: flex;
     flex-direction: column;
-    gap: 5vh;
+    width: 50vw;
+    gap: 20px;
+    padding: 40px;
+    border-radius: 20px;
+    border: solid 3px var(--color-violet);
 
-    .product-header {
+    .header-container {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 1vw;
-
-      .product-seller {
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: solid 2px var(--color-violet);
+      .product-header {
         display: flex;
         align-items: center;
         gap: 1vw;
+
+        img {
+          width: 50px;
+          border-radius: 50%;
+        }
 
         p {
           font-size: 3rem;
           font-weight: 600;
           color: var(--color-violet);
+        }
+      }
+
+      p, span {
+        font-size: 1.5rem;
+        font-weight: 500;
+
+        span {
+          font-weight: 700;
         }
       }
     }
@@ -30,7 +50,7 @@
       gap: 3vw;
 
       img {
-        width: 400px;
+        width: 300px;
         border-radius: 20px;
       }
 
@@ -38,119 +58,124 @@
         width: 100%;
         display: flex;
         flex-direction: column;
+        justify-content: space-evenly;
 
-        .info:first-child {
+        .info {
           display: flex;
           justify-content: space-between;
-          padding: 30px 0;
 
-          p {
-            font-size: 2.5rem;
-            font-weight: 700;
-          }
-
-          .name {
-            color: var(--color-violet);
-          }
-
+          .name,
           .price {
-            color: var(--color-red);
+            font-size: 2rem;
+            font-weight: 700;
           }
         }
 
-        .info:last-child {
+        p,
+        span {
+          font-size: 1.25rem;
+          font-weight: 500;
+
+          span {
+            font-weight: 800;
+          }
+        }
+
+        .input-container {
           display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          height: 100%;
+          align-items: flex-start;
+          gap: 1vw;
 
-          p,
-          span {
-            font-size: 2rem;
-            font-weight: 500;
+          label {
+            font-size: 1.25rem;
+            font-weight: 800;
           }
 
-          span {
-            font-weight: 700;
-          }
-
-          .group {
-            display: flex;
-            justify-content: space-between;
-          }
-
-          .quantity-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1vh;
-
-            .quantity {
-              display: flex;
-              gap: 10px;
-
-              button {
-                border: none;
-                background: none;
-                cursor: pointer;
-              }
-
-              input {
-                border: 2px solid var(--color-violet);
-                outline: none;
-                text-align: center;
-                border-radius: 5px;
-                width: 10vw;
-                font-size: 1.5rem;
-                font-weight: 600;
-              }
-            }
-          }
-
-          .description {
-            text-align: justify;
-            text-indent: 100px;
+          select {
+            outline: none;
+            border-radius: 5px;
+            border: solid 2px var(--color-violet);
           }
         }
       }
     }
 
-    .button-group {
+    .footer-container {
       display: flex;
-      justify-content: flex-end;
-      gap: 5vw;
+      align-items: flex-end;
+      justify-content: space-between;
 
-      button {
-        width: 10vw;
-        padding: 10px 20px;
-        font-size: 1.5rem;
-        font-weight: 800;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s ease;
+      .quantity-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2vh;
+
+        p {
+          font-size: 1.5rem;
+          font-weight: 700;
+        }
+
+        .quantity {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+
+          button {
+            border: none;
+            background: none;
+            cursor: pointer;
+          }
+
+          input {
+            border: 2px solid var(--color-violet);
+            outline: none;
+            text-align: center;
+            border-radius: 5px;
+            width: 10vw;
+            font-size: 1.5rem;
+            font-weight: 600;
+          }
+        }
       }
 
-      button:first-child {
-        border: solid 2px var(--color-violet);
-        background-color: white;
-        color: var(--color-violet);
-      }
+      .button-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 5vw;
 
-      button:last-child {
-        border: solid 2px var(--color-red);
-        background-color: var(--color-red);
-        color: white;
-      }
+        button {
+          width: 10vw;
+          height: fit-content;
+          padding: 10px 20px;
+          font-size: 1.25rem;
+          font-weight: 800;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
 
-      button:first-child:hover {
-        background-color: var(--color-violet);
-        color: white;
-      }
+        button:first-child {
+          border: solid 2px var(--color-violet);
+          background-color: white;
+          color: var(--color-violet);
+        }
 
-      button:last-child:hover {
-        border: solid 2px var(--color-red);
-        background-color: white;
-        color: var(--color-red);
+        button:last-child {
+          border: solid 2px var(--color-dark-red);
+          background-color: var(--color-white);
+          color: var(--color-dark-red);
+        }
+
+        button:first-child:hover {
+          background-color: var(--color-violet);
+          color: white;
+        }
+
+        button:last-child:hover {
+          background-color: var(--color-dark-red);
+          color: var(--color-white);
+        }
       }
     }
   }
