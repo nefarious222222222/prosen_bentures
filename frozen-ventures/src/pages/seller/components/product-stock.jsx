@@ -4,7 +4,12 @@ import { ErrorMessage } from "../../../components/error-message";
 import { SuccessMessage } from "../../../components/success-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
 
-export const ProductStock = ({ handleCancelClick, productName, productId, shopId }) => {
+export const ProductStock = ({
+  handleCancelClick,
+  productName,
+  productId,
+  shopId,
+}) => {
   const [inventory, setInventory] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -19,14 +24,13 @@ export const ProductStock = ({ handleCancelClick, productName, productId, shopId
   useEffect(() => {
     const fetchInventory = () => {
       axios
-        .get(
-          `http://localhost/api/manageInventory.php?productId=${productId}&shopId=${shopId}`
-        )
+        .get(`http://localhost/api/manageInventory.php?productId=${productId}`)
         .then((response) => {
           if (response.data.status === 0) {
-            setErrorMessage(
-              "Failed to update product: " + response.data.message
-            );
+            setErrorMessage(response.data.message);
+            setTimeout(() => {
+              setErrorMessage("");
+            }, 2000);
           } else {
             setInventory(Array.isArray(response.data) ? response.data : []);
           }
@@ -37,8 +41,6 @@ export const ProductStock = ({ handleCancelClick, productName, productId, shopId
         });
     };
     fetchInventory();
-    const intervalId = setInterval(fetchInventory, 3000);
-    return () => clearInterval(intervalId);
   }, [productId, shopId]);
 
   const handleAddSize = () => {
@@ -95,7 +97,9 @@ export const ProductStock = ({ handleCancelClick, productName, productId, shopId
         })
         .catch((error) => {
           console.error("Error:", error);
-          setErrorMessage("An error occurred while adding size, price and stock");
+          setErrorMessage(
+            "An error occurred while adding size, price and stock"
+          );
         });
     } else if (action === "remove" && currentItem) {
       axios
@@ -112,7 +116,9 @@ export const ProductStock = ({ handleCancelClick, productName, productId, shopId
         })
         .catch((error) => {
           console.error("Error:", error);
-          setErrorMessage("An error occurred while removing size, price and stock");
+          setErrorMessage(
+            "An error occurred while removing size, price and stock"
+          );
         });
     }
 

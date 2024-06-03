@@ -18,16 +18,15 @@ export const ManageInventory = () => {
     const fetchInventory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost/api/manageInventory.php?shopId=${shopId}&status=1`
+          `http://localhost/api/getInventory.php?shopId=${shopId}&status=1`
         );
         setInventory(Array.isArray(response.data) ? response.data : []);
+        console.log(inventory)
       } catch (error) {
         console.error("Error fetching inventory:", error);
       }
     };
     fetchInventory();
-    const intervalId = setInterval(fetchInventory, 2500);
-    return () => clearInterval(intervalId);
   }, [user.shopId]);
 
   const handleShowProductStock = (productName, productId) => {
