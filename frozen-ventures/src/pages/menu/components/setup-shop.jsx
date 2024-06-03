@@ -5,6 +5,7 @@ import axios from "axios";
 import { ErrorMessage } from "../../../components/error-message";
 import { SuccessMessage } from "../../../components/success-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
+import { VerifyShop } from "../../../components/verify-shop";
 import ShopImg from "../../../assets/images/1.jpg";
 
 export const SetUpShop = () => {
@@ -17,9 +18,12 @@ export const SetUpShop = () => {
   });
   const [shop, setShop] = useState([]);
   const [imageFile, setImageFile] = useState(null);
+  const [file, setFile] = useState(null);
+  const [fileContent, setFileContent] = useState("");
   const [editable, setEditable] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showVerifyShop, setShowVerifyShop] = useState(false);
   const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
 
   const accountId = user.accountId;
@@ -59,6 +63,16 @@ export const SetUpShop = () => {
   const handleConfirmEditClose = () => {
     setEditable(false);
     setShowConfirmationPopup(false);
+  };
+
+  const handleVerifyClick = () => {
+    setShowVerifyShop(true);
+  };
+
+  const handleCancelClick = () => {
+    setErrorMessage("")
+    setSuccessMessage("");
+    setShowVerifyShop(false);
   };
 
   const handleShopFormChange = (e) => {
@@ -109,7 +123,9 @@ export const SetUpShop = () => {
             })
             .catch((error) => {
               console.error("Error:", error);
-              setErrorMessage("An error occurred while saving the shop information");
+              setErrorMessage(
+                "An error occurred while saving the shop information"
+              );
               setSuccessMessage("");
             });
         } else {
@@ -148,10 +164,99 @@ export const SetUpShop = () => {
     }
   };
 
+  const handleSubmitVerify = (e) => {
+    e.preventDefault();
+  
+    if (!file) {
+      setErrorMessage('Please select a PDF file');
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('shopDocument', file);
+  
+    axios.post('http://localhost/api/uploadShopVerificationFiles.php', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then((response) => {
+      if (response.data.status === 1) {
+        const filePath = response.data.filePath;
+  
+        axios.post('http://localhost/api/verifyShop.php', { 
+          accountID: user.accountId,
+          shopDocument: filePath
+        })
+        .then((updateResponse) => {
+          if (updateResponse.data.status === 1) {
+            setSuccessMessage(updateResponse.data.message);
+            setErrorMessage('');
+          } else {
+            setErrorMessage(updateResponse.data.message);
+            setSuccessMessage('');
+          }
+        })
+        .catch((error) => {
+          console.error('Error updating shop document:', error);
+          setErrorMessage('An error occurred while submiting the file');
+          setSuccessMessage('');
+        });
+      } else {
+        setErrorMessage('Failed to upload shop document');
+        setSuccessMessage('');
+      }
+    })
+    .catch((error) => {
+      console.error('Error uploading shop document:', error);
+      setErrorMessage('An error occurred while submiting the file');
+      setSuccessMessage('');
+    });
+    setTimeout(() => {
+      setShowVerifyShop(false)
+      setErrorMessage("")
+      setSuccessMessage("");
+    }, 2500);
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      if (selectedFile.type !== 'application/pdf') {
+        setErrorMessage('Only PDF files are allowed');
+        return;
+      }
+      setFile(selectedFile);
+      const reader = new FileReader();
+  
+      reader.onload = (event) => {
+        setFileContent(event.target.result);
+        console.log("File content:", event.target.result);
+      };
+  
+      reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+      };
+  
+      reader.readAsText(selectedFile);
+    }
+
+    setTimeout(() => {
+      setErrorMessage("");
+    }, 2000);
+  };
+
   return (
     <div className="setup-shop">
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
+      {showVerifyShop && (
+        <VerifyShop
+          handleCancel={handleCancelClick}
+          handleSubmit={handleSubmitVerify}
+          handleFileChange={handleFileChange}
+        />
+      )}
       <form className="shop-container" onSubmit={handleSaveShop}>
         {showConfirmationPopup && (
           <ConfirmationPopUp
@@ -162,11 +267,16 @@ export const SetUpShop = () => {
           />
         )}
         <div className="shop-profile">
-          <img src={`http://localhost/api/productImages/${shop.shopLogo}` && ShopImg} alt="User" />
+          <img
+            src={
+              `http://localhost/api/productImages/${shop.shopLogo}` && ShopImg
+            }
+            alt="User"
+          />
 
           <div className="shop-details">
             <p>{shop.shopName}</p>
-            <p>{shop.isVerified ? "Verified" : "Not Verified"}</p>
+            <p>{shop.isVerified == 1 ? "Verified" : "Not Verified"}</p>
           </div>
           <button
             type="button"
@@ -174,8 +284,8 @@ export const SetUpShop = () => {
           >
             <NotePencil size={30} /> <p>{editable ? "Save" : "Edit"}</p>
           </button>
-          {!user.shopId && (
-            <button type="button">
+          {shop.isVerified == 0 && (
+            <button type="button" onClick={handleVerifyClick}>
               <CheckCircle size={30} /> <p>Verify</p>
             </button>
           )}
