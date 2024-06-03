@@ -8,7 +8,8 @@ export const AddProduct = ({
   handleImageChange,
   imagePreview,
   handleProductFormChange,
-  handleCancelAddProduct,
+  handleCancelAddProductClick,
+  handleAddProductClick
 }) => {
   return (
     <div className="add-product">
@@ -67,13 +68,13 @@ export const AddProduct = ({
             ></textarea>
           </div>
         </div>
-        <div className="button-group">
-          <button type="button" onClick={handleCancelAddProduct}>
+      </form>
+      <div className="button-group">
+          <button onClick={handleCancelAddProductClick}>
             Cancel
           </button>
-          <button type="submit">Add</button>
+          <button onClick={handleAddProductClick}>Add</button>
         </div>
-      </form>
     </div>
   );
 };

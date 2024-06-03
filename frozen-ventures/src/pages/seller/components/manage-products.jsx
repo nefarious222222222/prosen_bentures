@@ -108,6 +108,12 @@ export const ManageProducts = () => {
     setErrorMessage("");
   };
 
+  const handleAddProductClick = () => {
+    setConfirmTitle("Add Product");
+    setConfirmMessage("Are you sure you want to add this product?");
+    setShowConfirmationPopup(true);
+  };
+
   const handleEditProductClick = (productId) => {
     setConfirmTitle("Edit Product");
     setConfirmMessage("Are you sure you want to edit this product?");
@@ -146,10 +152,11 @@ export const ManageProducts = () => {
   };
 
   const handleSubmitAddProduct = (e) => {
-    e.preventDefault();
-
     if (!imageFile) {
       setErrorMessage("Please select an image");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 2000);
       return;
     }
 
@@ -214,7 +221,6 @@ export const ManageProducts = () => {
   };
 
   const handleSubmitEditProduct = (e) => {
-
     if (!editProductData.productID) {
       setErrorMessage("Product ID is missing");
       return;
@@ -247,7 +253,8 @@ export const ManageProducts = () => {
       handleSubmitEditProduct();
       setShowConfirmationPopup(false);
     } else if (confirmTitle === "Add Product") {
-      
+      handleSubmitAddProduct();
+      setShowConfirmationPopup(false);
     } else if (confirmTitle === "Remove Product") {
       axios
         .post(
@@ -348,7 +355,8 @@ export const ManageProducts = () => {
           imagePreview={imagePreview}
           handleSubmit={handleSubmitAddProduct}
           handleProductFormChange={handleProductFormChange}
-          handleCancelAddProduct={handleCancelAddProduct}
+          handleCancelAddProductClick={handleCancelAddProduct}
+          handleAddProductClick={handleAddProductClick}
           setShowAddProductPopup={setShowAddProductPopup}
         />
       )}
