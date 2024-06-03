@@ -1,0 +1,157 @@
+.individual-product {
+  padding: 15vh 6vw;
+
+  .product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+
+    .product-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1vw;
+
+      .product-seller {
+        display: flex;
+        align-items: center;
+        gap: 1vw;
+
+        p {
+          font-size: 3rem;
+          font-weight: 600;
+          color: var(--color-violet);
+        }
+      }
+    }
+
+    .product {
+      display: flex;
+      gap: 3vw;
+
+      img {
+        width: 400px;
+        border-radius: 20px;
+      }
+
+      .product-info {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .info:first-child {
+          display: flex;
+          justify-content: space-between;
+          padding: 30px 0;
+
+          p {
+            font-size: 2.5rem;
+            font-weight: 700;
+          }
+
+          .name {
+            color: var(--color-violet);
+          }
+
+          .price {
+            color: var(--color-red);
+          }
+        }
+
+        .info:last-child {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 100%;
+
+          p,
+          span {
+            font-size: 2rem;
+            font-weight: 500;
+          }
+
+          span {
+            font-weight: 700;
+          }
+
+          .group {
+            display: flex;
+            justify-content: space-between;
+          }
+
+          .quantity-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1vh;
+
+            .quantity {
+              display: flex;
+              gap: 10px;
+
+              button {
+                border: none;
+                background: none;
+                cursor: pointer;
+              }
+
+              input {
+                border: 2px solid var(--color-violet);
+                outline: none;
+                text-align: center;
+                border-radius: 5px;
+                width: 10vw;
+                font-size: 1.5rem;
+                font-weight: 600;
+              }
+            }
+          }
+
+          .description {
+            text-align: justify;
+            text-indent: 100px;
+          }
+        }
+      }
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 5vw;
+
+      button {
+        width: 10vw;
+        padding: 10px 20px;
+        font-size: 1.5rem;
+        font-weight: 800;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      button:first-child {
+        border: solid 2px var(--color-violet);
+        background-color: white;
+        color: var(--color-violet);
+      }
+
+      button:last-child {
+        border: solid 2px var(--color-red);
+        background-color: var(--color-red);
+        color: white;
+      }
+
+      button:first-child:hover {
+        background-color: var(--color-violet);
+        color: white;
+      }
+
+      button:last-child:hover {
+        border: solid 2px var(--color-red);
+        background-color: white;
+        color: var(--color-red);
+      }
+    }
+  }
+}

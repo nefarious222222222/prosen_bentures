@@ -10,7 +10,9 @@ import { Sign } from "./pages/sign/sign";
 import { Menu } from "./pages/menu/menu";
 import { Shop } from "./pages/shop/shop";
 import { Cart } from "./pages/cart/cart";
+4;
 import { History } from "./pages/history/history";
+import { IndividualProduct } from "./pages/shop/individual-product";
 import { HomeSeller } from "./pages/seller/home-seller";
 
 function App() {
@@ -27,7 +29,10 @@ function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/history" element={<History />} />
-
+            <Route
+              path="/individual-product/:productId"
+              element={<IndividualProduct />}
+            />
             <Route path="/home-admin" element={<HomeAdmin />} />
             <Route path="/home-seller" element={<HomeSeller />} />
           </Routes>

@@ -18,12 +18,14 @@ export const ManageProducts = () => {
     shopID: shopId,
     productID: "",
     productName: "",
+    productFlavor: "",
     productDescription: "",
   });
   const [newProductData, setNewProductData] = useState({
     shopID: shopId,
     productImage: "",
     productName: "",
+    productFlavor: "",
     productDescription: "",
     status: "1",
   });
@@ -38,7 +40,7 @@ export const ManageProducts = () => {
     const fetchProducts = () => {
       axios
         .get(
-          `http://localhost/api/getProducts.php?shopId=${shopId}&status=1`
+          `http://localhost/api/manageProduct.php?shopId=${shopId}&status=1`
         )
         .then((response) => {
           setProducts(Array.isArray(response.data) ? response.data : []);
@@ -111,6 +113,7 @@ export const ManageProducts = () => {
       shopID: shopId,
       productID: "",
       productName: "",
+      productFlavor: "",
       productDescription: "",
     });
     setShowEditProductPopup(false);
@@ -149,7 +152,7 @@ export const ManageProducts = () => {
             }));
 
             axios
-              .post("http://localhost/api/addProduct.php", newProductData)
+              .post("http://localhost/api/manageProduct.php", newProductData)
               .then((response) => {
                 console.log(response.data);
                 if (response.data.status === 1) {
@@ -191,6 +194,7 @@ export const ManageProducts = () => {
       shopID: shopId,
       productID: product.productID,
       productName: product.productName,
+      productFlavor: product.productFlavor,
       productDescription: product.productDescription,
     });
     setShowEditProductPopup(true);
@@ -205,7 +209,7 @@ export const ManageProducts = () => {
     }
 
     axios
-      .post("http://localhost/api/editProduct.php", editProductData)
+      .post("http://localhost/api/manageProduct.php", editProductData)
       .then((response) => {
         console.log(response.data);
         if (response.data.status === 1) {
@@ -297,6 +301,9 @@ export const ManageProducts = () => {
                   <div className="info">
                     <p>
                       <span>Product Name:</span> {product.productName}
+                    </p>
+                    <p>
+                      <span>Product Flavor:</span> {product.productFlavor}
                     </p>
                   </div>
                   <p className="description">{product.productDescription}</p>

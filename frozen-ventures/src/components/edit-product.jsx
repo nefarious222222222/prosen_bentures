@@ -23,6 +23,17 @@ export const EditProduct = ({
               onChange={handleEditFormChange}
             />
           </div>
+
+          <div className="input-field">
+            <label htmlFor="productFlavor">Product Flavor:</label>
+            <input
+              type="text"
+              id="productFlavor"
+              name="productFlavor"
+              value={editProductData.productFlavor}
+              onChange={handleEditFormChange}
+            />
+          </div>
         </div>
 
         <div className="input-container">
