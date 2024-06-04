@@ -7,10 +7,9 @@ import { ErrorMessage } from "../../../components/error-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
 import { useNavigate } from "react-router-dom";
 
-export const CartItems = ({ passSubTotal }) => {
+export const CartItems = ({ updateSubTotal }) => {
   const { user } = useContext(UserContext);
   const [cartItems, setCartItems] = useState([]);
-  const [subTotal, setSubtotal] = useState("");
   const [selectedId, setSelectedId] = useState({
     accountId: "",
     productId: "",
@@ -38,17 +37,9 @@ export const CartItems = ({ passSubTotal }) => {
   }, [user.accountId]);
 
   useEffect(() => {
-    const calculateSubtotal = () => {
-      const subtotal = cartItems
-        .reduce((total, item) => total + parseFloat(item.totalPrice), 0)
-        .toFixed(2);
-      return subtotal;
-    };
-
-    const subtotal = calculateSubtotal();
-    setSubtotal(subtotal);
-    passSubTotal = subTotal;
-  }, [cartItems]);
+    const subTotal = cartItems.reduce((acc, item) => acc + item.productPrice * item.quantity, 0);
+    updateSubTotal(subTotal);
+  }, [cartItems, updateSubTotal]);
 
   const handleQuantityChange = (
     productId,

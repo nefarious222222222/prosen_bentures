@@ -11,7 +11,6 @@ export const Cart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [cartItems, setCartItems] = useState([]);
 
-  let handleCheckout;
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -27,6 +26,14 @@ export const Cart = () => {
     fetchCartItems();
   }, [user.accountId]);
 
+  const updateSubTotal = (subTotal) => {
+    setTotalPrice(subTotal);
+  };
+
+  const handleCheckout = () => {
+    console.log("Checkout button clicked");
+  };
+
   return (
     <div className="container cart">
       {user.userRole !== "customer" ? <Navigate to="/" replace={true} /> : null}
@@ -37,7 +44,7 @@ export const Cart = () => {
 
           <div className="checkout">
             <p>
-              <span>Sub Total: </span>Php 
+              <span>Sub Total: </span>Php {totalPrice.toFixed(2)}
             </p>
 
             <button
@@ -63,7 +70,7 @@ export const Cart = () => {
           </table>
         </div>
 
-        {cartItems.length == 0 ? (
+        {cartItems.length === 0 ? (
           <div key="empty-cart" className="empty-cart">
             <div className="message-one">
               <span>
@@ -89,7 +96,7 @@ export const Cart = () => {
           </div>
         ) : (
           <div className="cart-items">
-            <CartItems />
+            <CartItems updateSubTotal={updateSubTotal} />
           </div>
         )}
       </div>
