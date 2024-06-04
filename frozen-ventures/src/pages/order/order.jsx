@@ -3,13 +3,15 @@ import "../../assets/styles/order.css";
 import { OrderContext } from "../../context/order-context";
 import { UserContext } from "../../context/user-context";
 import { useNavigate } from "react-router-dom";
+import { ErrorMessage } from "../../components/error-message";
+import { SuccessMessage } from "../../components/success-message";
+import { ConfirmationPopUp } from "../../components/confirmation-popup";
 
 export const Order = () => {
   const { user } = useContext(UserContext);
   const { orderProducts, clearOrder } = useContext(OrderContext);
   const { products } = orderProducts || {};
   const navigate = useNavigate();
-  const [userEmail, setUserEmail] = useState("");
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
@@ -21,7 +23,9 @@ export const Order = () => {
   });
   const [isEditingShippingMode, setIsEditingShippingMode] = useState(false);
   const [isEditingShippingDate, setIsEditingShippingDate] = useState(false);
-  const [shippingAddressError, setShippingAddressError] = useState(false);
+  const [showConfirmOrder, setShowConfirmOrder] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [shippingMode, setShippingMode] = useState("pickup");
 
   let totalProductAmount = 0;
@@ -74,7 +78,7 @@ export const Order = () => {
   };
 
   const isShippingAddressEmpty = () => {
-    const { street, barangay, municipality, province, zip } = formUserPersonal;
+    const { street, barangay, municipality, province, zip } = userData;
     return !street || !barangay || !municipality || !province || !zip;
   };
 
@@ -101,9 +105,61 @@ export const Order = () => {
     setIsEditingShippingDate(false);
   };
 
-  console.log(shippingDate);
+  const handlePlaceOrderClick = () => {
+    if (isShippingAddressEmpty()) {
+      setErrorMessage("Order Unsuccessful: Address cannot be incomplete");
+
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 2000);
+    } else {
+      setShowConfirmOrder(true);
+    }
+  };
+
+  const handleConfirmCancelClick = () => {
+    setShowConfirmOrder(false);
+  };
+
+  const handlePlaceOrder = () => {
+    for (const productId in products) {
+      const product = products[productId];
+
+      const productInfo = {
+        productPrice: product.productPrice,
+        productName: product.productName,
+        productImage: product.productImage,
+        shopName: product.shopName,
+      };
+
+      const orderInfo = {
+        orderDate: product.orderDate,
+        shippingMode: shippingMode,
+        shippingDate: shippingDate.toISOString().split("T")[0],
+        status: product.status,
+        quantity: product.quantity,
+        subTotal: product.subTotal,
+      };
+
+      const orderData = {
+        ...orderInfo,
+        [productId]: productInfo,
+      };
+
+      console.log(user.userRole, user.accountId, orderData);
+    }
+  };
+
   return (
     <div className="container order">
+      {showConfirmOrder && (
+        <ConfirmationPopUp
+          confirmTitle={"Confirm Order"}
+          confirmMessage={"Are you certain you wish to place order?"}
+          handleCancel={handleConfirmCancelClick}
+          handleConfirm={handlePlaceOrder}
+        />
+      )}
       <header>
         <h2>Order Confirmation</h2>
 
@@ -113,7 +169,7 @@ export const Order = () => {
               <p>
                 Order Total: <span>Php {totalOrderCost.toFixed(2)}</span>
               </p>
-              <button>Place Order</button>
+              <button onClick={handlePlaceOrderClick}>Place Order</button>
             </>
           ) : null}
         </div>
@@ -258,7 +314,7 @@ export const Order = () => {
             <p className="label">Total:</p>
             <p className="price">Php {totalOrderCost.toFixed(2)}</p>
           </div>
-          <button>Place Order</button>
+          <button onClick={handlePlaceOrderClick}>Place Order</button>
         </div>
       </div>
     </div>
