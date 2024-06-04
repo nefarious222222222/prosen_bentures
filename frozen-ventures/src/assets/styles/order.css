@@ -279,6 +279,7 @@
 
       .sub-total,
       .shipping,
+      .fee,
       .total {
         display: flex;
         justify-content: space-between;
@@ -297,7 +298,7 @@
       }
 
       .line {
-        border: solid 1px var(--color-dark-gray);
+        border: solid 1px black;
         margin: 10px 0;
       }
 
@@ -309,14 +310,15 @@
         border-radius: 5px;
         font-size: 1.25rem;
         font-weight: 800;
-        color: var(--color-violet);
-        background-color: var(--color-pale-stone);
+        border: solid 2px var(--color-violet);
+        color: var(--color-white);
+        background-color: var(--color-violet);
         transition: all 0.3s ease;
       }
 
       button:hover {
-        background-color: var(--color-violet);
-        color: var(--color-pale-stone);
+        background-color: var(--color-pale-violet);
+        color: var(--color-violet);
         cursor: pointer;
       }
     }

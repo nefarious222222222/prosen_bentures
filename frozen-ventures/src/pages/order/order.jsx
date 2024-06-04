@@ -29,13 +29,16 @@ export const Order = () => {
   const [shippingMode, setShippingMode] = useState("pickup");
 
   let totalProductAmount = 0;
+  let productFee = 0;
 
   if (products) {
     for (const productId in products) {
       const product = products[productId];
       totalProductAmount += product.productPrice * product.quantity;
+      productFee += product.productPrice * product.quantity * 0.01;
     }
   }
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -52,9 +55,12 @@ export const Order = () => {
     fetchUserData();
   }, [user.accountId]);
 
-  const shippingCost = shippingMode === "pickup" ? 0 : 10;
+  const shippingCost =
+    shippingMode === "pickup" ? 0 : 10 * Object.keys(products).length;
   const totalOrderCost =
-    parseFloat(totalProductAmount) + parseFloat(shippingCost);
+    parseFloat(totalProductAmount) +
+    parseFloat(shippingCost) +
+    parseFloat(productFee);
 
   const handleEditUserInfo = () => {
     navigate("/menu");
@@ -125,6 +131,11 @@ export const Order = () => {
     for (const productId in products) {
       const product = products[productId];
 
+      const productFee = product.productPrice * product.quantity * 0.01;
+      const shippingFee =
+        shippingMode === "delivery" ? 10 : 0;
+      const totalPrice = Number(product.subTotal) + Number(productFee) + Number(shippingFee);
+
       const productInfo = {
         productId: product.productId,
         priceId: product.priceId,
@@ -137,7 +148,7 @@ export const Order = () => {
         shippingDate: shippingDate.toISOString().split("T")[0],
         status: product.status,
         quantity: product.quantity,
-        subTotal: product.subTotal,
+        totalPrice: totalPrice.toFixed(2),
       };
 
       const orderData = {
@@ -305,8 +316,12 @@ export const Order = () => {
             <p className="price">Php {totalProductAmount.toFixed(2)}</p>
           </div>
           <div className="shipping">
-            <p className="label">Shipping:</p>
+            <p className="label">Shipping Fee:</p>
             <p className="price">Php {shippingCost.toFixed(2)}</p>
+          </div>
+          <div className="fee">
+            <p className="label">Platform Fee:</p>
+            <p className="price">Php {productFee.toFixed(2)}</p>
           </div>
           <div className="line"></div>
           <div className="total">
