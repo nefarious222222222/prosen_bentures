@@ -73,7 +73,7 @@ export const IndividualProduct = () => {
     setQuantity((prevQuantity) => Math.max(1, prevQuantity - 1));
   };
 
-  const totalPrice = selectedPrice ? selectedPrice.productPrice * quantity : 0;
+  const totalPrice = Number(selectedPrice ? selectedPrice.productPrice * quantity : 0).toFixed(2);
 
   const handleAddToCartClick = () => {
     if (user?.accountId == null) {
