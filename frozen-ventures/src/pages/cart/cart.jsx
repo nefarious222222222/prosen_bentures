@@ -1,16 +1,32 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "../../assets/styles/cart.css";
+import axios from "axios";
 import { UserContext } from "../../context/user-context";
+import { CartItems } from "./components/cart-item";
 import { Navigate, Link } from "react-router-dom";
 import { ShoppingCart, Storefront } from "phosphor-react";
 
 export const Cart = () => {
   const { user } = useContext(UserContext);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [products, setProducts] = useState([]);
-  const [orderSet, setOrderSet] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
 
   let handleCheckout;
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost/api/manageCart.php?accountId=${user.accountId}`
+        );
+        setCartItems(response.data);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+      }
+    };
+
+    fetchCartItems();
+  }, [user.accountId]);
+  console.log(cartItems);
 
   return (
     <div className="container cart">
@@ -48,36 +64,36 @@ export const Cart = () => {
           </table>
         </div>
 
-        <div className="cart-items">
-          CART ITEM HERE
-        </div>
+        {cartItems.length == 0 ? (
+          <div key="empty-cart" className="empty-cart">
+            <div className="message-one">
+              <span>
+                <ShoppingCart size={50} />
+              </span>
+              <h2>
+                Your <span>cart</span> is empty
+              </h2>
+            </div>
+
+            <div className="message-two">
+              <p>
+                <span>Venture</span> into the <span>product catalog</span>, and
+                maybe you'll find something <span>frosty</span>.
+              </p>
+              <Link to="/shop">
+                <button>
+                  <Storefront size={32} />
+                  Browse Shop
+                </button>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="cart-items">
+            <CartItems />
+          </div>
+        )}
       </div>
-
-      {totalPrice === 0 && (
-        <div key="empty-cart" className="empty-cart">
-          <div className="message-one">
-            <span>
-              <ShoppingCart size={50} />
-            </span>
-            <h2>
-              Your <span>cart</span> is empty
-            </h2>
-          </div>
-
-          <div className="message-two">
-            <p>
-              <span>Venture</span> into the <span>product catalog</span>, and
-              maybe you'll find something <span>frosty</span>.
-            </p>
-            <Link to="/shop">
-              <button>
-                <Storefront size={32} />
-                Browse Shop
-              </button>
-            </Link>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
