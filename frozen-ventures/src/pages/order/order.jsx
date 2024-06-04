@@ -47,33 +47,17 @@ export const Order = () => {
 
     fetchUserData();
   }, [user.accountId]);
-  
+
   const shippingCost = shippingMode === "pickup" ? 0 : 10;
   const totalOrderCost =
     parseFloat(totalProductAmount) + parseFloat(shippingCost);
 
   const handleEditUserInfo = () => {
-    navigate("/user-menu");
+    navigate("/menu");
   };
 
   const handleEditShippingAddress = () => {
-    navigate("/user-menu");
-  };
-
-  const handleConfirmOrderShow = () => {
-    if (isShippingAddressEmpty()) {
-      setShippingAddressError(true);
-
-      setTimeout(() => {
-        setShippingAddressError(false);
-      }, 2000);
-    } else {
-      setShowConfirmOrder(true);
-    }
-  };
-
-  const handleConfirmOrderClose = () => {
-    setShowConfirmOrder(false);
+    navigate("/menu");
   };
 
   const handleEditShippingMode = () => {
@@ -129,7 +113,7 @@ export const Order = () => {
               <p>
                 Order Total: <span>Php {totalOrderCost.toFixed(2)}</span>
               </p>
-              <button onClick={handleConfirmOrderShow}>Place Order</button>
+              <button>Place Order</button>
             </>
           ) : null}
         </div>
@@ -154,11 +138,10 @@ export const Order = () => {
             <button onClick={handleEditShippingAddress}>Edit</button>
           </div>
 
-          <p>{userData.street}</p>
-          <p>{userData.barangay}</p>
-          <p>{userData.municipality}</p>
-          <p>{userData.province}</p>
-          <p>{userData.zip}</p>
+          <p>
+            {userData.street} {userData.barangay} {userData.municipality}{" "}
+            {userData.province} {userData.zip}
+          </p>
         </div>
 
         <div className="info">
@@ -244,7 +227,7 @@ export const Order = () => {
                       <p>{product.shopName}</p>
                     </td>
                     <td>
-                      <p>{product.quantity}</p>
+                      <p>x{product.quantity}</p>
                     </td>
                     <td>
                       <p>
@@ -263,19 +246,19 @@ export const Order = () => {
         <div className="total-container">
           <h2>Total Cost</h2>
           <div className="sub-total">
-            <p className="label">Sub Total</p>
+            <p className="label">Sub Total:</p>
             <p className="price">Php {totalProductAmount.toFixed(2)}</p>
           </div>
           <div className="shipping">
-            <p className="label">Shipping</p>
+            <p className="label">Shipping:</p>
             <p className="price">Php {shippingCost.toFixed(2)}</p>
           </div>
           <div className="line"></div>
           <div className="total">
-            <p className="label">Total</p>
+            <p className="label">Total:</p>
             <p className="price">Php {totalOrderCost.toFixed(2)}</p>
           </div>
-          <button onClick={handleConfirmOrderShow}>Place Order</button>{" "}
+          <button>Place Order</button>
         </div>
       </div>
     </div>
