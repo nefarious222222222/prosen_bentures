@@ -47,6 +47,9 @@ export const Cart = () => {
           }
 
           acc[curr.productID] = {
+            productId: curr.productID,
+            priceId: curr.priceID,
+            shopId: curr.shopID,
             productImage: curr.productImage,
             productName: curr.productName,
             productFlavor: curr.productFlavor,
@@ -62,6 +65,7 @@ export const Cart = () => {
         }, {}),
       };
 
+      
       setOrder(orderDetails);
       setOrderSet(true);
     } catch (error) {

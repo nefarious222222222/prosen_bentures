@@ -126,10 +126,9 @@ export const Order = () => {
       const product = products[productId];
 
       const productInfo = {
-        productPrice: product.productPrice,
-        productName: product.productName,
-        productImage: product.productImage,
-        shopName: product.shopName,
+        productId: product.productId,
+        priceId: product.priceId,
+        shopId: product.shopId,
       };
 
       const orderInfo = {
@@ -146,7 +145,7 @@ export const Order = () => {
         [productId]: productInfo,
       };
 
-      console.log(user.userRole, user.accountId, orderData);
+      console.log(user.accountId, orderData);
     }
   };
 
