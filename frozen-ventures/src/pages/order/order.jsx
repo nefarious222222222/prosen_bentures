@@ -5,12 +5,12 @@ import { UserContext } from "../../context/user-context";
 import { useNavigate } from "react-router-dom";
 
 export const Order = () => {
-  const { orderProducts, clearOrder } = useContext(OrderContext);
   const { user } = useContext(UserContext);
+  const { orderProducts, clearOrder } = useContext(OrderContext);
   const { products } = orderProducts || {};
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState("");
-  const [formUserPersonal, setFormUserPersonal] = useState({
+  const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
     street: "",
@@ -24,41 +24,6 @@ export const Order = () => {
   const [shippingAddressError, setShippingAddressError] = useState(false);
   const [shippingMode, setShippingMode] = useState("pickup");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user?.accountId) {
-        const userData = await getUserInfoById(user?.accountId);
-        const userPersonal = await getUserPersonalInfoById(user?.accountId);
-
-        if (userData && userPersonal) {
-          const userEmail = userData.email;
-
-          setFormUserPersonal({
-            firstName: userPersonal.firstName,
-            lastName: userPersonal.lastName,
-            street: userPersonal.street,
-            barangay: userPersonal.barangay,
-            municipality: userPersonal.municipality,
-            province: userPersonal.province,
-            zip: userPersonal.zip,
-          });
-
-          setUserEmail(userEmail);
-        }
-      }
-    };
-
-    fetchData();
-  }, [user?.accountId]);
-
-  const handleEditUserInfo = () => {
-    navigate("/user-menu");
-  };
-
-  const handleEditShippingAddress = () => {
-    navigate("/user-menu");
-  };
-
   let totalProductAmount = 0;
 
   if (products) {
@@ -67,10 +32,33 @@ export const Order = () => {
       totalProductAmount += product.productPrice * product.quantity;
     }
   }
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost/api/getPersonalAccountInfo.php?accountId=${user.accountId}`
+        );
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
 
+    fetchUserData();
+  }, [user.accountId]);
+  
   const shippingCost = shippingMode === "pickup" ? 0 : 10;
   const totalOrderCost =
     parseFloat(totalProductAmount) + parseFloat(shippingCost);
+
+  const handleEditUserInfo = () => {
+    navigate("/user-menu");
+  };
+
+  const handleEditShippingAddress = () => {
+    navigate("/user-menu");
+  };
 
   const handleConfirmOrderShow = () => {
     if (isShippingAddressEmpty()) {
@@ -88,59 +76,6 @@ export const Order = () => {
     setShowConfirmOrder(false);
   };
 
-  const handlePlaceOrder = async () => {
-    try {
-      if (isShippingAddressEmpty()) {
-        setShippingAddressError(true);
-        return;
-      }
-
-      let allOrdersCreated = true;
-
-      for (const productId in products) {
-        const product = products[productId];
-        const orderId = await generateNewOrderId(userId);
-
-        const productInfo = {
-          productPrice: product.productPrice,
-          productName: product.productName,
-          productImage: product.productImage,
-          shopName: product.shopName,
-        };
-
-        const orderInfo = {
-          orderDate: product.orderDate,
-          shippingMode: shippingMode,
-          shippingDate: shippingDate,
-          status: product.status,
-          quantity: product.quantity,
-          subTotal: product.subTotal,
-        };
-
-        const orderData = {
-          ...orderInfo,
-          [productId]: productInfo,
-        };
-
-        await createOrder(user.userRole, user.accountId, orderId, orderData);
-      }
-
-      if (allOrdersCreated) {
-        setShowConfirmOrder(false);
-        setShowSuccessMessage(true);
-
-        setTimeout(() => {
-          clearOrder();
-          window.location.href = "/home";
-        }, 1000);
-      } else {
-        console.log("Error placing order");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleEditShippingMode = () => {
     setIsEditingShippingMode(!isEditingShippingMode);
   };
@@ -152,13 +87,6 @@ export const Order = () => {
 
   const handleEditShippingDate = () => {
     setIsEditingShippingDate(!isEditingShippingDate);
-  };
-
-  const handleShippingDateChange = (event) => {
-    const selectedDate = new Date(event.target.value);
-    const formattedDate = selectedDate.toLocaleDateString();
-    setShippingDate(formattedDate);
-    setIsEditingShippingDate(false);
   };
 
   const isShippingAddressEmpty = () => {
@@ -180,14 +108,18 @@ export const Order = () => {
   const [shippingDate, setShippingDate] = useState(getCurrentDate());
 
   useEffect(() => {
-    const formattedDate = shippingDate.toLocaleDateString();
-    setShippingDate(formattedDate);
+    setShippingDate(getCurrentDate());
   }, []);
 
+  const handleShippingDateChange = (event) => {
+    const selectedDate = new Date(event.target.value);
+    setShippingDate(selectedDate);
+    setIsEditingShippingDate(false);
+  };
+
+  console.log(shippingDate);
   return (
-    <div
-      className="container order"
-    >
+    <div className="container order">
       <header>
         <h2>Order Confirmation</h2>
 
@@ -211,9 +143,9 @@ export const Order = () => {
           </div>
 
           <h4>
-            {formUserPersonal.firstName} {formUserPersonal.lastName}
+            {userData.firstName} {userData.lastName}
           </h4>
-          <p>{userEmail}</p>
+          <p>{userData.email}</p>
         </div>
 
         <div className="info">
@@ -222,11 +154,11 @@ export const Order = () => {
             <button onClick={handleEditShippingAddress}>Edit</button>
           </div>
 
-          <p>{formUserPersonal.street}</p>
-          <p>{formUserPersonal.barangay}</p>
-          <p>{formUserPersonal.municipality}</p>
-          <p>{formUserPersonal.province}</p>
-          <p>{formUserPersonal.zip}</p>
+          <p>{userData.street}</p>
+          <p>{userData.barangay}</p>
+          <p>{userData.municipality}</p>
+          <p>{userData.province}</p>
+          <p>{userData.zip}</p>
         </div>
 
         <div className="info">
@@ -268,13 +200,13 @@ export const Order = () => {
             <input
               className="ship-date"
               type="date"
-              min={getCurrentDate()}
-              max={getMaxDate()}
-              value={getCurrentDate()}
+              min={getCurrentDate().toISOString().split("T")[0]}
+              max={getMaxDate().toISOString().split("T")[0]}
+              value={shippingDate.toISOString().split("T")[0]}
               onChange={handleShippingDateChange}
             />
           ) : (
-            <p>{shippingDate}</p>
+            <p>{shippingDate.toISOString().split("T")[0]}</p>
           )}
         </div>
       </div>
@@ -298,10 +230,15 @@ export const Order = () => {
                   <tr key={productId}>
                     <td>
                       <img
-                        src={product.productImage}
+                        src={`http://localhost/api/productImages/${product.productImage}`}
                         alt={product.productName}
                       />
-                      <p>{product.productName}</p>
+                      <div className="description">
+                        <p>{product.productName}</p>
+                        <p>{product.productFlavor}</p>
+                        <p>{product.productSize}</p>
+                        <p>Php {product.productPrice}</p>
+                      </div>
                     </td>
                     <td>
                       <p>{product.shopName}</p>

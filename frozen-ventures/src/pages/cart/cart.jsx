@@ -49,6 +49,8 @@ export const Cart = () => {
           acc[curr.productID] = {
             productImage: curr.productImage,
             productName: curr.productName,
+            productFlavor: curr.productFlavor,
+            productSize: curr.productSize,
             productPrice: curr.productPrice,
             quantity: curr.quantity,
             shopName: curr.shopName,
