@@ -7,6 +7,14 @@ import { ErrorMessage } from "../../components/error-message";
 import { SuccessMessage } from "../../components/success-message";
 import { ConfirmationPopUp } from "../../components/confirmation-popup";
 
+const formatDate = (date) => {
+  const d = new Date(date);
+  const month = `${d.getMonth() + 1}`.padStart(2, "0");
+  const day = `${d.getDate()}`.padStart(2, "0");
+  const year = d.getFullYear();
+  return `${year}-${month}-${day}`;
+};
+
 export const Order = () => {
   const { user } = useContext(UserContext);
   const { orderProducts, clearOrder } = useContext(OrderContext);
@@ -89,8 +97,7 @@ export const Order = () => {
   };
 
   const getCurrentDate = () => {
-    const currentDate = new Date();
-    return currentDate;
+    return new Date();
   };
 
   const getMaxDate = () => {
@@ -133,8 +140,9 @@ export const Order = () => {
 
       const productFee = product.productPrice * product.quantity * 0.01;
       const shippingFee =
-        shippingMode === "delivery" ? 10 : 0;
-      const totalPrice = Number(product.subTotal) + Number(productFee) + Number(shippingFee);
+        shippingMode === "delivery" ? 10 * product.quantity : 0;
+      const totalPrice =
+        Number(product.subTotal) + Number(productFee) + Number(shippingFee);
 
       const productInfo = {
         productId: product.productId,
@@ -143,9 +151,9 @@ export const Order = () => {
       };
 
       const orderInfo = {
-        orderDate: product.orderDate,
+        orderDate: formatDate(product.orderDate),
         shippingMode: shippingMode,
-        shippingDate: shippingDate.toISOString().split("T")[0],
+        shippingDate: formatDate(shippingDate),
         status: product.status,
         quantity: product.quantity,
         totalPrice: totalPrice.toFixed(2),
@@ -249,13 +257,13 @@ export const Order = () => {
             <input
               className="ship-date"
               type="date"
-              min={getCurrentDate().toISOString().split("T")[0]}
-              max={getMaxDate().toISOString().split("T")[0]}
-              value={shippingDate.toISOString().split("T")[0]}
+              min={formatDate(getCurrentDate())}
+              max={formatDate(getMaxDate())}
+              value={formatDate(shippingDate)}
               onChange={handleShippingDateChange}
             />
           ) : (
-            <p>{shippingDate.toISOString().split("T")[0]}</p>
+            <p>{formatDate(shippingDate)}</p>
           )}
         </div>
       </div>
