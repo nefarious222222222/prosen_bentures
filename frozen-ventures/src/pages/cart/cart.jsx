@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import "../../assets/styles/cart.css";
-import axios from "axios";
 import { UserContext } from "../../context/user-context";
 import { OrderContext } from "../../context/order-context";
 import { CartItems } from "./components/cart-item";
 import { Navigate, Link } from "react-router-dom";
+import { ErrorMessage } from "../../components/error-message";
 import { ShoppingCart, Storefront } from "phosphor-react";
 
 export const Cart = () => {
@@ -12,18 +12,73 @@ export const Cart = () => {
   const { setOrder } = useContext(OrderContext);
   const [cartSubTotal, setCartSubTotal] = useState(0);
   const [cartItems, setCartItems] = useState([]);
+  const [orderSet, setOrderSet] = useState(false);
+  const [cartItemError, setCartItemError] = useState(false);
+  const [errorProduct, setErrorProduct] = useState(null);
 
   const updateSubTotal = (subTotal) => {
     setCartSubTotal(subTotal);
   };
 
-  const handleCheckout = () => {
-    console.log("Checkout button clicked");
+  const handleCheckout = async () => {
+    try {
+      const currentDate = new Date().toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      const orderDetails = {
+        products: cartItems.reduce((acc, curr) => {
+          const subTotal =
+            parseFloat(curr.productPrice) * parseInt(curr.quantity);
+          if (curr.quantity > curr.productStock) {
+            setErrorProduct(curr.productName);
+            setCartItemError(true);
+
+            setTimeout(() => {
+              setCartItemError(false);
+              setErrorProduct(null);
+            }, 3000);
+
+            throw new Error(
+              `Quantity for ${curr.productName} exceeds available stock.`
+            );
+          }
+
+          acc[curr.productID] = {
+            productImage: curr.productImage,
+            productName: curr.productName,
+            productPrice: curr.productPrice,
+            quantity: curr.quantity,
+            shopName: curr.shopName,
+            subTotal: subTotal.toFixed(2),
+            status: "pending",
+            orderDate: currentDate,
+          };
+          return acc;
+        }, {}),
+      };
+
+      setOrder(orderDetails);
+      setOrderSet(true);
+    } catch (error) {
+      console.error("Error during checkout:", error.message);
+    }
   };
+
+  if (orderSet) {
+    return <Navigate to="/order" replace />;
+  }
 
   return (
     <div className="container cart">
       {user.userRole !== "customer" ? <Navigate to="/" replace={true} /> : null}
+      {cartItemError && (
+        <ErrorMessage
+          message={`Quantity for ${errorProduct} exceeds available stock`}
+        />
+      )}
 
       <div className="cart-container">
         <div className="cart-header">
