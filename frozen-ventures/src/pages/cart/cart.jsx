@@ -2,32 +2,19 @@ import React, { useContext, useState, useEffect } from "react";
 import "../../assets/styles/cart.css";
 import axios from "axios";
 import { UserContext } from "../../context/user-context";
+import { OrderContext } from "../../context/order-context";
 import { CartItems } from "./components/cart-item";
 import { Navigate, Link } from "react-router-dom";
 import { ShoppingCart, Storefront } from "phosphor-react";
 
 export const Cart = () => {
   const { user } = useContext(UserContext);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const { setOrder } = useContext(OrderContext);
+  const [cartSubTotal, setCartSubTotal] = useState(0);
   const [cartItems, setCartItems] = useState([]);
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost/api/manageCart.php?accountId=${user.accountId}`
-        );
-        setCartItems(response.data);
-      } catch (error) {
-        console.error("Error fetching cart items:", error);
-      }
-    };
-
-    fetchCartItems();
-  }, [user.accountId]);
-
   const updateSubTotal = (subTotal) => {
-    setTotalPrice(subTotal);
+    setCartSubTotal(subTotal);
   };
 
   const handleCheckout = () => {
@@ -44,13 +31,13 @@ export const Cart = () => {
 
           <div className="checkout">
             <p>
-              <span>Sub Total: </span>Php {totalPrice.toFixed(2)}
+              <span>Sub Total: </span>Php {cartSubTotal.toFixed(2)}
             </p>
 
             <button
               className="checkOutButton"
               onClick={handleCheckout}
-              disabled={totalPrice === 0}
+              disabled={cartSubTotal === 0}
             >
               Check Out
             </button>
@@ -70,7 +57,15 @@ export const Cart = () => {
           </table>
         </div>
 
-        {cartItems.length === 0 ? (
+        {cartItems ? (
+          <div className="cart-items">
+            <CartItems
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              updateSubTotal={updateSubTotal}
+            />
+          </div>
+        ) : (
           <div key="empty-cart" className="empty-cart">
             <div className="message-one">
               <span>
@@ -93,10 +88,6 @@ export const Cart = () => {
                 </button>
               </Link>
             </div>
-          </div>
-        ) : (
-          <div className="cart-items">
-            <CartItems updateSubTotal={updateSubTotal} />
           </div>
         )}
       </div>

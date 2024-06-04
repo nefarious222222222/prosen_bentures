@@ -7,9 +7,8 @@ import { ErrorMessage } from "../../../components/error-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
 import { useNavigate } from "react-router-dom";
 
-export const CartItems = ({ updateSubTotal }) => {
+export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
   const { user } = useContext(UserContext);
-  const [cartItems, setCartItems] = useState([]);
   const [selectedId, setSelectedId] = useState({
     accountId: "",
     productId: "",
@@ -34,7 +33,7 @@ export const CartItems = ({ updateSubTotal }) => {
     };
 
     fetchCartItems();
-  }, [user.accountId]);
+  }, [user.accountId, setCartItems]);
 
   useEffect(() => {
     const subTotal = cartItems.reduce((acc, item) => acc + item.productPrice * item.quantity, 0);
@@ -145,6 +144,7 @@ export const CartItems = ({ updateSubTotal }) => {
   const handleProductClick = (productId) => {
     navigate(`/individual-product/${productId}`);
   };
+
   return (
     <div className="cart-item">
       {errorMessage && <ErrorMessage message={errorMessage} />}
