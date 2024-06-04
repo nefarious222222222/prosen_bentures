@@ -34,6 +34,10 @@ export const ProductStock = ({
         });
     };
     fetchInventory();
+
+    const intervalId = setInterval(fetchInventory, 3000);
+
+    return () => clearInterval(intervalId);
   }, [productId, shopId]);
 
   const handleInputChange = (e) => {
@@ -56,18 +60,31 @@ export const ProductStock = ({
     setShowConfirmationPopUp(false);
   };
 
+  const validateSize = (size) => {
+    const regex = /^\d+(\.\d+)?[a-zA-Z]+$/;
+    return regex.test(size);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!newPrice || !newSize || !newStock) {
-      setErrorMessage("Cannot be empty");
-
+      setErrorMessage("Fields cannot be empty");
       setTimeout(() => {
         setErrorMessage("");
       }, 2500);
-    } else {
-      setAction("submit");
-      setShowConfirmationPopUp(true);
+      return;
     }
+
+    if (!validateSize(newSize)) {
+      setErrorMessage("Size must include a number followed by a metric unit");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 2500);
+      return;
+    }
+
+    setAction("submit");
+    setShowConfirmationPopUp(true);
   };
 
   const handleRemoveClick = (item) => {
