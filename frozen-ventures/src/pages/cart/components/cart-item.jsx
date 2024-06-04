@@ -7,9 +7,10 @@ import { ErrorMessage } from "../../../components/error-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
 import { useNavigate } from "react-router-dom";
 
-export const CartItems = () => {
+export const CartItems = ({ passSubTotal }) => {
   const { user } = useContext(UserContext);
   const [cartItems, setCartItems] = useState([]);
+  const [subTotal, setSubtotal] = useState("");
   const [selectedId, setSelectedId] = useState({
     accountId: "",
     productId: "",
@@ -36,6 +37,19 @@ export const CartItems = () => {
     fetchCartItems();
   }, [user.accountId]);
 
+  useEffect(() => {
+    const calculateSubtotal = () => {
+      const subtotal = cartItems
+        .reduce((total, item) => total + parseFloat(item.totalPrice), 0)
+        .toFixed(2);
+      return subtotal;
+    };
+
+    const subtotal = calculateSubtotal();
+    setSubtotal(subtotal);
+    passSubTotal = subTotal;
+  }, [cartItems]);
+
   const handleQuantityChange = (
     productId,
     priceId,
@@ -45,6 +59,7 @@ export const CartItems = () => {
     totalPrice
   ) => {
     const newTotalPrice = Number(productPrice * newQuantity).toFixed(2);
+
     setCartItems((prevCartItems) =>
       prevCartItems.map((cartItem) =>
         cartItem.productID === productId && cartItem.priceID === priceId
@@ -139,7 +154,6 @@ export const CartItems = () => {
   const handleProductClick = (productId) => {
     navigate(`/individual-product/${productId}`);
   };
-
   return (
     <div className="cart-item">
       {errorMessage && <ErrorMessage message={errorMessage} />}

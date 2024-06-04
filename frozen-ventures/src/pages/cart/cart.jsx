@@ -26,7 +26,6 @@ export const Cart = () => {
 
     fetchCartItems();
   }, [user.accountId]);
-  console.log(cartItems);
 
   return (
     <div className="container cart">
@@ -38,7 +37,7 @@ export const Cart = () => {
 
           <div className="checkout">
             <p>
-              <span>Sub Total: </span>Php {totalPrice.toFixed(2)}
+              <span>Sub Total: </span>Php 
             </p>
 
             <button
