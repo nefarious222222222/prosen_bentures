@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import "../../assets/styles/order.css";
+import axios from "axios";
 import { OrderContext } from "../../context/order-context";
 import { UserContext } from "../../context/user-context";
 import { useNavigate } from "react-router-dom";
@@ -144,32 +145,48 @@ export const Order = () => {
       const totalPrice =
         Number(product.subTotal) + Number(productFee) + Number(shippingFee);
 
-      const productInfo = {
+      const orderData = {
+        accountId: user.accountId,
         productId: product.productId,
         priceId: product.priceId,
-        shopId: product.shopId,
-      };
-
-      const orderInfo = {
         orderDate: formatDate(product.orderDate),
         shippingMode: shippingMode,
-        shippingDate: formatDate(shippingDate),
+        receiveDate: formatDate(shippingDate),
         status: product.status,
         quantity: product.quantity,
         totalPrice: totalPrice.toFixed(2),
       };
 
-      const orderData = {
-        ...orderInfo,
-        [productId]: productInfo,
-      };
-
-      console.log(user.accountId, orderData);
+      try {
+        axios
+          .post("http://localhost/api/manageOrder.php", orderData)
+          .then((response) => {
+            if (response.data.status === 1) {
+                clearOrder();
+                setSuccessMessage(response.data.message);
+            } else if (response.data.status === 0) {
+                setErrorMessage(response.data.message);
+            } else {
+                setErrorMessage("Something went wrong");
+            }
+          });
+      } catch (error) {
+        console.error("There was an error placing the order:", error);
+      }
     }
+
+    setTimeout(() => {
+        setErrorMessage("");
+        setSuccessMessage("");
+        setShowConfirmOrder(false);
+        navigate("/");
+    }, 2000);
   };
 
   return (
     <div className="container order">
+      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
       {showConfirmOrder && (
         <ConfirmationPopUp
           confirmTitle={"Confirm Order"}
