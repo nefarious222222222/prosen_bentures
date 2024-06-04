@@ -5,15 +5,21 @@ import { Minus, Plus, Trash } from "phosphor-react";
 import { SuccessMessage } from "../../../components/success-message";
 import { ErrorMessage } from "../../../components/error-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
+import { useNavigate } from "react-router-dom";
 
 export const CartItems = () => {
   const { user } = useContext(UserContext);
   const [cartItems, setCartItems] = useState([]);
-  const [selectedProductId, setSelectedProductId] = useState("");
+  const [selectedId, setSelectedId] = useState({
+    accountId: "",
+    productId: "",
+    priceId: "",
+  });
   const [selectedProductName, setSelectedProductName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -34,8 +40,11 @@ export const CartItems = () => {
     productId,
     priceId,
     newQuantity,
-    productStock
+    productPrice,
+    productStock,
+    totalPrice
   ) => {
+    const newTotalPrice = Number(productPrice * newQuantity).toFixed(2);
     setCartItems((prevCartItems) =>
       prevCartItems.map((cartItem) =>
         cartItem.productID === productId && cartItem.priceID === priceId
@@ -45,16 +54,17 @@ export const CartItems = () => {
                 Math.max(1, newQuantity),
                 cartItem.productStock
               ),
+              totalPrice: Number(productPrice * newQuantity).toFixed(2),
             }
           : cartItem
       )
     );
-
     axios
       .put(`http://localhost/api/manageCart.php`, {
         accountId: user.accountId,
         productId,
         priceId,
+        totalPrice: newTotalPrice,
         quantity: newQuantity,
         productStock: productStock,
       })
@@ -74,20 +84,61 @@ export const CartItems = () => {
     }, 2000);
   };
 
-  const handleDeleteClick = (productId, productName) => {
-    setSelectedProductId(productId);
+  const handleDeleteClick = (productId, priceId, productName) => {
+    setSelectedId({
+      accountId: user.accountId,
+      productId: productId,
+      priceId: priceId,
+    });
     setSelectedProductName(productName);
     setShowConfirmationPopUp(true);
   };
 
   const handleCancelClick = () => {
-    setSelectedProductId("");
+    setSelectedId([]);
     setSelectedProductName("");
     setShowConfirmationPopUp(false);
   };
 
-  console.log();
-  const handleConfirmDeleteClick = () => {};
+  const handleConfirmDeleteClick = () => {
+    axios
+      .delete(`http://localhost/api/manageCart.php`, {
+        data: {
+          accountId: selectedId.accountId,
+          productId: selectedId.productId,
+          priceId: selectedId.priceId,
+        },
+      })
+      .then((response) => {
+        if (response.data.status === 1) {
+          setCartItems((prevCartItems) =>
+            prevCartItems.filter(
+              (cartItem) =>
+                !(
+                  cartItem.productID === selectedId.productId &&
+                  cartItem.priceID === selectedId.priceId
+                )
+            )
+          );
+          setSuccessMessage(response.data.message);
+        } else {
+          setErrorMessage(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting cart item:", error);
+        setErrorMessage("Failed to remove product from cart");
+      });
+    setShowConfirmationPopUp(false);
+    setTimeout(() => {
+      setSuccessMessage("");
+      setErrorMessage("");
+    }, 2000);
+  };
+
+  const handleProductClick = (productId) => {
+    navigate(`/individual-product/${productId}`);
+  };
 
   return (
     <div className="cart-item">
@@ -104,14 +155,17 @@ export const CartItems = () => {
       <table>
         <tbody>
           {cartItems.map((cartItem) => (
-            <tr key={cartItem.productID}>
+            <tr className="cart-product" key={cartItem.cartID}>
               <td className="information">
                 <img
                   src={`http://localhost/api/productImages/${cartItem.productImage}`}
                   alt={cartItem.productName}
+                  onClick={() => handleProductClick(cartItem.productID)}
                 />
                 <div className="description">
-                  <p>{cartItem.productName}</p>
+                  <p onClick={() => handleProductClick(cartItem.productID)}>
+                    {cartItem.productName}
+                  </p>
                   <p>{cartItem.productFlavor}</p>
                   <p>{cartItem.shopName}</p>
                   <p>{cartItem.productSize}</p>
@@ -126,6 +180,7 @@ export const CartItems = () => {
                       cartItem.productID,
                       cartItem.priceID,
                       cartItem.quantity - 1,
+                      cartItem.productPrice,
                       cartItem.productStock
                     )
                   }
@@ -140,6 +195,7 @@ export const CartItems = () => {
                       cartItem.productID,
                       cartItem.priceID,
                       parseInt(e.target.value),
+                      cartItem.productPrice,
                       cartItem.productStock
                     )
                   }
@@ -150,6 +206,7 @@ export const CartItems = () => {
                       cartItem.productID,
                       cartItem.priceID,
                       cartItem.quantity + 1,
+                      cartItem.productPrice,
                       cartItem.productStock
                     )
                   }
@@ -163,7 +220,11 @@ export const CartItems = () => {
               <td className="delete">
                 <button
                   onClick={() =>
-                    handleDeleteClick(cartItem.productID, cartItem.productName)
+                    handleDeleteClick(
+                      cartItem.productID,
+                      cartItem.priceID,
+                      cartItem.productName
+                    )
                   }
                 >
                   <Trash size={45} />
