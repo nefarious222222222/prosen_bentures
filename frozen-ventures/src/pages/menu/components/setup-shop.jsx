@@ -18,6 +18,7 @@ export const SetUpShop = () => {
     shopType: user.userRole,
   });
   const [shop, setShop] = useState([]);
+  const [personalInfo, setPersonalInfo] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const [file, setFile] = useState(null);
   const [fileContent, setFileContent] = useState("");
@@ -53,7 +54,20 @@ export const SetUpShop = () => {
   }, [accountId]);
 
   const handleEditClick = () => {
-    setEditable(!editable);
+    axios
+      .get(`http://localhost/api/managePersonalInfo.php?accountId=${user.accountId}`)
+      .then((response) => {
+        setPersonalInfo(Array.isArray(response.data) ? response.data : []);
+      });
+
+    if (personalInfo.length == 0) {
+      setErrorMessage("Please edit your personal information first");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 2500);
+    } else {
+      setEditable(!editable);
+    }
   };
 
   const handleConfirmEditShow = () => {
@@ -138,8 +152,8 @@ export const SetUpShop = () => {
                     .catch((error) => {
                       console.error("Error:", error);
                     });
-                    setSuccessMessage("");
-                    setErrorMessage("");
+                  setSuccessMessage("");
+                  setErrorMessage("");
                 }, 2000);
               } else {
                 setErrorMessage("Failed to save shop information");
