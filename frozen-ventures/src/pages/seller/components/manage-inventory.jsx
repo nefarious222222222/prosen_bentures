@@ -21,12 +21,13 @@ export const ManageInventory = () => {
           `http://localhost/api/getInventory.php?shopId=${shopId}&status=1`
         );
         setInventory(Array.isArray(response.data) ? response.data : []);
-        console.log(inventory)
       } catch (error) {
         console.error("Error fetching inventory:", error);
       }
     };
     fetchInventory();
+    const intervalId = setInterval(fetchInventory, 5000);
+    return () => clearInterval(intervalId);
   }, [user.shopId]);
 
   const handleShowProductStock = (productName, productId) => {

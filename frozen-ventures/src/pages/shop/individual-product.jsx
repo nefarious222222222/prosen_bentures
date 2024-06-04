@@ -35,7 +35,7 @@ export const IndividualProduct = () => {
     const fetchPrice = async () => {
       try {
         const response = await axios.get(
-          "http://localhost/api/getProductPrice.php",
+          "http://localhost/api/manageInventory.php",
           {
             params: { productId: productId },
           }
@@ -93,8 +93,7 @@ export const IndividualProduct = () => {
     if (user?.accountId == null) {
       setErrorMessage("You must be signed in to buy this product");
     } else {
-      setSuccessMessage(`${product.productName} has been added to cart`);
-      // ADD TO DB
+      // ADD CONTEXT PROCEED TO OTHER PAGE
     }
 
     setTimeout(() => {
@@ -107,7 +106,7 @@ export const IndividualProduct = () => {
     <div className="container individual-product">
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
-      {product && selectedPrice ? (
+      {product ? (
         <div className="product-details">
           <div className="header-container">
             <div className="product-header">
@@ -135,7 +134,7 @@ export const IndividualProduct = () => {
             <div className="product-info">
               <div className="info">
                 <p className="name">{product.productName}</p>
-                <p className="price">Php {selectedPrice.productPrice}</p>
+                <p className="price">Php {selectedPrice?.productPrice}</p>
               </div>
 
               <div className="info">
@@ -143,7 +142,7 @@ export const IndividualProduct = () => {
                   <span>Flavor:</span> {product.productFlavor}
                 </p>
                 <p>
-                  <span>Stocks:</span> {selectedPrice.productStock}
+                  <span>Stocks:</span> {selectedPrice?.productStock}
                 </p>
 
                 <div className="input-container">
@@ -182,7 +181,7 @@ export const IndividualProduct = () => {
                   value={quantity}
                   onChange={handleQuantityChange}
                   min="1"
-                  max={selectedPrice.productStock}
+                  max={selectedPrice?.productStock}
                 />
                 <button onClick={incrementQuantity}>
                   <Plus size={25} />

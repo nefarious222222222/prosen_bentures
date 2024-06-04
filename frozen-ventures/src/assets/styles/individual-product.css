@@ -81,6 +81,10 @@
           }
         }
 
+        .description {
+          text-align: justify;
+        }
+
         .input-container {
           display: flex;
           align-items: flex-start;

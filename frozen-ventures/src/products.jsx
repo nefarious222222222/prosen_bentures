@@ -33,7 +33,7 @@ export const Products = () => {
     <>
       {products.map((product) => (
         <div
-          className="product-item"
+          className="product-item-individual"
           key={product.productID}
           onClick={() => handleProductClick(product.productID)}
         >

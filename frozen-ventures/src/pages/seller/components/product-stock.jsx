@@ -26,14 +26,7 @@ export const ProductStock = ({
       axios
         .get(`http://localhost/api/manageInventory.php?productId=${productId}`)
         .then((response) => {
-          if (response.data.status === 0) {
-            setErrorMessage(response.data.message);
-            setTimeout(() => {
-              setErrorMessage("");
-            }, 2000);
-          } else {
-            setInventory(Array.isArray(response.data) ? response.data : []);
-          }
+          setInventory(Array.isArray(response.data) ? response.data : []);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -42,6 +35,17 @@ export const ProductStock = ({
     };
     fetchInventory();
   }, [productId, shopId]);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setNewSize(value.replace(/\s/g, ""));
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === " ") {
+      e.preventDefault();
+    }
+  };
 
   const handleAddSize = () => {
     setShowAddForm(true);
@@ -87,6 +91,13 @@ export const ProductStock = ({
           console.log(response.data);
           if (response.data.status === 1) {
             setSuccessMessage(response.data.message);
+            axios
+              .get(
+                `http://localhost/api/manageInventory.php?productId=${productId}`
+              )
+              .then((response) => {
+                setInventory(Array.isArray(response.data) ? response.data : []);
+              });
           } else {
             setErrorMessage(response.data.message);
           }
@@ -110,6 +121,13 @@ export const ProductStock = ({
           console.log(response.data);
           if (response.data.status === 1) {
             setSuccessMessage(response.data.message);
+            axios
+              .get(
+                `http://localhost/api/manageInventory.php?productId=${productId}`
+              )
+              .then((response) => {
+                setInventory(Array.isArray(response.data) ? response.data : []);
+              });
           } else {
             setErrorMessage(response.data.message);
           }
@@ -130,90 +148,93 @@ export const ProductStock = ({
   };
 
   return (
-    <div className="stock-container">
-      <div className="header">
-        <button onClick={handleCancelClick}>Cancel</button>
-        <h2>{productName}</h2>
-        <button onClick={handleAddSize}>Add</button>
-      </div>
+    <>
       {errorMessage ? <ErrorMessage message={errorMessage} /> : null}
       {successMessage ? <SuccessMessage message={successMessage} /> : null}
-      {showConfirmationPopUp ? (
-        <ConfirmationPopUp
-          confirmTitle={action === "submit" ? "Add Size" : "Remove Size"}
-          confirmMessage={
-            action === "submit"
-              ? "Would you like to add this size?"
-              : "Would you like to remove this size?"
-          }
-          handleConfirm={handleConfirm}
-          handleCancel={handleCancel}
-        />
-      ) : null}
-      <div className="inventory-list">
-        <table>
-          <thead>
-            <tr>
-              <th>Size</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {showAddForm && (
-              <tr className="add-size">
-                <td>
-                  <input
-                    type="text"
-                    placeholder="Example: 1 liter"
-                    value={newSize}
-                    onChange={(e) => setNewSize(e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    value={newPrice}
-                    onChange={(e) => setNewPrice(e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    value={newStock}
-                    onChange={(e) => setNewStock(e.target.value)}
-                  />
-                </td>
-                <td>
-                  <button onClick={handleSubmit}>Submit</button>
-                  <button onClick={handleCancel}>Cancel</button>
-                </td>
-              </tr>
-            )}
-            {inventory.length === 0 ? (
+      <div className="stock-container">
+        <div className="header">
+          <button onClick={handleCancelClick}>Cancel</button>
+          <h2>{productName}</h2>
+          <button onClick={handleAddSize}>Add</button>
+        </div>
+        {showConfirmationPopUp ? (
+          <ConfirmationPopUp
+            confirmTitle={action === "submit" ? "Add Size" : "Remove Size"}
+            confirmMessage={
+              action === "submit"
+                ? "Would you like to add this size?"
+                : "Would you like to remove this size?"
+            }
+            handleConfirm={handleConfirm}
+            handleCancel={handleCancel}
+          />
+        ) : null}
+        <div className="inventory-list">
+          <table>
+            <thead>
               <tr>
-                <td colSpan="4">No records yet</td>
+                <th>Size</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Action</th>
               </tr>
-            ) : (
-              inventory.map((item) => (
-                <tr key={item.priceID} className="inventory-item">
-                  <td>{item.productSize}</td>
-                  <td>Php {item.productPrice}</td>
-                  <td>x {item.productStock}</td>
+            </thead>
+            <tbody>
+              {showAddForm && (
+                <tr className="add-size">
                   <td>
-                    <button onClick={() => handleRemoveClick(item)}>
-                      Remove
-                    </button>
+                    <input
+                      type="text"
+                      placeholder="Example: 1liter"
+                      value={newSize}
+                      onChange={handleInputChange}
+                      onKeyPress={handleKeyPress}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      placeholder="0"
+                      value={newPrice}
+                      onChange={(e) => setNewPrice(e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      placeholder="0"
+                      value={newStock}
+                      onChange={(e) => setNewStock(e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <button onClick={handleSubmit}>Submit</button>
+                    <button onClick={handleCancel}>Cancel</button>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              )}
+              {inventory.length === 0 ? (
+                <tr>
+                  <td colSpan="4">No records yet</td>
+                </tr>
+              ) : (
+                inventory.map((item) => (
+                  <tr key={item.priceID} className="inventory-item">
+                    <td>{item.productSize}</td>
+                    <td>Php {item.productPrice}</td>
+                    <td>x {item.productStock}</td>
+                    <td>
+                      <button onClick={() => handleRemoveClick(item)}>
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

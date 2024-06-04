@@ -83,7 +83,9 @@
   .product-container {
     width: 90vw;
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 3vw;
   }
 }
 
