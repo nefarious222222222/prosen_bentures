@@ -53,7 +53,7 @@ export const Products = () => {
             </p>
             <div className="details">
               <p>{product.productSize}</p>
-              <p>Php {product.productPrice.toFixed(2)}</p>
+              <p>Php {product.productPrice}</p>
             </div>
           </div>
         </div>
