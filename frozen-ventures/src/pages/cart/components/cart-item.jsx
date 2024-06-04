@@ -30,10 +30,15 @@ export const CartItems = () => {
     fetchCartItems();
   }, [user.accountId]);
 
-  const handleQuantityChange = (productId, newQuantity, productStock) => {
+  const handleQuantityChange = (
+    productId,
+    priceId,
+    newQuantity,
+    productStock
+  ) => {
     setCartItems((prevCartItems) =>
       prevCartItems.map((cartItem) =>
-        cartItem.productID === productId
+        cartItem.productID === productId && cartItem.priceID === priceId
           ? {
               ...cartItem,
               quantity: Math.min(
@@ -49,6 +54,7 @@ export const CartItems = () => {
       .put(`http://localhost/api/manageCart.php`, {
         accountId: user.accountId,
         productId,
+        priceId,
         quantity: newQuantity,
         productStock: productStock,
       })
@@ -80,9 +86,8 @@ export const CartItems = () => {
     setShowConfirmationPopUp(false);
   };
 
-  const handleConfirmDeleteClick = () => {
-    
-  };
+  console.log();
+  const handleConfirmDeleteClick = () => {};
 
   return (
     <div className="cart-item">
@@ -119,6 +124,7 @@ export const CartItems = () => {
                   onClick={() =>
                     handleQuantityChange(
                       cartItem.productID,
+                      cartItem.priceID,
                       cartItem.quantity - 1,
                       cartItem.productStock
                     )
@@ -132,6 +138,7 @@ export const CartItems = () => {
                   onChange={(e) =>
                     handleQuantityChange(
                       cartItem.productID,
+                      cartItem.priceID,
                       parseInt(e.target.value),
                       cartItem.productStock
                     )
@@ -141,6 +148,7 @@ export const CartItems = () => {
                   onClick={() =>
                     handleQuantityChange(
                       cartItem.productID,
+                      cartItem.priceID,
                       cartItem.quantity + 1,
                       cartItem.productStock
                     )
