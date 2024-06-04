@@ -61,33 +61,63 @@ export const IndividualProduct = () => {
   };
 
   const handleQuantityChange = (event) => {
-    const value = Math.max(1, Math.min(selectedPrice.productStock, Number(event.target.value)));
+    const value = Math.max(
+      1,
+      Math.min(selectedPrice.productStock, Number(event.target.value))
+    );
     setQuantity(value);
   };
 
   const incrementQuantity = () => {
-    setQuantity((prevQuantity) => Math.min(selectedPrice.productStock, prevQuantity + 1));
+    setQuantity((prevQuantity) =>
+      Math.min(selectedPrice.productStock, prevQuantity + 1)
+    );
   };
 
   const decrementQuantity = () => {
     setQuantity((prevQuantity) => Math.max(1, prevQuantity - 1));
   };
 
-  const totalPrice = Number(selectedPrice ? selectedPrice.productPrice * quantity : 0).toFixed(2);
+  const totalPrice = Number(
+    selectedPrice ? selectedPrice.productPrice * quantity : 0
+  ).toFixed(2);
 
   const handleAddToCartClick = () => {
     if (user?.accountId == null) {
       setErrorMessage("You must be signed in to add items to your cart");
     } else {
-      setSuccessMessage(`${product.productName} has been added to cart`);
-      // ADD TO DB
+      const newCartItem = {
+        accountId: user.accountId,
+        productId: productId,
+        priceId: selectedPrice.priceID,
+        shopId: selectedPrice.shopID,
+        quantity: quantity,
+        totalPrice: totalPrice,
+      };
+      axios
+        .post("http://localhost/api/manageCart.php", newCartItem)
+        .then((response) => {
+          if (response.data.status === 1) {
+            setSuccessMessage(response.data.message);
+          } else {
+            setErrorMessage(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setErrorMessage(
+            "An error occurred while adding the product to the cart"
+          );
+        });
+
+      console.log(newCartItem);
     }
 
     setTimeout(() => {
       setErrorMessage("");
       setSuccessMessage("");
     }, 2500);
-  }
+  };
 
   const handleBuyNowClick = () => {
     if (user?.accountId == null) {
@@ -100,7 +130,7 @@ export const IndividualProduct = () => {
       setErrorMessage("");
       setSuccessMessage("");
     }, 3000);
-  }
+  };
 
   return (
     <div className="container individual-product">
