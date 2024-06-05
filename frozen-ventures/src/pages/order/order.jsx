@@ -148,6 +148,7 @@ export const Order = () => {
       const orderData = {
         accountId: user.accountId,
         productId: product.productId,
+        shopId: product.shopId,
         priceId: product.priceId,
         orderDate: formatDate(product.orderDate),
         shippingMode: shippingMode,

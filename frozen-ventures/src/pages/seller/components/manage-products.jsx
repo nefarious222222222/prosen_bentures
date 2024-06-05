@@ -7,6 +7,31 @@ import { EditProduct } from "../../../components/edit-product";
 import { ErrorMessage } from "../../../components/error-message";
 import { SuccessMessage } from "../../../components/success-message";
 
+const formatDate = (dateString) => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const parts = dateString.split("-");
+  const year = parts[0];
+  const month = months[parseInt(parts[1], 10) - 1];
+  const day = parts[2];
+
+  return `${month} ${parseInt(day, 10)}, ${year}`;
+};
+
+
 export const ManageProducts = () => {
   const { user } = useContext(UserContext);
   const shopId = user.shopId;
@@ -311,7 +336,7 @@ export const ManageProducts = () => {
                   <span>Product Id:</span> {product.productID}
                 </p>
                 <p>
-                  <span>Date Added:</span> {product.dateAdded}
+                  <span>Date Added:</span> {formatDate(product.dateAdded)}
                 </p>
               </div>
 

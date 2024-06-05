@@ -3,6 +3,30 @@ import { UserContext } from "../../../context/user-context";
 import axios from "axios";
 import { ProductStock } from "./product-stock";
 
+const formatDate = (dateString) => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const parts = dateString.split("-");
+  const year = parts[0];
+  const month = months[parseInt(parts[1], 10) - 1];
+  const day = parts[2];
+
+  return `${month} ${parseInt(day, 10)}, ${year}`;
+};
+
 export const ManageInventory = () => {
   const { user } = useContext(UserContext);
   const shopId = user.shopId;
@@ -79,7 +103,7 @@ export const ManageInventory = () => {
                 </p>
                 <p>
                   <span>Date Added: </span>
-                  {product.dateAdded}
+                  {formatDate(product.dateAdded)}
                 </p>
               </div>
 

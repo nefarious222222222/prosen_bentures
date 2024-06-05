@@ -7,15 +7,25 @@ export const PendingOrder = ({ orders, cancelRequest }) => {
 
   const formatDate = (dateString) => {
     const months = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
-  
-    const parts = dateString.split('-');
+
+    const parts = dateString.split("-");
     const year = parts[0];
     const month = months[parseInt(parts[1], 10) - 1];
     const day = parts[2];
-  
+
     return `${month} ${parseInt(day, 10)}, ${year}`;
   };
 
@@ -76,6 +86,13 @@ export const PendingOrder = ({ orders, cancelRequest }) => {
                 </div>
               </div>
             </div>
+
+            {order.status == "cancel requested" && (
+              <div className="order-cancelled">
+                <p>Reason For Cancellation:</p>
+                <p>{order.cancelReason}</p>
+              </div>
+            )}
           </div>
         ))
       ) : (
