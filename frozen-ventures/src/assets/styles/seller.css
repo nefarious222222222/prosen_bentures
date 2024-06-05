@@ -529,15 +529,15 @@
           font-size: 1.25rem;
           font-weight: 800;
           cursor: pointer;
-          color: var(--color-violet);
-          background-color: var(--color-white);
+          color: var(--color-white);
+          background-color: var(--color-violet);
           border: solid 2px var(--color-violet);
           transition: all 0.3s ease;
         }
 
         button:hover {
-          background-color: var(--color-violet);
-          color: var(--color-white);
+          background-color: var(--color-white);
+          color: var(--color-violet);
         }
       }
 

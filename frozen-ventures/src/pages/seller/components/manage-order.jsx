@@ -3,6 +3,7 @@ import axios from "axios";
 import { UserContext } from "../../../context/user-context";
 import { ErrorMessage } from "../../../components/error-message";
 import { SuccessMessage } from "../../../components/success-message";
+import { ConfirmationPopUp } from "../../../components/confirmation-popup";
 
 const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -36,22 +37,26 @@ export const ManageOrder = () => {
   const { user } = useContext(UserContext);
   const [activeItem, setActiveItem] = useState("pending");
   const [orders, setOrders] = useState([]);
+  const [selectedId, setSelectedId] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+  const [confirmationTitle, setConfirmationTitle] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState("");
+
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost/api/manageSellerOrder.php?shopId=${user.shopId}`
+      );
+      setOrders(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setErrorMessage("Failed to fetch orders. Please try again later.");
+    }
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost/api/manageSellerOrder.php?shopId=${user.shopId}`
-        );
-        setOrders(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-        setErrorMessage("Failed to fetch orders. Please try again later.");
-      }
-    };
-
     fetchOrders();
   }, [user.shopId]);
 
@@ -66,10 +71,84 @@ export const ManageOrder = () => {
       (activeItem === "completed" && order.status === "order received") ||
       order.status === "order cancelled"
   );
+
+  const handleAcceptOrderClick = (orderId) => {
+    setSelectedId(orderId);
+    setConfirmationTitle("Confirm Order");
+    setConfirmationMessage("Are you sure you want to accept this order?");
+    setShowConfirmationPopUp(true);
+  };
+
+  const handleAcceptRequestClick = (orderId) => {
+    setSelectedId(orderId);
+    setConfirmationTitle("Order Cancellation");
+    setConfirmationMessage("Are you sure you want to accept this cancel request?");
+    setShowConfirmationPopUp(true);
+  };
+
+  const handleCancelConfirmationClick = () => {
+    setSelectedId("");
+    setConfirmationTitle("");
+    setConfirmationMessage("");
+    setShowConfirmationPopUp(false);
+  };
+
+  const handleConfirmConfirmationClick = () => {
+    if (selectedId && confirmationTitle == "Confirm Order") {
+      const updateOrderData = {
+        orderId: selectedId,
+        status: "to receive",
+      };
+      axios
+        .post("http://localhost/api/manageSellerOrder.php?", updateOrderData)
+        .then((response) => {
+          setSuccessMessage(response.data.message);
+          fetchOrders();
+        })
+        .catch((error) => {
+          console.error("Error updating order status:", error);
+          setErrorMessage(response.data.message);
+        });
+    } else if (selectedId && confirmationTitle == "Order Cancellation") {
+      const updateOrderData = {
+        orderId: selectedId,
+        status: "order cancelled",
+      };
+      axios
+        .post("http://localhost/api/manageSellerOrder.php?", updateOrderData)
+        .then((response) => {
+          setSuccessMessage(response.data.message);
+          fetchOrders();
+        })
+        .catch((error) => {
+          console.error("Error updating order status:", error);
+          setErrorMessage(response.data.message);
+        });
+    } else {
+      setErrorMessage("Something went wrong");
+    }
+
+    setTimeout(() => {
+      setSelectedId("");
+      setConfirmationTitle("");
+      setConfirmationMessage("");
+      setSuccessMessage("");
+      setShowConfirmationPopUp(false);
+    }, 2000);
+  };
+
   return (
     <div className="manage-order">
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
+      {showConfirmationPopUp && (
+        <ConfirmationPopUp
+          confirmTitle={confirmationTitle}
+          confirmMessage={confirmationMessage}
+          handleCancel={handleCancelConfirmationClick}
+          handleConfirm={handleConfirmConfirmationClick}
+        />
+      )}
       <h1>Manage Order</h1>
 
       <div className="manage-order-container">
@@ -81,7 +160,7 @@ export const ManageOrder = () => {
             Pending
           </button>
           <button
-            className={activeItem === "to-receive" ? "active" : ""}
+            className={activeItem === "to receive" ? "active" : ""}
             onClick={() => handleItemClick("to receive")}
           >
             To Receive
@@ -109,10 +188,22 @@ export const ManageOrder = () => {
                 </p>
 
                 {(order.status === "pending" && (
-                  <button>Accept Order</button>
+                  <button
+                    onClick={() => {
+                      handleAcceptOrderClick(order.orderID);
+                    }}
+                  >
+                    Accept Order
+                  </button>
                 )) ||
                   (order.status === "cancel requested" && (
-                    <button>Accept Cancellation</button>
+                    <button
+                      onClick={() => {
+                        handleAcceptRequestClick(order.orderID);
+                      }}
+                    >
+                      Accept Request
+                    </button>
                   ))}
               </div>
               <div className="item-container">
