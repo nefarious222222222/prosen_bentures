@@ -106,7 +106,7 @@ export const Home = () => {
         <div class="about-container">
           <div class="logo-container">
             <img src={logo} alt="Logo" />
-            <h1>FrozenVentures</h1>
+            <h2>FrozenVentures</h2>
           </div>
 
           <p>

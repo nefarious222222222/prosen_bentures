@@ -225,8 +225,8 @@ export const ProductStock = ({
                     />
                   </td>
                   <td>
-                    <button onClick={handleSubmit}>Submit</button>
                     <button onClick={handleCancel}>Cancel</button>
+                    <button onClick={handleSubmit}>Submit</button>
                   </td>
                 </tr>
               )}

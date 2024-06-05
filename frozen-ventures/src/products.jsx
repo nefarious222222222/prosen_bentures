@@ -8,14 +8,17 @@ export const Products = () => {
   const { user } = useContext(UserContext);
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
   let shopType = "";
-  if (user.userRole == "customer") {
+  if (user?.userRole === "customer" || user?.userRole == "") {
     shopType = "retailer";
-  } else if (user.userRole == "retailer") {
+  } else if (user?.userRole === "retailer") {
     shopType = "distributor";
-  } else if (user.userRole == "distributor") {
+  } else if (user?.userRole === "distributor") {
     shopType = "manufacturer";
+  } else {
+    shopType = "retailer";
   }
 
   useEffect(() => {
@@ -31,18 +34,17 @@ export const Products = () => {
     };
 
     fetchProducts();
-
-    const intervalId = setInterval(fetchProducts, 30000);
-    return () => clearInterval(intervalId);
-  }, []);
+  }, [shopType]);
 
   const handleProductClick = (productID) => {
     navigate(`/individual-product/${productID}`);
   };
 
+  const displayedProducts = location.pathname === "/" ? products.slice(0, 4) : products;
+
   return (
     <>
-      {products.map((product) => (
+      {displayedProducts.map((product) => (
         <div
           className="product-item-individual"
           key={product.productID}
@@ -55,8 +57,8 @@ export const Products = () => {
           <div className="product-details">
             <p className="product-name">{product.productName}</p>
             <p>
-              <span>Available: </span>
-              {product.totalStock}
+              <span>Flavor: </span>
+              {product.productFlavor}
             </p>
             <p>
               <span>Shop: </span>
