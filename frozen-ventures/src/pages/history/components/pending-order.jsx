@@ -1,11 +1,6 @@
-import React, { useContext, useState, useEffect } from "react";
-import axios from "axios";
-import { UserContext } from "../../../context/user-context";
+import React from "react";
 
-export const PendingOrder = ({ cancelRequest }) => {
-  const { user } = useContext(UserContext);
-  const [orders, setOrders] = useState([]);
-
+export const PendingOrder = ({ orders, cancelRequest }) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
@@ -23,25 +18,6 @@ export const PendingOrder = ({ cancelRequest }) => {
   
     return `${month} ${parseInt(day, 10)}, ${year}`;
   };
-
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost/api/managePendingOrders.php?accountId=${user.accountId}`
-        );
-        if (response.data.status === 0) {
-          setError(response.data.message);
-        } else {
-          setOrders(response.data);
-        }
-      } catch (error) {
-        console.log("Error fetching orders");
-      }
-    };
-
-    fetchOrders();
-  }, [user.accountId]);
 
   return (
     <div className="pending-order">
@@ -64,7 +40,7 @@ export const PendingOrder = ({ cancelRequest }) => {
                 {formatDate(order.receiveDate)}
               </p>
 
-              {order.status == "pending" && (
+              {order.status === "pending" && (
                 <button onClick={() => cancelRequest(order.orderID)}>
                   Request Cancel Order
                 </button>
@@ -89,6 +65,10 @@ export const PendingOrder = ({ cancelRequest }) => {
                 <div className="detail">
                   <p className="label">Total Price:</p>
                   <p>Php {order.totalPrice.toFixed(2)}</p>
+                </div>
+                <div className="detail">
+                  <p className="label">Shipping Mode:</p>
+                  <p>{capitalizeFirstLetter(order.shippingMode)}</p>
                 </div>
                 <div className="detail">
                   <p className="label">Status:</p>

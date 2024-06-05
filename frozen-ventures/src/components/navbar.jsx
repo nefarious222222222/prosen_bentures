@@ -3,7 +3,12 @@ import { UserContext } from "../context/user-context";
 import "../assets/styles/components.css";
 import logo from "../assets/images/logo.jpg";
 import { Link, useLocation } from "react-router-dom";
-import { Storefront, ShoppingCart, Cube, UserCircle } from "phosphor-react";
+import {
+  Storefront,
+  ShoppingCart,
+  ClockCounterClockwise,
+  UserCircle,
+} from "phosphor-react";
 
 export const Navbar = () => {
   const { user } = useContext(UserContext);
@@ -47,7 +52,11 @@ export const Navbar = () => {
             </Link>
 
             <Link to="/history" title="History">
-              <Cube className="link fake-button" size={30} color={"#fff"} />
+              <ClockCounterClockwise
+                className="link fake-button"
+                size={30}
+                color={"#fff"}
+              />
             </Link>
           </>
         ) : null}

@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../context/user-context";
 import "../../assets/styles/seller.css";
 import { ShopPerformance } from "./components/shop-performance";
+import { ManageOrder } from "./components/manage-order";
 import { ManageProducts } from "./components/manage-products";
 import { ManageInventory } from "./components/manage-inventory";
 import { ManageShop } from "./components/manage-shop";
@@ -145,6 +146,7 @@ export const HomeSeller = () => {
         style={{ marginLeft: isExpanded ? "15vw" : "5vw" }}
       >
         {activeItem === "performance" && <ShopPerformance />}
+        {activeItem === "manage-order" && <ManageOrder />}
         {activeItem === "manage-products" && <ManageProducts />}
         {activeItem === "manage-inventory" && <ManageInventory />}
         {activeItem === "manage-shop" && <ManageShop />}

@@ -12,6 +12,7 @@ import { ErrorMessage } from "../../components/error-message";
 export const History = () => {
   const { user } = useContext(UserContext);
   const [activeItem, setActiveItem] = useState("pending");
+  const [orders, setOrders] = useState([]);
   const [cancelSelectedId, setCancelSelectedId] = useState("");
   const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
   const [confirmationTitle, setConfirmationTitle] = useState("");
@@ -19,8 +20,29 @@ export const History = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost/api/managePendingOrders.php?accountId=${user.accountId}`
+      );
+      if (response.data.status === 0) {
+        setErrorMessage(response.data.message);
+      } else {
+        setOrders(response.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setErrorMessage("Error fetching orders");
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, [user.accountId]);
+
   const handleItemClick = (item) => {
     setActiveItem(item);
+    fetchOrders();
   };
 
   const handleCancelRequestClick = (orderId) => {
@@ -30,25 +52,34 @@ export const History = () => {
     setConfirmationMessage("Are you sure you want to cancel this order?");
   };
 
+  const handleReceiveOrderClick = (orderId) => {
+    setCancelSelectedId(orderId);
+    setShowConfirmationPopUp(true);
+    setConfirmationTitle("Receive Order");
+    setConfirmationMessage("Are you sure you have received this order?");
+  };
+
   const handleConfirmClick = () => {
-    if (confirmationTitle == "Request Cancel Order") {
+    if (confirmationTitle === "Request Cancel Order") {
       axios
         .post("http://localhost/api/managePendingOrders.php", {
           accountId: user.accountId,
           orderId: cancelSelectedId,
+          status: "cancel requested",
         })
         .then((response) => {
           if (response.data.status === 1) {
-            axios.get(
-              `http://localhost/api/managePendingOrders.php?accountId=${user.accountId}`
-            );
             setSuccessMessage(response.data.message);
+            setOrders((prevOrders) =>
+              prevOrders.filter((order) => order.orderID !== cancelSelectedId)
+            );
           } else {
             setErrorMessage(response.data.message);
           }
         })
         .catch((error) => {
           console.error("Error occurred while canceling order:", error);
+          setErrorMessage("Error occurred while canceling order");
         });
 
       setTimeout(() => {
@@ -56,8 +87,33 @@ export const History = () => {
         setErrorMessage("");
         setShowConfirmationPopUp(false);
       }, 2000);
-    } else if (confirmationTitle == "Order Received") {
-      // ORDER RECEIVED FUNCTION
+    } else if (confirmationTitle === "Receive Order") {
+      axios
+        .post("http://localhost/api/managePendingOrders.php", {
+          accountId: user.accountId,
+          orderId: cancelSelectedId,
+          status: "order received",
+        })
+        .then((response) => {
+          if (response.data.status === 1) {
+            setSuccessMessage(response.data.message);
+            setOrders((prevOrders) =>
+              prevOrders.filter((order) => order.orderID !== cancelSelectedId)
+            );
+          } else {
+            setErrorMessage(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error occurred while canceling order:", error);
+          setErrorMessage("Error occurred while canceling order");
+        });
+
+      setTimeout(() => {
+        setSuccessMessage("");
+        setErrorMessage("");
+        setShowConfirmationPopUp(false);
+      }, 2000);
     } else {
       setErrorMessage("Something went wrong");
     }
@@ -68,6 +124,10 @@ export const History = () => {
     setShowConfirmationPopUp(false);
     setConfirmationTitle("");
     setConfirmationMessage("");
+  };
+
+  const filterOrdersByStatus = (statuses) => {
+    return orders.filter((order) => statuses.includes(order.status));
   };
 
   return (
@@ -108,10 +168,22 @@ export const History = () => {
 
         <div className="order-container">
           {activeItem === "pending" && (
-            <PendingOrder cancelRequest={handleCancelRequestClick} />
+            <PendingOrder
+              orders={filterOrdersByStatus(["pending", "cancel requested"])}
+              cancelRequest={handleCancelRequestClick}
+            />
           )}
-          {activeItem === "to-receive" && <ToReceiveOrder />}
-          {activeItem === "completed" && <CompleteOrder />}
+          {activeItem === "to-receive" && (
+            <ToReceiveOrder
+              orders={filterOrdersByStatus(["to receive"])}
+              receiveOrder={handleReceiveOrderClick}
+            />
+          )}
+          {activeItem === "completed" && (
+            <CompleteOrder
+              orders={filterOrdersByStatus(["order received"])}
+            />
+          )}
         </div>
       </div>
     </div>

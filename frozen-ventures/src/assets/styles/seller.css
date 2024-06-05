@@ -125,6 +125,63 @@
     transition: all 0.5s ease;
   }
 
+  .manage-order {
+    padding: 20px;
+
+    h1 {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: solid 2px var(--color-violet);
+    }
+
+    .manage-order-container {
+      border-radius: 20px;
+      margin: 20px 0;
+      box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
+  
+      .button-group {
+        display: flex;
+        justify-content: space-between;
+  
+        button:first-child {
+          border-top-left-radius: 10px;
+        }
+  
+        button:last-child {
+          border-top-right-radius: 10px;
+        }
+  
+        button {
+          width: 100%;
+          font-size: 1.5rem;
+          font-weight: 700;
+          padding: 10px;
+          cursor: pointer;
+          border: solid 2px var(--color-violet);
+          color: var(--color-violet);
+          transition: all 0.3s ease;
+        }
+  
+        button:hover,
+        button.active {
+          background-color: var(--color-violet);
+          color: white;
+        }
+      }
+  
+      .manage-order-container {
+        padding: 0 40px 10px 40px;
+        min-height: 65vh;
+  
+        /* Pending order css */
+        .pending-order {
+          
+  
+        }
+      }
+    }
+  }
+
   /* Manage products css */
   .manage-products {
     padding: 20px;
