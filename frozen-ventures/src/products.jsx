@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "./assets/styles/products.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { UserContext } from "./context/user-context";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const Products = () => {
+  const { user } = useContext(UserContext);
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+
+  let shopType = "";
+  if (user.userRole == "customer") {
+    shopType = "retailer";
+  } else if (user.userRole == "retailer") {
+    shopType = "distributor";
+  } else if (user.userRole == "distributor") {
+    shopType = "manufacturer";
+  }
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost/api/getProductsForCustomer.php"
+          `http://localhost/api/getProductsByRole.php?shopType=${shopType}`
         );
         setProducts(response.data);
       } catch (error) {
