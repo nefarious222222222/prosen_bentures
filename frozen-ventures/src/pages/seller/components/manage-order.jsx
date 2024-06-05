@@ -64,14 +64,6 @@ export const ManageOrder = () => {
     setActiveItem(item);
   };
 
-  const filteredOrders = orders.filter(
-    (order) =>
-      order.status === activeItem ||
-      (activeItem === "pending" && order.status === "cancel requested") ||
-      (activeItem === "completed" && order.status === "order received") ||
-      order.status === "order cancelled"
-  );
-
   const handleAcceptOrderClick = (orderId) => {
     setSelectedId(orderId);
     setConfirmationTitle("Confirm Order");
@@ -136,6 +128,17 @@ export const ManageOrder = () => {
       setShowConfirmationPopUp(false);
     }, 2000);
   };
+
+  const filteredOrders = orders.filter((order) => {
+    if (activeItem === "pending") {
+      return order.status === "pending" || order.status === "cancel requested";
+    } else if (activeItem === "to receive") {
+      return order.status === "to receive";
+    } else if (activeItem === "completed") {
+      return order.status === "order received" || order.status === "order cancelled";
+    }
+    return false;
+  });
 
   return (
     <div className="manage-order">
