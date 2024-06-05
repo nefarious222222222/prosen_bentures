@@ -181,7 +181,7 @@ export const History = () => {
           )}
           {activeItem === "completed" && (
             <CompleteOrder
-              orders={filterOrdersByStatus(["order received"])}
+              orders={filterOrdersByStatus(["order received", "order cancelled"])}
             />
           )}
         </div>
