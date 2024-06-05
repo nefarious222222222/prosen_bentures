@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ErrorMessage } from "../../../components/error-message";
-import { SuccessMessage } from "../../../components/success-message";
 
 export const UserList = () => {
-  const [inputUserId, setInputUserId] = useState("");
   const [selectRole, setSelectRole] = useState("all");
   const [users, setUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const fetchUsers = () => {
@@ -35,7 +32,6 @@ export const UserList = () => {
   return (
     <div className="user-list">
       {errorMessage && <ErrorMessage message={errorMessage} />}
-      {successMessage && <SuccessMessage message={successMessage} />}
       <h1>User List</h1>
 
       <div className="list-container">

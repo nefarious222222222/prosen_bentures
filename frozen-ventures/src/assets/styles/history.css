@@ -5,69 +5,6 @@
     color: var(--color-violet);
   }
 
-  .popup {
-    position: fixed;
-    width: fit-content;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 40px;
-    border-radius: 20px;
-    background-color: white;
-    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
-
-    .popup-content {
-      display: flex;
-      flex-direction: column;
-      gap: 1vh;
-
-      h2 {
-        font-size: 2rem;
-        color: var(--color-red);
-      }
-
-      label {
-        padding: 20px 0 10px 0;
-        font-size: 1.5rem;
-        font-weight: 700;
-      }
-
-      select {
-        resize: none;
-        padding: 10px;
-        font-size: 1.25rem;
-        font-weight: 500;
-        border: none;
-        border-radius: 5px;
-        outline: solid 2px var(--color-violet);
-        background-color: white;
-      }
-
-      .button-group {
-        display: flex;
-        justify-content: space-between;
-        padding: 30px 0 0 0;
-
-        button {
-          font-size: 1.25rem;
-          font-weight: 700;
-          padding: 5px 20px;
-          border-radius: 5px;
-          cursor: pointer;
-          color: white;
-          border: solid 2px var(--color-violet);
-          background-color: var(--color-violet);
-          transition: all 0.3s ease;
-        }
-
-        button:hover {
-          color: var(--color-violet);
-          background-color: white;
-        }
-      }
-    }
-  }
-
   .history-container {
     border-radius: 20px;
     margin: 20px 0;
@@ -104,93 +41,118 @@
     }
 
     .order-container {
-      padding: 20px 40px;
+      padding: 0 40px 10px 40px;
       min-height: 70vh;
 
-      .order-item:last-child {
-        border: none;
-      }
-
-      .order-item {
-        padding: 20px 0;
-
-        p {
-          font-size: 1.25rem;
-          font-weight: 600;
-        }
-
-        .info {
+      /* Pending order css */
+      .pending-order {
+        .order-item {
           display: flex;
           flex-direction: column;
-          align-items: center;
-
-          span {
-            font-size: 1.25rem;
-            font-weight: 500;
-          }
-
-          p {
-            font-size: 1.5rem;
-            font-weight: 600;
-          }
-        }
-
-        button {
-          padding: 10px 20px;
-          cursor: pointer;
-          border: none;
-          border-radius: 5px;
-          font-size: 1.2rem;
-          font-weight: 800;
-          color: var(--color-violet);
-          background-color: var(--color-pale-stone);
-          transition: all 0.3s ease;
-        }
-
-        button:hover {
-          background-color: var(--color-violet);
-          color: var(--color-pale-stone);
-        }
-
-        .product-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: space-between;
-          padding: 40px;
+          margin: 40px 0;
+          padding: 30px 40px 40px 40px;
+          border-radius: 20px;
           box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
 
-          .group-date {
+          .item-header {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            width: 100%;
-            border-bottom: solid 2px gray;
-            padding-bottom: 20px;
             margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: solid 2px var(--color-violet);
+
+            p,
+            span {
+              font-size: 1.5rem;
+
+              span {
+                font-weight: 800;
+              }
+            }
+
+            button {
+              font-weight: 700;
+              padding: 10px;
+              cursor: pointer;
+              border-radius: 5px;
+              border: solid 2px var(--color-violet);
+              background-color: var(--color-violet);
+              color: white;
+              transition: all 0.3s ease;
+            }
+
+            button:hover {
+              background-color: var(--color-white);
+              color: var(--color-violet);
+            }
           }
 
-          .product-details {
-            width: 100%;
+          .item-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
 
-            .product {
+            .product-item {
               display: flex;
               align-items: center;
-              gap: 1vw;
+              gap: 20px;
 
               img {
                 width: 200px;
                 border-radius: 20px;
               }
 
-              h2 {
-                font-size: 1.75rem;
-                font-weight: 700;
-                color: var(--color-violet);
+              .product-details {
+                display: flex;
+                flex-direction: column;
+
+                p:first-child {
+                  font-size: 2rem;
+                  font-weight: 800;
+                  color: var(--color-violet);
+                }
               }
             }
+
+            .order-details {
+              width: 55vw;
+              display: flex;
+              justify-content: space-between;
+
+              .detail {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .label {
+                  font-size: 1.25rem;
+                  font-weight: 800;
+                }
+
+                p {
+                  font-size: 1.5rem;
+                  font-weight: 500;
+                }
+              }
+            }
+          }
+        }
+
+        .empty-pending {
+          min-height: 60vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          h1 {
+            font-size: 4rem;
+          }
+
+          p {
+            font-size: 2rem;
+            font-weight: 600;
           }
         }
       }

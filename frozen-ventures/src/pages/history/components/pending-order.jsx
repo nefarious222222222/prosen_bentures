@@ -1,0 +1,109 @@
+import React, { useContext, useState, useEffect } from "react";
+import axios from "axios";
+import { UserContext } from "../../../context/user-context";
+
+export const PendingOrder = ({ cancelRequest }) => {
+  const { user } = useContext(UserContext);
+  const [orders, setOrders] = useState([]);
+
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const formatDate = (dateString) => {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+  
+    const parts = dateString.split('-');
+    const year = parts[0];
+    const month = months[parseInt(parts[1], 10) - 1];
+    const day = parts[2];
+  
+    return `${month} ${parseInt(day, 10)}, ${year}`;
+  };
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost/api/managePendingOrders.php?accountId=${user.accountId}`
+        );
+        if (response.data.status === 0) {
+          setError(response.data.message);
+        } else {
+          setOrders(response.data);
+        }
+      } catch (error) {
+        console.log("Error fetching orders");
+      }
+    };
+
+    fetchOrders();
+  }, [user.accountId]);
+
+  return (
+    <div className="pending-order">
+      {orders.length > 0 ? (
+        orders.map((order) => (
+          <div key={order.orderID} className="order-item">
+            <div className="item-header">
+              <p>
+                <span>Shop Name: </span>
+                {order.shopName}
+              </p>
+
+              <p>
+                <span>Order Date: </span>
+                {formatDate(order.orderDate)}
+              </p>
+
+              <p>
+                <span>Receive Date: </span>
+                {formatDate(order.receiveDate)}
+              </p>
+
+              {order.status == "pending" && (
+                <button onClick={() => cancelRequest(order.orderID)}>
+                  Request Cancel Order
+                </button>
+              )}
+            </div>
+            <div className="item-container">
+              <div className="product-item">
+                <img
+                  src={`http://localhost/api/productImages/${order.productImage}`}
+                  alt={order.productName}
+                />
+                <div className="product-details">
+                  <p>{order.productName}</p>
+                  <p>{order.productFlavor}</p>
+                </div>
+              </div>
+              <div className="order-details">
+                <div className="detail">
+                  <p className="label">Quantity:</p>
+                  <p>x{order.quantity}</p>
+                </div>
+                <div className="detail">
+                  <p className="label">Total Price:</p>
+                  <p>Php {order.totalPrice.toFixed(2)}</p>
+                </div>
+                <div className="detail">
+                  <p className="label">Status:</p>
+                  <p>{capitalizeFirstLetter(order.status)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      ) : (
+        <div className="empty-pending">
+          <h1>Empty</h1>
+          <p>No pending or cancel requested orders</p>
+        </div>
+      )}
+    </div>
+  );
+};
