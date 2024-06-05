@@ -342,3 +342,63 @@
     }
   }
 }
+
+/* Cancel reason css */
+.cancel-reason {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  padding: 30px 40px;
+  border-radius: 20px;
+  border: solid 3px var(--color-violet);
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.2);
+  z-index: 998;
+
+  .reason-body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    p {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    select {
+      font-size: 1.25rem;
+      font-weight: 500;
+      border: solid 2px var(--color-violet);
+      border-radius: 5px;
+      padding: 5px 10px;
+      outline: none;
+      min-width: 500px;
+    }
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 120px;
+      color: var(--color-white);
+      background-color: var(--color-violet);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--color-light-violet);
+    }
+  }
+}

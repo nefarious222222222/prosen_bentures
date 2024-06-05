@@ -8,6 +8,7 @@ import { CompleteOrder } from "./components/completed-order";
 import { ConfirmationPopUp } from "../../components/confirmation-popup";
 import { SuccessMessage } from "../../components/success-message";
 import { ErrorMessage } from "../../components/error-message";
+import { CancelReason } from "../../components/cancel-reason";
 
 export const History = () => {
   const { user } = useContext(UserContext);
@@ -19,6 +20,8 @@ export const History = () => {
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showCancelReason, setShowCancelReason] = useState(false);
+  const [selectedReason, setSelectedReason] = useState("");
 
   const fetchOrders = async () => {
     try {
@@ -47,9 +50,7 @@ export const History = () => {
 
   const handleCancelRequestClick = (orderId) => {
     setCancelSelectedId(orderId);
-    setShowConfirmationPopUp(true);
-    setConfirmationTitle("Request Cancel Order");
-    setConfirmationMessage("Are you sure you want to cancel this order?");
+    setShowCancelReason(true);
   };
 
   const handleReceiveOrderClick = (orderId) => {
@@ -66,6 +67,7 @@ export const History = () => {
           accountId: user.accountId,
           orderId: cancelSelectedId,
           status: "cancel requested",
+          cancelReason: selectedReason,
         })
         .then((response) => {
           if (response.data.status === 1) {
@@ -93,6 +95,7 @@ export const History = () => {
           accountId: user.accountId,
           orderId: cancelSelectedId,
           status: "order received",
+          cancelReason: "N/A",
         })
         .then((response) => {
           if (response.data.status === 1) {
@@ -126,9 +129,36 @@ export const History = () => {
     setConfirmationMessage("");
   };
 
+  const handleReasonCancel = () => {
+    setShowCancelReason(false);
+    setSelectedReason("");
+    setErrorMessage("");
+  };
+
+  const handleReasonConfirm = () => {
+    if (!selectedReason) {
+      setErrorMessage("Please select a reason for cancellation.");
+      return;
+    }
+    setShowConfirmationPopUp(true);
+    setConfirmationTitle("Request Cancel Order");
+    setConfirmationMessage("Are you sure you want to cancel this order?");
+    setShowCancelReason(false);
+  };
+
   const filterOrdersByStatus = (statuses) => {
     return orders.filter((order) => statuses.includes(order.status));
   };
+
+  const reasons = [
+    "Changed my mind",
+    "Found a better price elsewhere",
+    "Item not needed anymore",
+    "Ordered by mistake",
+    "Wrong item ordered",
+    "No longer needed due to a change in plans",
+    "Other...",
+  ];
 
   return (
     <div className="container history">
@@ -142,7 +172,16 @@ export const History = () => {
           handleConfirm={handleConfirmClick}
         />
       )}
-      <h1>History</h1>
+      {showCancelReason && (
+        <CancelReason
+          selectedReason={selectedReason}
+          setSelectedReason={setSelectedReason}
+          reasons={reasons}
+          handleReasonCancel={handleReasonCancel}
+          handleReasonConfirm={handleReasonConfirm}
+        />
+      )}
+      <h1>Purchase History</h1>
 
       <div className="history-container">
         <div className="button-group">
@@ -181,7 +220,10 @@ export const History = () => {
           )}
           {activeItem === "completed" && (
             <CompleteOrder
-              orders={filterOrdersByStatus(["order received", "order cancelled"])}
+              orders={filterOrdersByStatus([
+                "order received",
+                "order cancelled",
+              ])}
             />
           )}
         </div>
