@@ -1,14 +1,18 @@
 import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../context/user-context";
+import { OrderContext } from "../../context/order-context";
 import "../../assets/styles/individual-product.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { SuccessMessage } from "../../components/success-message";
 import { ErrorMessage } from "../../components/error-message";
 import { Minus, Plus, UserCircle, X } from "phosphor-react";
 
 export const IndividualProduct = ({ productId, cancelClick }) => {
   const { user } = useContext(UserContext);
+  const { setOrder } = useContext(OrderContext);
   const [product, setProduct] = useState(null);
+  const navigate = useNavigate();
   const [price, setPrice] = useState([]);
   const [selectedPrice, setSelectedPrice] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -93,7 +97,10 @@ export const IndividualProduct = ({ productId, cancelClick }) => {
         totalPrice: totalPrice,
       };
       axios
-        .post("http://localhost/prosen_bentures/api/manageCart.php", newCartItem)
+        .post(
+          "http://localhost/prosen_bentures/api/manageCart.php",
+          newCartItem
+        )
         .then((response) => {
           if (response.data.status === 1) {
             setSuccessMessage(response.data.message);
@@ -121,7 +128,42 @@ export const IndividualProduct = ({ productId, cancelClick }) => {
     if (user?.accountId == null) {
       setErrorMessage("You must be signed in to buy this product");
     } else {
-      // ADD CONTEXT PROCEED TO OTHER PAGE
+      try {
+        const currentDate = new Date().toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+
+        const orderDetails = {
+          products: {
+            [productId]: {
+              productId: productId,
+              priceId: selectedPrice.priceID,
+              shopId: selectedPrice.shopID,
+              productImage: product.productImage,
+              productName: product.productName,
+              productFlavor: product.productFlavor,
+              productSize: selectedPrice.productSize,
+              productPrice: selectedPrice.productPrice,
+              quantity: quantity,
+              shopName: product.shopName,
+              subTotal: totalPrice,
+              status: "pending",
+              orderDate: currentDate,
+            },
+          },
+        };
+
+        setOrder(orderDetails);
+        if (orderDetails !== null) {
+          console.log("SADNAKLSDNAS");
+          navigate("/order");
+        }
+      } catch (error) {
+        console.error("Error during checkout:", error.message);
+        setErrorMessage("An error occurred during checkout");
+      }
     }
 
     setTimeout(() => {
@@ -134,7 +176,7 @@ export const IndividualProduct = ({ productId, cancelClick }) => {
     <div className="individual-product">
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
-      <X className="cancel-button" onClick={cancelClick} size={50}/>
+      <X className="cancel-button" onClick={cancelClick} size={50} />
       {product ? (
         <div className="product-details">
           <div className="header-container">

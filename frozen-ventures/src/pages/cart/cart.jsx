@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../../assets/styles/cart.css";
 import { UserContext } from "../../context/user-context";
 import { OrderContext } from "../../context/order-context";
@@ -9,12 +9,16 @@ import { ShoppingCart, Storefront } from "phosphor-react";
 
 export const Cart = () => {
   const { user } = useContext(UserContext);
-  const { setOrder } = useContext(OrderContext);
+  const { setOrder, clearOrder } = useContext(OrderContext);
   const [cartSubTotal, setCartSubTotal] = useState(0);
   const [cartItems, setCartItems] = useState([]);
   const [orderSet, setOrderSet] = useState(false);
   const [cartItemError, setCartItemError] = useState(false);
   const [errorProduct, setErrorProduct] = useState(null);
+
+  useEffect (() => {
+    clearOrder();
+  }, []);
 
   const updateSubTotal = (subTotal) => {
     setCartSubTotal(subTotal);

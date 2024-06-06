@@ -4,7 +4,7 @@ import axios from "axios";
 import { UserContext } from "./context/user-context";
 import { IndividualProduct } from "./pages/shop/individual-product";
 import { useLocation } from "react-router-dom";
-import { Overlay } from "./overlay";
+import Overlay from "./overlay";
 
 export const Products = () => {
   const { user } = useContext(UserContext);

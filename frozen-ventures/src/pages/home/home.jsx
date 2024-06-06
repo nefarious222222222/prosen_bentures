@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import "../../assets/styles/home.css";
+import { OrderContext } from "../../context/order-context";
 import { useNavigate } from "react-router-dom";
 import carrousel from "../../assets/images/0.jpg";
 import one from "../../assets/images/1.jpg";
@@ -14,6 +15,12 @@ import { TwitterLogo } from "phosphor-react";
 import { Products } from "../../products";
 
 export const Home = () => {
+  const { clearOrder } = useContext(OrderContext);
+
+  useEffect (() => {
+    clearOrder();
+  }, []);
+
   const navigate = useNavigate();
 
   const handleMoreFlavorsClick = () => {
