@@ -37,7 +37,9 @@ export const ManageOrder = () => {
   const { user } = useContext(UserContext);
   const [activeItem, setActiveItem] = useState("pending");
   const [orders, setOrders] = useState([]);
-  const [selectedId, setSelectedId] = useState("");
+  const [selectedOrderId, setSelectedOrderId] = useState("");
+  const [selectedPriceId, setSelectedPriceId] = useState("");
+  const [productQuantity, setProductQuantity] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
@@ -64,64 +66,95 @@ export const ManageOrder = () => {
     setActiveItem(item);
   };
 
-  const handleAcceptOrderClick = (orderId) => {
-    setSelectedId(orderId);
+  const handleAcceptOrderClick = (orderId, priceId, productQuantity) => {
+    setSelectedOrderId(orderId);
+    setSelectedPriceId(priceId);
+    setProductQuantity(productQuantity);
     setConfirmationTitle("Confirm Order");
     setConfirmationMessage("Are you sure you want to accept this order?");
     setShowConfirmationPopUp(true);
   };
 
   const handleAcceptRequestClick = (orderId) => {
-    setSelectedId(orderId);
+    setSelectedOrderId(orderId);
     setConfirmationTitle("Order Cancellation");
-    setConfirmationMessage("Are you sure you want to accept this cancel request?");
+    setConfirmationMessage(
+      "Are you sure you want to accept this cancel request?"
+    );
     setShowConfirmationPopUp(true);
   };
 
   const handleCancelConfirmationClick = () => {
-    setSelectedId("");
+    setSelectedOrderId("");
     setConfirmationTitle("");
     setConfirmationMessage("");
     setShowConfirmationPopUp(false);
   };
 
   const handleConfirmConfirmationClick = () => {
-    if (selectedId && confirmationTitle == "Confirm Order") {
-      const updateOrderData = {
-        orderId: selectedId,
-        status: "to receive",
+    if (selectedOrderId && confirmationTitle === "Confirm Order") {
+      const updatePriceData = {
+        priceId: selectedPriceId,
+        productQuantity: productQuantity,
       };
       axios
-        .post("http://localhost/prosen_bentures/api/manageSellerOrder.php?", updateOrderData)
+        .put(
+          "http://localhost/prosen_bentures/api/manageSellerOrder.php",
+          updatePriceData
+        )
         .then((response) => {
-          setSuccessMessage(response.data.message);
-          fetchOrders();
+          if (response.data.status === 1) {
+            const updateOrderData = {
+              orderId: selectedOrderId,
+              status: "to receive",
+            };
+            axios
+              .post(
+                "http://localhost/prosen_bentures/api/manageSellerOrder.php",
+                updateOrderData
+              )
+              .then((response) => {
+                setSuccessMessage(response.data.message);
+                fetchOrders();
+              })
+              .catch((error) => {
+                console.error("Error updating order status:", error);
+                setErrorMessage(
+                  "Failed to update order status. Please try again."
+                );
+              });
+          } else {
+            setErrorMessage(response.data.message);
+          }
         })
         .catch((error) => {
-          console.error("Error updating order status:", error);
-          setErrorMessage(response.data.message);
+          console.error("Error updating product stock:", error);
+          setErrorMessage("Failed to update product stock. Please try again.");
         });
-    } else if (selectedId && confirmationTitle == "Order Cancellation") {
+    } else if (selectedOrderId && confirmationTitle === "Order Cancellation") {
       const updateOrderData = {
-        orderId: selectedId,
+        orderId: selectedOrderId,
         status: "order cancelled",
       };
       axios
-        .post("http://localhost/prosen_bentures/api/manageSellerOrder.php?", updateOrderData)
+        .post(
+          "http://localhost/prosen_bentures/api/manageSellerOrder.php",
+          updateOrderData
+        )
         .then((response) => {
           setSuccessMessage(response.data.message);
           fetchOrders();
         })
         .catch((error) => {
           console.error("Error updating order status:", error);
-          setErrorMessage(response.data.message);
+          setErrorMessage("Failed to update order status. Please try again.");
         });
     } else {
-      setErrorMessage("Something went wrong");
+      setErrorMessage("Something went wrong. Please try again.");
     }
 
     setTimeout(() => {
-      setSelectedId("");
+      setSelectedOrderId("");
       setConfirmationTitle("");
       setConfirmationMessage("");
       setSuccessMessage("");
@@ -135,7 +168,9 @@ export const ManageOrder = () => {
     } else if (activeItem === "to receive") {
       return order.status === "to receive";
     } else if (activeItem === "completed") {
-      return order.status === "order received" || order.status === "order cancelled";
+      return (
+        order.status === "order received" || order.status === "order cancelled"
+      );
     }
     return false;
   });
@@ -193,7 +228,11 @@ export const ManageOrder = () => {
                 {(order.status === "pending" && (
                   <button
                     onClick={() => {
-                      handleAcceptOrderClick(order.orderID);
+                      handleAcceptOrderClick(
+                        order.orderID,
+                        order.priceID,
+                        order.quantity
+                      );
                     }}
                   >
                     Accept Order

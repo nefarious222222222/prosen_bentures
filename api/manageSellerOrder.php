@@ -1,6 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT");
 header('Content-Type: application/json');
 
 include 'DbConnect.php';
@@ -45,12 +46,50 @@ switch ($method) {
             $stmt->bindParam(':status', $status);
             $stmt->bindParam(':orderId', $orderId);
 
-            if ($stmt->execute() && $status == "to receive") {
-                $response = ["status" => 1, "message" => "Order status updated successfully"];
-            } elseif ($stmt->execute() && $status == "order cancelled") {
-                $response = ["status" => 1, "message" => "Order cancellation has been confirmed"];
+            if ($stmt->execute()) {
+                $response = ["status" => 1, "message" => $status == "to receive" ? "Order status updated successfully" : "Order cancellation has been confirmed"];
             } else {
                 $response = ["status" => 0, "message" => "Failed to update order status"];
+            }
+        } else {
+            $response = ["status" => 0, "message" => "Invalid input"];
+        }
+        echo json_encode($response);
+        break;
+
+    case 'PUT':
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+
+        if (isset($data['priceId']) && isset($data['productQuantity'])) {
+            $priceID = $data['priceId'];
+            $productQuantity = $data['productQuantity'];
+
+            $sql = "SELECT productStock FROM product_price WHERE priceID = :priceId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':priceId', $priceID);
+            $stmt->execute();
+            $currentStock = $stmt->fetch(PDO::FETCH_ASSOC)['productStock'];
+
+            if ($currentStock !== false) {
+                $newStock = $currentStock - $productQuantity;
+
+                if ($newStock >= 0) {
+                    $updateSql = "UPDATE product_price SET productStock = :newStock WHERE priceID = :priceId";
+                    $updateStmt = $conn->prepare($updateSql);
+                    $updateStmt->bindParam(':newStock', $newStock);
+                    $updateStmt->bindParam(':priceId', $priceID);
+
+                    if ($updateStmt->execute()) {
+                        $response = ["status" => 1, "message" => "Product stock updated successfully"];
+                    } else {
+                        $response = ["status" => 0, "message" => "Failed to update product stock"];
+                    }
+                } else {
+                    $response = ["status" => 0, "message" => "Insufficient stock"];
+                }
+            } else {
+                $response = ["status" => 0, "message" => "Product not found"];
             }
         } else {
             $response = ["status" => 0, "message" => "Invalid input"];
