@@ -140,7 +140,7 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
       setErrorMessage("");
     }, 2000);
   };
-  
+
   return (
     <div className="cart-item">
       {errorMessage && <ErrorMessage message={errorMessage} />}
@@ -184,6 +184,7 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
                       cartItem.productStock
                     )
                   }
+                  disabled={cartItem.quantity <= 1}
                 >
                   <Minus size={25} />
                 </button>
@@ -210,6 +211,7 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
                       cartItem.productStock
                     )
                   }
+                  disabled={cartItem.quantity >= cartItem.productStock}
                 >
                   <Plus size={25} />
                 </button>
