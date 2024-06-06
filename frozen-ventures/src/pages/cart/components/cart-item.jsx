@@ -140,11 +140,7 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
       setErrorMessage("");
     }, 2000);
   };
-
-  const handleProductClick = (productId) => {
-    navigate(`/individual-product/${productId}`);
-  };
-
+  
   return (
     <div className="cart-item">
       {errorMessage && <ErrorMessage message={errorMessage} />}
@@ -165,10 +161,9 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
                 <img
                   src={`http://localhost/prosen_bentures/api/productImages/${cartItem.productImage}`}
                   alt={cartItem.productName}
-                  onClick={() => handleProductClick(cartItem.productID)}
                 />
                 <div className="description">
-                  <p onClick={() => handleProductClick(cartItem.productID)}>
+                  <p>
                     {cartItem.productName}
                   </p>
                   <p>{cartItem.productFlavor}</p>
