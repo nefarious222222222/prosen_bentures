@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../../context/user-context";
 import axios from "axios";
 import { ProductStock } from "./product-stock";
+import { ErrorMessage } from "../../../components/error-message";
 
 const formatDate = (dateString) => {
   const months = [
@@ -36,6 +37,7 @@ export const ManageInventory = () => {
   const [selectedProductName, setSelectedProductName] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [selectedShopId, setSelectedShopId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const productStockRef = useRef(null);
 
   useEffect(() => {
@@ -50,8 +52,6 @@ export const ManageInventory = () => {
       }
     };
     fetchInventory();
-    const intervalId = setInterval(fetchInventory, 5000);
-    return () => clearInterval(intervalId);
   }, [user.shopId]);
 
   const handleShowProductStock = (productName, productId) => {
@@ -60,6 +60,30 @@ export const ManageInventory = () => {
     setSelectedShopId(user.shopId);
     setShowProductStock(true);
   };
+
+  useEffect(() => {
+    const checkLowStock = () => {
+      const lowStockProducts = [];
+      for (const product of inventory) {
+        if (product.totalStock <= 20) {
+          lowStockProducts.push(product);
+        }
+      }
+      if (lowStockProducts.length > 0) {
+        const productNames = lowStockProducts
+          .map((product) => product.productName)
+          .join(", ");
+        setErrorMessage(`Low stock for: ${productNames}, please check your stocks on all sizes`);
+      } else {
+        setErrorMessage("");
+      }
+    };
+
+    checkLowStock();
+    setTimeout(() => {
+      setErrorMessage("");
+    }, 10000);
+  }, [inventory]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -83,6 +107,7 @@ export const ManageInventory = () => {
 
   return (
     <div className="manage-inventory">
+      {errorMessage && <ErrorMessage message={errorMessage} />}
       <h1>Manage Inventory</h1>
       {!inventory || inventory.length === 0 ? (
         <p>No inventory items found.</p>

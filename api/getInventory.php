@@ -15,7 +15,6 @@ switch ($method) {
         $sql = "SELECT 
                     pi.*,
                     pp.priceID,
-                    pp.productSize,
                     pp.productPrice,
                     pp.productStock,
                     COALESCE(SUM(pp.productStock), 0) AS totalStock

@@ -5,7 +5,6 @@ import { Minus, Plus, Trash } from "phosphor-react";
 import { SuccessMessage } from "../../../components/success-message";
 import { ErrorMessage } from "../../../components/error-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
-import { useNavigate } from "react-router-dom";
 
 export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
   const { user } = useContext(UserContext);
@@ -18,7 +17,6 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartItems = async () => {
