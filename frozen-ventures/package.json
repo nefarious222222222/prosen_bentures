@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "axios": "^1.7.2",
+    "chart.js": "^4.4.3",
     "framer-motion": "^11.2.10",
     "phosphor-react": "^1.4.1",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1",
     "react-spinners-kit": "^1.9.1"
