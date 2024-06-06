@@ -13,7 +13,7 @@ switch ($method) {
         $cartData = json_decode(file_get_contents('php://input'));
 
         if (empty($cartData->accountId) || empty($cartData->productId) || empty($cartData->priceId) || empty($cartData->shopId) || empty($cartData->quantity) || empty($cartData->totalPrice)) {
-            echo json_encode(["status" => 0, "message" => "One or more required fields are empty"]);
+            echo json_encode(["status" => 0, "message" => "Something went wrong"]);
             exit();
         }
 
@@ -23,6 +23,19 @@ switch ($method) {
         $shopId = $cartData->shopId;
         $quantity = $cartData->quantity;
         $totalPrice = $cartData->totalPrice;
+
+        $stockSql = "SELECT productStock FROM product_price WHERE priceID = :priceId";
+        $stockStmt = $conn->prepare($stockSql);
+        $stockStmt->bindParam(':priceId', $priceId);
+        $stockStmt->execute();
+        $stockData = $stockStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$stockData) {
+            echo json_encode(["status" => 0, "message" => "Product not found in inventory"]);
+            exit();
+        }
+
+        $availableStock = $stockData['productStock'];
 
         $existingCartSql = "SELECT * FROM user_cart WHERE accountID = :accountId AND productID = :productId AND priceID = :priceId";
         $existingCartStmt = $conn->prepare($existingCartSql);
@@ -34,6 +47,12 @@ switch ($method) {
 
         if ($existingCart) {
             $updatedQuantity = $existingCart['quantity'] + $quantity;
+
+            if ($updatedQuantity > $availableStock) {
+                echo json_encode(["status" => 0, "message" => "Requested quantity exceeds available stock"]);
+                exit();
+            }
+
             $updatedTotalPrice = $existingCart['totalPrice'] + $totalPrice;
 
             $updateSql = "UPDATE user_cart SET quantity = :updatedQuantity, totalPrice = :updatedTotalPrice WHERE accountID = :accountId AND productID = :productId AND priceID = :priceId";
@@ -50,8 +69,13 @@ switch ($method) {
                 echo json_encode(["status" => 0, "message" => "Failed to update product quantity"]);
             }
         } else {
+            if ($quantity > $availableStock) {
+                echo json_encode(["status" => 0, "message" => "Requested quantity exceeds available stock"]);
+                exit();
+            }
+
             $insertSql = "INSERT INTO user_cart (cartID, accountID, productID, priceID, shopID, quantity, totalPrice) 
-            VALUES (null, :accountId, :productId, :priceId, :shopId, :quantity, :totalPrice)";
+    VALUES (null, :accountId, :productId, :priceId, :shopId, :quantity, :totalPrice)";
 
             $stmt = $conn->prepare($insertSql);
             $stmt->bindParam(':accountId', $accountId);
