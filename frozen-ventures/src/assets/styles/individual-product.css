@@ -3,13 +3,30 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
+  z-index: 998;
+
+  .cancel-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--color-violet);
+    transition: all 0.3s ease;
+  }
+
+  .cancel-button:hover {
+    color: var(--color-white);
+    background-color: var(--color-dark-red);
+  }
 
   .product-details {
     display: flex;
     flex-direction: column;
-    width: 50vw;
+    width: 60vw;
     gap: 20px;
-    padding: 40px;
+    padding: 60px;
     border-radius: 20px;
     border: solid 3px var(--color-violet);
     background-color: var(--color-white);
@@ -20,6 +37,7 @@
       align-items: center;
       padding-bottom: 20px;
       border-bottom: solid 2px var(--color-violet);
+      
       .product-header {
         display: flex;
         align-items: center;

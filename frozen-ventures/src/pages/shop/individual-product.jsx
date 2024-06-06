@@ -4,9 +4,9 @@ import "../../assets/styles/individual-product.css";
 import axios from "axios";
 import { SuccessMessage } from "../../components/success-message";
 import { ErrorMessage } from "../../components/error-message";
-import { Minus, Plus, UserCircle } from "phosphor-react";
+import { Minus, Plus, UserCircle, X } from "phosphor-react";
 
-export const IndividualProduct = ({ productId }) => {
+export const IndividualProduct = ({ productId, cancelClick }) => {
   const { user } = useContext(UserContext);
   const [product, setProduct] = useState(null);
   const [price, setPrice] = useState([]);
@@ -134,6 +134,7 @@ export const IndividualProduct = ({ productId }) => {
     <div className="individual-product">
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
+      <X className="cancel-button" onClick={cancelClick} size={50}/>
       {product ? (
         <div className="product-details">
           <div className="header-container">
