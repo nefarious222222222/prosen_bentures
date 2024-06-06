@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import "../../assets/styles/home.css";
+import { UserContext } from "../../context/user-context";
 import { OrderContext } from "../../context/order-context";
 import { useNavigate } from "react-router-dom";
 import carrousel from "../../assets/images/0.jpg";
@@ -15,17 +16,28 @@ import { TwitterLogo } from "phosphor-react";
 import { Products } from "../../products";
 
 export const Home = () => {
+  const { user } = useContext(UserContext);
   const { clearOrder } = useContext(OrderContext);
 
-  useEffect (() => {
+  useEffect(() => {
     clearOrder();
+
+    if (user?.userRole == "admin") {
+      navigate("/home-admin");
+    } else if (
+      user?.userRole == "retailer" ||
+      user?.userRole == "distributor" ||
+      user?.userRole == "manufacturer"
+    ) {
+      navigate("/home-seller");
+    }
   }, []);
 
   const navigate = useNavigate();
 
   const handleMoreFlavorsClick = () => {
-    navigate("/shop")
-  }
+    navigate("/shop");
+  };
 
   return (
     <div className="home">

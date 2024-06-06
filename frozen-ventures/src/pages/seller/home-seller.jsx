@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../context/user-context";
 import "../../assets/styles/seller.css";
 import { ShopPerformance } from "./components/shop-performance";
+import { SellerShop } from "./components/seller-shop";
+import { SellerCart } from "./components/seller-cart";
 import { ManageOrder } from "./components/manage-order";
 import { ManageProducts } from "./components/manage-products";
 import { ManageInventory } from "./components/manage-inventory";
@@ -63,8 +65,8 @@ export const HomeSeller = () => {
         )}
         <ul>
           <li
-            className={activeItem === "performance" ? "active" : ""}
-            onClick={() => handleItemClick("performance")}
+            className={activeItem === "shop-performance" ? "active" : ""}
+            onClick={() => handleItemClick("shop-performance")}
             data-tooltip="Shop Performance"
           >
             <Gauge size={40} />
@@ -73,16 +75,16 @@ export const HomeSeller = () => {
           {user.userRole !== "manufacturer" && (
             <>
               <li
-                className={activeItem === "shop" ? "active" : ""}
-                onClick={() => handleItemClick("shop")}
+                className={activeItem === "seller-shop" ? "active" : ""}
+                onClick={() => handleItemClick("seller-shop")}
                 data-tooltip="Shop"
               >
                 <Storefront size={40} />
                 {isExpanded && <p>Shop</p>}
               </li>
               <li
-                className={activeItem === "cart" ? "active" : ""}
-                onClick={() => handleItemClick("cart")}
+                className={activeItem === "seller-cart" ? "active" : ""}
+                onClick={() => handleItemClick("seller-cart")}
                 data-tooltip="Cart"
               >
                 <ShoppingCart size={40} />
@@ -145,7 +147,9 @@ export const HomeSeller = () => {
         className="selected-item"
         style={{ marginLeft: isExpanded ? "15vw" : "5vw" }}
       >
-        {activeItem === "performance" && <ShopPerformance />}
+        {activeItem === "shop-performance" && <ShopPerformance />}
+        {activeItem === "seller-shop" && <SellerShop />}
+        {activeItem === "seller-cart" && <SellerCart />}
         {activeItem === "manage-order" && <ManageOrder />}
         {activeItem === "manage-products" && <ManageProducts />}
         {activeItem === "manage-inventory" && <ManageInventory />}

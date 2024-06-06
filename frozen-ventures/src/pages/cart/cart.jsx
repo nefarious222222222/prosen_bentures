@@ -16,7 +16,7 @@ export const Cart = () => {
   const [cartItemError, setCartItemError] = useState(false);
   const [errorProduct, setErrorProduct] = useState(null);
 
-  useEffect (() => {
+  useEffect(() => {
     clearOrder();
   }, []);
 
@@ -69,7 +69,6 @@ export const Cart = () => {
         }, {}),
       };
 
-      
       setOrder(orderDetails);
       setOrderSet(true);
     } catch (error) {
@@ -83,7 +82,9 @@ export const Cart = () => {
 
   return (
     <div className="container cart">
-      {user.userRole !== "customer" ? <Navigate to="/" replace={true} /> : null}
+      {user.userRole == "customer" ||
+        user.userRole == "retailer" ||
+        (user.userRole == "distributor" && <Navigate to="/" replace={true} />)}
       {cartItemError && (
         <ErrorMessage
           message={`Quantity for ${errorProduct} exceeds available stock`}

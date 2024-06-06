@@ -192,6 +192,24 @@
     }
   }
 
+  /* Seller shop css */
+  .seller-shop {
+    .shop {
+      padding: 0;
+    }
+
+    .text-container {
+      padding-top: 0;
+    }
+  }
+
+  /* Seller cart css */
+  .seller-cart {
+    .cart {
+      padding: 0;
+    }
+  }
+
   /* Manage order css */
   .manage-order {
     h1 {
