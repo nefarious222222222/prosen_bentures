@@ -226,7 +226,7 @@ export const IndividualProduct = ({ productId, cancelClick }) => {
                     <option value="" disabled>
                       Select a size
                     </option>
-                    {price.map((p) => (
+                    {price?.map((p) => (
                       <option key={p.priceID} value={p.productSize}>
                         {p.productSize}
                       </option>

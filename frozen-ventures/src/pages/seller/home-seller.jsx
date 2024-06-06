@@ -4,6 +4,7 @@ import "../../assets/styles/seller.css";
 import { ShopPerformance } from "./components/shop-performance";
 import { SellerShop } from "./components/seller-shop";
 import { SellerCart } from "./components/seller-cart";
+import { SellerHistory } from "./components/seller-history";
 import { ManageOrder } from "./components/manage-order";
 import { ManageProducts } from "./components/manage-products";
 import { ManageInventory } from "./components/manage-inventory";
@@ -91,8 +92,8 @@ export const HomeSeller = () => {
                 {isExpanded && <p>Cart</p>}
               </li>
               <li
-                className={activeItem === "history" ? "active" : ""}
-                onClick={() => handleItemClick("history")}
+                className={activeItem === "seller-history" ? "active" : ""}
+                onClick={() => handleItemClick("seller-history")}
                 data-tooltip="History"
               >
                 <ClockCounterClockwise size={40} />
@@ -150,6 +151,7 @@ export const HomeSeller = () => {
         {activeItem === "shop-performance" && <ShopPerformance />}
         {activeItem === "seller-shop" && <SellerShop />}
         {activeItem === "seller-cart" && <SellerCart />}
+        {activeItem === "seller-history" && <SellerHistory />}
         {activeItem === "manage-order" && <ManageOrder />}
         {activeItem === "manage-products" && <ManageProducts />}
         {activeItem === "manage-inventory" && <ManageInventory />}

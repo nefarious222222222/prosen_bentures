@@ -210,6 +210,23 @@
     }
   }
 
+  /* Seller history css */
+  .seller-history {
+    .history {
+      padding: 0;
+    }
+
+    h1 {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: solid 2px var(--color-violet);
+    }
+
+    .order-container {
+      min-height: 65vh;
+    }
+  }
+
   /* Manage order css */
   .manage-order {
     h1 {
