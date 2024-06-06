@@ -36,12 +36,13 @@ switch ($method) {
             $updatedQuantity = $existingCart['quantity'] + $quantity;
             $updatedTotalPrice = $existingCart['totalPrice'] + $totalPrice;
 
-            $updateSql = "UPDATE user_cart SET quantity = :updatedQuantity, totalPrice = :updatedTotalPrice WHERE accountID = :accountId AND productID = :productId";
+            $updateSql = "UPDATE user_cart SET quantity = :updatedQuantity, totalPrice = :updatedTotalPrice WHERE accountID = :accountId AND productID = :productId AND priceID = :priceId";
             $updateStmt = $conn->prepare($updateSql);
             $updateStmt->bindParam(':updatedQuantity', $updatedQuantity);
             $updateStmt->bindParam(':updatedTotalPrice', $updatedTotalPrice);
             $updateStmt->bindParam(':accountId', $accountId);
             $updateStmt->bindParam(':productId', $productId);
+            $updateStmt->bindParam(':priceId', $priceId);
 
             if ($updateStmt->execute()) {
                 echo json_encode(["status" => 1, "message" => "Product quantity updated successfully"]);

@@ -150,6 +150,8 @@ export const History = () => {
     return orders.filter((order) => statuses.includes(order.status));
   };
 
+  console.log(orders)
+
   const reasons = [
     "Changed my mind",
     "Found a better price elsewhere",

@@ -28,7 +28,7 @@ export const ToReceiveOrder = ({ orders, receiveOrder }) => {
 
     return `${month} ${parseInt(day, 10)}, ${year}`;
   };
-
+  
   return (
     <div className="pending-order">
       {orders.length > 0 ? (
@@ -65,6 +65,7 @@ export const ToReceiveOrder = ({ orders, receiveOrder }) => {
                 <div className="product-details">
                   <p>{order.productName}</p>
                   <p>{order.productFlavor}</p>
+                  <p>{order.productSize}</p>
                 </div>
               </div>
               <div className="order-details">

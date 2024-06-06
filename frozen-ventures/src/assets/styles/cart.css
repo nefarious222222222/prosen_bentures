@@ -122,7 +122,6 @@
       img {
         width: 200px;
         border-radius: 20px;
-        cursor: pointer;
       }
   
       .description {
@@ -138,7 +137,6 @@
         p:first-child {
           font-size: 1.5rem;
           font-weight: 600;
-          cursor: pointer;
         }
       }
     }
