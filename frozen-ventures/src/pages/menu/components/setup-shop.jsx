@@ -33,7 +33,7 @@ export const SetUpShop = () => {
     const fetchShopInfo = () => {
       axios
         .get(
-          `http://localhost/api/setUpShop.php?accountId=${accountId}&status=1`
+          `http://localhost/prosen_bentures/api/setUpShop.php?accountId=${accountId}&status=1`
         )
         .then((response) => {
           const shopData = Array.isArray(response.data) ? response.data[0] : {};
@@ -55,7 +55,7 @@ export const SetUpShop = () => {
 
   const handleEditClick = () => {
     axios
-      .get(`http://localhost/api/managePersonalInfo.php?accountId=${user.accountId}`)
+      .get(`http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${user.accountId}`)
       .then((response) => {
         setPersonalInfo(Array.isArray(response.data) ? response.data : []);
       });
@@ -111,7 +111,7 @@ export const SetUpShop = () => {
     formData.append("shopImageType", imageFile.type);
 
     axios
-      .post("http://localhost/api/uploadShopLogo.php", formData, {
+      .post("http://localhost/prosen_bentures/api/uploadShopLogo.php", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -125,7 +125,7 @@ export const SetUpShop = () => {
           };
 
           axios
-            .post("http://localhost/api/setUpShop.php", shopDataToSend)
+            .post("http://localhost/prosen_bentures/api/setUpShop.php", shopDataToSend)
             .then((response) => {
               if (response.data.status === 1) {
                 setSuccessMessage("Shop information saved successfully");
@@ -134,7 +134,7 @@ export const SetUpShop = () => {
                 setTimeout(() => {
                   axios
                     .get(
-                      `http://localhost/api/setUpShop.php?accountId=${accountId}&status=1`
+                      `http://localhost/prosen_bentures/api/setUpShop.php?accountId=${accountId}&status=1`
                     )
                     .then((response) => {
                       const shopData = Array.isArray(response.data)
@@ -215,7 +215,7 @@ export const SetUpShop = () => {
     formData.append("shopDocument", file);
 
     axios
-      .post("http://localhost/api/uploadShopVerificationFiles.php", formData, {
+      .post("http://localhost/prosen_bentures/api/uploadShopVerificationFiles.php", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -225,7 +225,7 @@ export const SetUpShop = () => {
           const filePath = response.data.filePath;
 
           axios
-            .post("http://localhost/api/verifyShop.php", {
+            .post("http://localhost/prosen_bentures/api/verifyShop.php", {
               accountID: user.accountId,
               shopDocument: filePath,
             })
@@ -310,7 +310,7 @@ export const SetUpShop = () => {
         <div className="shop-profile">
           {shop ? (
             <img
-              src={`http://localhost/api/${shop.shopLogo}`}
+              src={`http://localhost/prosen_bentures/api/${shop.shopLogo}`}
               alt="Shop Logo"
             />
           ) : (

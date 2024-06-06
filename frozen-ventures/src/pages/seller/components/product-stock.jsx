@@ -24,7 +24,7 @@ export const ProductStock = ({
   useEffect(() => {
     const fetchInventory = () => {
       axios
-        .get(`http://localhost/api/manageInventory.php?productId=${productId}`)
+        .get(`http://localhost/prosen_bentures/api/manageInventory.php?productId=${productId}`)
         .then((response) => {
           setInventory(Array.isArray(response.data) ? response.data : []);
         })
@@ -103,14 +103,14 @@ export const ProductStock = ({
         productId: productId,
       };
       axios
-        .post("http://localhost/api/manageInventory.php", sizeData)
+        .post("http://localhost/prosen_bentures/api/manageInventory.php", sizeData)
         .then((response) => {
           console.log(response.data);
           if (response.data.status === 1) {
             setSuccessMessage(response.data.message);
             axios
               .get(
-                `http://localhost/api/manageInventory.php?productId=${productId}`
+                `http://localhost/prosen_bentures/api/manageInventory.php?productId=${productId}`
               )
               .then((response) => {
                 setInventory(Array.isArray(response.data) ? response.data : []);
@@ -131,7 +131,7 @@ export const ProductStock = ({
         });
     } else if (action === "remove" && currentItem) {
       axios
-        .delete(`http://localhost/api/manageInventory.php`, {
+        .delete(`http://localhost/prosen_bentures/api/manageInventory.php`, {
           data: { priceID: currentItem.priceID },
         })
         .then((response) => {
@@ -140,7 +140,7 @@ export const ProductStock = ({
             setSuccessMessage(response.data.message);
             axios
               .get(
-                `http://localhost/api/manageInventory.php?productId=${productId}`
+                `http://localhost/prosen_bentures/api/manageInventory.php?productId=${productId}`
               )
               .then((response) => {
                 setInventory(Array.isArray(response.data) ? response.data : []);

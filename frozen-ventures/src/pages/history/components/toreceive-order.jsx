@@ -59,7 +59,7 @@ export const ToReceiveOrder = ({ orders, receiveOrder }) => {
             <div className="item-container">
               <div className="product-item">
                 <img
-                  src={`http://localhost/api/productImages/${order.productImage}`}
+                  src={`http://localhost/prosen_bentures/api/productImages/${order.productImage}`}
                   alt={order.productName}
                 />
                 <div className="product-details">

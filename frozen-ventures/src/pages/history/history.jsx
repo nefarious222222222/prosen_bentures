@@ -26,7 +26,7 @@ export const History = () => {
   const fetchOrders = async () => {
     try {
       const response = await axios.get(
-        `http://localhost/api/managePendingOrders.php?accountId=${user.accountId}`
+        `http://localhost/prosen_bentures/api/managePendingOrders.php?accountId=${user.accountId}`
       );
       if (response.data.status === 0) {
         setErrorMessage(response.data.message);
@@ -63,7 +63,7 @@ export const History = () => {
   const handleConfirmClick = () => {
     if (confirmationTitle === "Request Cancel Order") {
       axios
-        .post("http://localhost/api/managePendingOrders.php", {
+        .post("http://localhost/prosen_bentures/api/managePendingOrders.php", {
           accountId: user.accountId,
           orderId: cancelSelectedId,
           status: "cancel requested",
@@ -91,7 +91,7 @@ export const History = () => {
       }, 2000);
     } else if (confirmationTitle === "Receive Order") {
       axios
-        .post("http://localhost/api/managePendingOrders.php", {
+        .post("http://localhost/prosen_bentures/api/managePendingOrders.php", {
           accountId: user.accountId,
           orderId: cancelSelectedId,
           status: "order received",

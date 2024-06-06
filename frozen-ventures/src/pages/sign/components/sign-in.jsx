@@ -21,7 +21,7 @@ export const SignIn = () => {
     setIsSigningIn(true);
 
     axios
-      .post("http://localhost/api/signin.php", {
+      .post("http://localhost/prosen_bentures/api/signin.php", {
         email,
         password,
       })

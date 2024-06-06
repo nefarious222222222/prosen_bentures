@@ -25,7 +25,7 @@ export const Products = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost/api/getProductsByRole.php?shopType=${shopType}`
+          `http://localhost/prosen_bentures/api/getProductsByRole.php?shopType=${shopType}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -51,7 +51,7 @@ export const Products = () => {
           onClick={() => handleProductClick(product.productID)}
         >
           <img
-            src={`http://localhost/api/productImages/${product.productImage}`}
+            src={`http://localhost/prosen_bentures/api/productImages/${product.productImage}`}
             alt={product.productName}
           />
           <div className="product-details">

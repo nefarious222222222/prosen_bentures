@@ -47,7 +47,7 @@ export const ManageOrder = () => {
   const fetchOrders = async () => {
     try {
       const response = await axios.get(
-        `http://localhost/api/manageSellerOrder.php?shopId=${user.shopId}`
+        `http://localhost/prosen_bentures/api/manageSellerOrder.php?shopId=${user.shopId}`
       );
       setOrders(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
@@ -92,7 +92,7 @@ export const ManageOrder = () => {
         status: "to receive",
       };
       axios
-        .post("http://localhost/api/manageSellerOrder.php?", updateOrderData)
+        .post("http://localhost/prosen_bentures/api/manageSellerOrder.php?", updateOrderData)
         .then((response) => {
           setSuccessMessage(response.data.message);
           fetchOrders();
@@ -107,7 +107,7 @@ export const ManageOrder = () => {
         status: "order cancelled",
       };
       axios
-        .post("http://localhost/api/manageSellerOrder.php?", updateOrderData)
+        .post("http://localhost/prosen_bentures/api/manageSellerOrder.php?", updateOrderData)
         .then((response) => {
           setSuccessMessage(response.data.message);
           fetchOrders();
@@ -212,7 +212,7 @@ export const ManageOrder = () => {
               <div className="item-container">
                 <div className="product-item">
                   <img
-                    src={`http://localhost/api/productImages/${order.productImage}`}
+                    src={`http://localhost/prosen_bentures/api/productImages/${order.productImage}`}
                     alt={order.productName}
                   />
                   <div className="product-details">

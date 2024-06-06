@@ -21,7 +21,7 @@ export const IndividualProduct = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          "http://localhost/api/getIndividualProduct.php",
+          "http://localhost/prosen_bentures/api/getIndividualProduct.php",
           {
             params: { productId: productId },
           }
@@ -35,7 +35,7 @@ export const IndividualProduct = () => {
     const fetchPrice = async () => {
       try {
         const response = await axios.get(
-          "http://localhost/api/manageInventory.php",
+          "http://localhost/prosen_bentures/api/manageInventory.php",
           {
             params: { productId: productId },
           }
@@ -95,7 +95,7 @@ export const IndividualProduct = () => {
         totalPrice: totalPrice,
       };
       axios
-        .post("http://localhost/api/manageCart.php", newCartItem)
+        .post("http://localhost/prosen_bentures/api/manageCart.php", newCartItem)
         .then((response) => {
           if (response.data.status === 1) {
             setSuccessMessage(response.data.message);
@@ -142,7 +142,7 @@ export const IndividualProduct = () => {
             <div className="product-header">
               {product.shopLogo ? (
                 <img
-                  src={`http://localhost/api/${product.shopLogo}`}
+                  src={`http://localhost/prosen_bentures/api/${product.shopLogo}`}
                   alt="Shop Logo"
                 />
               ) : (
@@ -158,7 +158,7 @@ export const IndividualProduct = () => {
 
           <div className="product">
             <img
-              src={`http://localhost/api/productImages/${product.productImage}`}
+              src={`http://localhost/prosen_bentures/api/productImages/${product.productImage}`}
               alt={product.productName}
             />
             <div className="product-info">

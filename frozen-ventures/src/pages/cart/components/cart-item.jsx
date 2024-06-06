@@ -24,7 +24,7 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
     const fetchCartItems = async () => {
       try {
         const response = await axios.get(
-          `http://localhost/api/manageCart.php?accountId=${user.accountId}`
+          `http://localhost/prosen_bentures/api/manageCart.php?accountId=${user.accountId}`
         );
         setCartItems(response.data);
       } catch (error) {
@@ -65,7 +65,7 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
       )
     );
     axios
-      .put(`http://localhost/api/manageCart.php`, {
+      .put(`http://localhost/prosen_bentures/api/manageCart.php`, {
         accountId: user.accountId,
         productId,
         priceId,
@@ -107,7 +107,7 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
 
   const handleConfirmDeleteClick = () => {
     axios
-      .delete(`http://localhost/api/manageCart.php`, {
+      .delete(`http://localhost/prosen_bentures/api/manageCart.php`, {
         data: {
           accountId: selectedId.accountId,
           productId: selectedId.productId,
@@ -163,7 +163,7 @@ export const CartItems = ({ cartItems, setCartItems, updateSubTotal }) => {
             <tr className="cart-product" key={cartItem.cartID}>
               <td className="information">
                 <img
-                  src={`http://localhost/api/productImages/${cartItem.productImage}`}
+                  src={`http://localhost/prosen_bentures/api/productImages/${cartItem.productImage}`}
                   alt={cartItem.productName}
                   onClick={() => handleProductClick(cartItem.productID)}
                 />

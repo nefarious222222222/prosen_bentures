@@ -10,7 +10,7 @@ export const UserList = () => {
   useEffect(() => {
     const fetchUsers = () => {
       axios
-        .get("http://localhost/api/allUsers.php")
+        .get("http://localhost/prosen_bentures/api/allUsers.php")
         .then((response) => {
           setUsers(Array.isArray(response.data.data) ? response.data.data : []);
         })

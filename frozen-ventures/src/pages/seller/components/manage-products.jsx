@@ -66,7 +66,7 @@ export const ManageProducts = () => {
   useEffect(() => {
     const fetchProducts = () => {
       axios
-        .get(`http://localhost/api/manageProduct.php?shopId=${shopId}&status=1`)
+        .get(`http://localhost/prosen_bentures/api/manageProduct.php?shopId=${shopId}&status=1`)
         .then((response) => {
           setProducts(Array.isArray(response.data) ? response.data : []);
         })
@@ -194,7 +194,7 @@ export const ManageProducts = () => {
       formData.append("productImageType", imageFile.type);
 
       axios
-        .post("http://localhost/api/uploadProductImage.php", formData, {
+        .post("http://localhost/prosen_bentures/api/uploadProductImage.php", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -208,7 +208,7 @@ export const ManageProducts = () => {
             }));
 
             axios
-              .post("http://localhost/api/addProduct.php", newProductData)
+              .post("http://localhost/prosen_bentures/api/addProduct.php", newProductData)
               .then((response) => {
                 console.log(response.data);
                 if (response.data.status === 1) {
@@ -252,7 +252,7 @@ export const ManageProducts = () => {
     }
 
     axios
-      .post("http://localhost/api/manageProduct.php", editProductData)
+      .post("http://localhost/prosen_bentures/api/manageProduct.php", editProductData)
       .then((response) => {
         console.log(response.data);
         if (response.data.status === 1) {
@@ -283,7 +283,7 @@ export const ManageProducts = () => {
     } else if (confirmTitle === "Remove Product") {
       axios
         .post(
-          `http://localhost/api/removeProduct.php?productId=${selectedProductId}`
+          `http://localhost/prosen_bentures/api/removeProduct.php?productId=${selectedProductId}`
         )
         .then((response) => {
           console.log(response.data);
@@ -342,7 +342,7 @@ export const ManageProducts = () => {
 
               <div className="product">
                 <img
-                  src={`http://localhost/api/productImages/${product.productImage}`}
+                  src={`http://localhost/prosen_bentures/api/productImages/${product.productImage}`}
                   alt=""
                 />
                 <div className="product-text">

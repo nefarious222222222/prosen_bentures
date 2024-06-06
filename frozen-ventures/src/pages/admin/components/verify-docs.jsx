@@ -15,7 +15,7 @@ export const VerifyDocs = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost/api/allShop.php");
+        const response = await axios.get("http://localhost/prosen_bentures/api/allShop.php");
         if (response.data.status === 1) {
           setUserList(response.data.data);
         } else {
@@ -43,7 +43,7 @@ export const VerifyDocs = () => {
 
   const handleConfirmClick = async () => {
     try {
-      const response = await axios.post("http://localhost/api/allShop.php", { accountID: selectedAccountId });
+      const response = await axios.post("http://localhost/prosen_bentures/api/allShop.php", { accountID: selectedAccountId });
       if (response.data.status === 1) {
         setSuccessMessage("User verified successfully");
         setUserList((prevList) =>
@@ -140,7 +140,7 @@ export const VerifyDocs = () => {
                 <td>
                   {user.shopDocument ? (
                     <a
-                      href={`http://localhost/api/${user.shopDocument}`}
+                      href={`http://localhost/prosen_bentures/api/${user.shopDocument}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

@@ -42,7 +42,7 @@ export const ManageInventory = () => {
     const fetchInventory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost/api/getInventory.php?shopId=${shopId}&status=1`
+          `http://localhost/prosen_bentures/api/getInventory.php?shopId=${shopId}&status=1`
         );
         setInventory(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
@@ -108,7 +108,7 @@ export const ManageInventory = () => {
               </div>
 
               <img
-                src={`http://localhost/api/productImages/${product.productImage}`}
+                src={`http://localhost/prosen_bentures/api/productImages/${product.productImage}`}
               />
 
               <div className="inventory-product-details">

@@ -52,7 +52,7 @@ export const Order = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `http://localhost/api/getPersonalAccountInfo.php?accountId=${user.accountId}`
+          `http://localhost/prosen_bentures/api/getPersonalAccountInfo.php?accountId=${user.accountId}`
         );
         const data = await response.json();
         setUserData(data);
@@ -160,7 +160,7 @@ export const Order = () => {
 
       try {
         axios
-          .post("http://localhost/api/manageOrder.php", orderData)
+          .post("http://localhost/prosen_bentures/api/manageOrder.php", orderData)
           .then((response) => {
             if (response.data.status === 1) {
                 clearOrder();
@@ -305,7 +305,7 @@ export const Order = () => {
                   <tr key={productId}>
                     <td>
                       <img
-                        src={`http://localhost/api/productImages/${product.productImage}`}
+                        src={`http://localhost/prosen_bentures/api/productImages/${product.productImage}`}
                         alt={product.productName}
                       />
                       <div className="description">

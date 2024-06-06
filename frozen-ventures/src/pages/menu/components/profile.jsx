@@ -48,7 +48,7 @@ export const Profile = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost/api/managePersonalInfo.php?accountId=${user.accountId}`
+        `http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${user.accountId}`
       )
       .then((response) => {
         const userData = response.data;
@@ -96,7 +96,7 @@ export const Profile = () => {
       zip: inputZip,
     };
     axios
-      .post("http://localhost/api/managePersonalInfo.php", newPersonalData)
+      .post("http://localhost/prosen_bentures/api/managePersonalInfo.php", newPersonalData)
       .then((response) => {
         console.log("Response:", response.data);
         setMessage(response.data.message);

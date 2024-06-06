@@ -27,7 +27,7 @@ export const SignUp = () => {
     };
     setAccountData(newAccountData);
     axios
-      .post("http://localhost/api/signup.php", newAccountData)
+      .post("http://localhost/prosen_bentures/api/signup.php", newAccountData)
       .then((response) => {
         console.log("Response:", response.data);
         setMessage(response.data.message);
