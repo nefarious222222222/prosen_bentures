@@ -5,11 +5,9 @@ import axios from "axios";
 import { SuccessMessage } from "../../components/success-message";
 import { ErrorMessage } from "../../components/error-message";
 import { Minus, Plus, UserCircle } from "phosphor-react";
-import { useParams } from "react-router-dom";
 
-export const IndividualProduct = () => {
+export const IndividualProduct = ({ productId }) => {
   const { user } = useContext(UserContext);
-  const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [price, setPrice] = useState([]);
   const [selectedPrice, setSelectedPrice] = useState(null);
@@ -133,7 +131,7 @@ export const IndividualProduct = () => {
   };
 
   return (
-    <div className="container individual-product">
+    <div className="individual-product">
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
       {product ? (

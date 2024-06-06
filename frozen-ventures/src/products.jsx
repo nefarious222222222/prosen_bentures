@@ -2,12 +2,14 @@ import React, { useContext, useState, useEffect } from "react";
 import "./assets/styles/products.css";
 import axios from "axios";
 import { UserContext } from "./context/user-context";
-import { useNavigate, useLocation } from "react-router-dom";
+import { IndividualProduct } from "./pages/shop/individual-product";
+import { useLocation } from "react-router-dom";
 
 export const Products = () => {
   const { user } = useContext(UserContext);
   const [products, setProducts] = useState([]);
-  const navigate = useNavigate();
+  const [selectedId, setSelectedId] = useState("");
+  const [showIndividualProduct, setShowIndividualProduct] = useState(false);
   const location = useLocation();
 
   let shopType = "";
@@ -36,14 +38,18 @@ export const Products = () => {
     fetchProducts();
   }, [shopType]);
 
-  const handleProductClick = (productID) => {
-    navigate(`/individual-product/${productID}`);
+  const handleProductClick = (productId) => {
+    setSelectedId(productId);
+    setShowIndividualProduct(true);
+    console.log(selectedId);
   };
 
-  const displayedProducts = location.pathname === "/" ? products.slice(0, 4) : products;
+  const displayedProducts =
+    location.pathname === "/" ? products.slice(0, 4) : products;
 
   return (
     <>
+      {showIndividualProduct && <IndividualProduct productId={selectedId} />}
       {displayedProducts.map((product) => (
         <div
           className="product-item-individual"
