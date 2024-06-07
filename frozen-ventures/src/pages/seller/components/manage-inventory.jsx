@@ -30,8 +30,6 @@ const formatDate = (dateString) => {
 
 export const ManageInventory = () => {
   const { user } = useContext(UserContext);
-  const shopId = user.shopId;
-
   const [inventory, setInventory] = useState([]);
   const [showProductStock, setShowProductStock] = useState(false);
   const [selectedProductName, setSelectedProductName] = useState(null);
@@ -44,7 +42,7 @@ export const ManageInventory = () => {
     const fetchInventory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost/prosen_bentures/api/getInventory.php?shopId=${shopId}&status=1`
+          `http://localhost/prosen_bentures/api/getInventory.php?shopId=${user.shopId}&status=1`
         );
         setInventory(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
@@ -62,28 +60,51 @@ export const ManageInventory = () => {
   };
 
   useEffect(() => {
-    const checkLowStock = () => {
-      const lowStockProducts = [];
-      for (const product of inventory) {
-        if (product.totalStock <= 20) {
-          lowStockProducts.push(product);
+    let errorMessageTimer = 5000;
+    let errorMessageShown = false;
+
+    const fetchLowStockProducts = async () => {
+      if (user?.shopId && user?.userRole && !errorMessageShown) {
+        try {
+          const response = await axios.get(
+            "http://localhost/prosen_bentures/api/getProductsBelow20.php",
+            {
+              params: {
+                shopId: user.shopId,
+                userRole: user.userRole,
+              },
+            }
+          );
+
+          const data = response.data;
+          if (Array.isArray(data) && data.length > 0) {
+            const productNames = data
+              .map((product) => product.productName)
+              .join(", ");
+            setErrorMessage(
+              `Low stock for: ${productNames}, please check your stocks on all sizes`
+            );
+
+            errorMessageShown = true;
+            clearTimeout(errorMessageTimer);
+            errorMessageTimer = setTimeout(() => {
+              setErrorMessage("");
+            }, 10000);
+          }
+        } catch (error) {
+          console.error("Error fetching low stock products:", error);
         }
-      }
-      if (lowStockProducts.length > 0) {
-        const productNames = lowStockProducts
-          .map((product) => product.productName)
-          .join(", ");
-        setErrorMessage(`Low stock for: ${productNames}, please check your stocks on all sizes`);
-      } else {
-        setErrorMessage("");
       }
     };
 
-    checkLowStock();
-    setTimeout(() => {
-      setErrorMessage("");
-    }, 10000);
-  }, [inventory]);
+    fetchLowStockProducts();
+    const interval = setInterval(fetchLowStockProducts, 5000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(errorMessageTimer);
+    };
+  }, [user?.shopId, user?.userRole]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
