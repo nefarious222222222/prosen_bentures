@@ -123,7 +123,7 @@ export const Navbar = () => {
           </>
         ) : null}
 
-        {user.accountId && user.userRole === "retailer" ? (
+        {user?.accountId && user?.userRole === "retailer" ? (
           <>
             <div
               className={`notif-container ${
