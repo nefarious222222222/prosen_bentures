@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/user-context";
 import "../assets/styles/components.css";
-import logo from "../assets/images/logo.jpg";
+import axios from "axios";
+import { Notifications } from "../pages/seller/components/notifications";
 import { Link, useLocation } from "react-router-dom";
+import logo from "../assets/images/logo.jpg";
 import {
   Storefront,
   ShoppingCart,
@@ -10,7 +12,6 @@ import {
   UserCircle,
   Bell,
 } from "phosphor-react";
-import { Notifications } from "../pages/seller/components/notifications";
 
 export const Navbar = () => {
   const { user } = useContext(UserContext);
@@ -20,10 +21,44 @@ export const Navbar = () => {
   const userRole = user?.userRole;
 
   useEffect(() => {
-    setProductsBelow20([1,2,3]);
-    console.log(productsBelow20)
-  }, [])
-  
+    const fetchLowStockProducts = async () => {
+      if (user?.shopId && userRole) {
+        try {
+          const response = await axios.get(
+            "http://localhost/prosen_bentures/api/getProductsBelow20.php",
+            {
+              params: {
+                shopId: user.shopId,
+                userRole: userRole,
+              },
+            }
+          );
+
+          const data = response.data;
+          if (Array.isArray(data) && data.length > 0) {
+            const lowStockProducts = data.filter((product) => {
+              if (userRole === "retailer") return product.productStock <= 20;
+              if (userRole === "distributor") return product.productStock <= 50;
+              if (userRole === "manufacturer") return product.productStock <= 100;
+              return false;
+            });
+            setProductsBelow20(lowStockProducts);
+          } else {
+            setProductsBelow20([]);
+          }
+        } catch (error) {
+          console.error("Error fetching low stock products:", error);
+        }
+      }
+    };
+
+    const interval = setInterval(() => {
+      fetchLowStockProducts();
+    }, 5000);
+    fetchLowStockProducts();
+
+    return () => clearInterval(interval);
+  }, [user?.shopId, userRole]);
 
   const toggleNotifications = () => {
     setShowNotifications((prevState) => !prevState);
@@ -75,19 +110,23 @@ export const Navbar = () => {
         ) : null}
 
         {user.accountId && user.userRole === "retailer" ? (
-          <div
-            className={`notif-container ${
-              productsBelow20.length > 0 ? "has-notifications" : ""
-            }`}
-          >
-            <Bell
-              className={"link fake-button"}
-              size={30}
-              color={"#fff"}
-              onClick={toggleNotifications}
-            />
-            {productsBelow20.length > 0 && <div className="red-dot"></div>}
-          </div>
+          <>
+            <div
+              className={`notif-container ${
+                productsBelow20.length > 0 ? "has-notifications" : ""
+              }`}
+            >
+              <Bell
+                className={"link fake-button"}
+                size={30}
+                color={"#fff"}
+                onClick={toggleNotifications}
+              />
+              {productsBelow20.length > 0 && <div className="red-dot"></div>}
+            </div>
+
+            {showNotifications && <Notifications productsBelow20={productsBelow20}/>}
+          </>
         ) : null}
 
         {userRole != null ? (
@@ -100,7 +139,6 @@ export const Navbar = () => {
           </Link>
         )}
       </div>
-      {showNotifications && <Notifications />}
     </div>
   );
 };

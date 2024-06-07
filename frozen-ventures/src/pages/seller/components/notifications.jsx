@@ -1,11 +1,9 @@
-import React, { useContext, useState, useEffect } from "react";
-import { UserContext } from "../../../context/user-context";
+import React, { useContext, useState } from "react";
 import { ActiveItemContext } from "../../../context/notification-context";
+import { WarningCircle } from "phosphor-react";
 
-export const Notifications = () => {
-  const { user } = useContext(UserContext);
+export const Notifications = ({productsBelow20}) => {
   const { setActiveItem } = useContext(ActiveItemContext);
-  const [productsBelow20, setProductsBelow20] = useState([]);
 
   const handleNotificationClick = () => {
     setActiveItem("manage-inventory");
@@ -24,13 +22,13 @@ export const Notifications = () => {
               >
                 <div className="header">
                   <p>
-                    <span>Product ID:</span> {product.productId}
+                    <span>Product ID:</span> {product.productID}
                   </p>
                 </div>
                 <div className="body">
-                  <img src={product.productImage} />
+                  <img src={`http://localhost/prosen_bentures/api/productImages/${product.productImage}`} />
                   <p>
-                    The product <span>{product.productName}</span> has only{" "}
+                    The product <span>{product.productName} {product.productSize}</span> has only{" "}
                     <span>{product.productStock}</span> items remaining in
                     stock.
                   </p>
