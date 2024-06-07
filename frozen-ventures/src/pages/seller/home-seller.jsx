@@ -10,6 +10,7 @@ import { ManageProducts } from "./components/manage-products";
 import { ManageInventory } from "./components/manage-inventory";
 import { ManageShop } from "./components/manage-shop";
 import { useNavigate } from "react-router-dom";
+import { ActiveItemContext } from "../../context/notification-context";
 import {
   Gauge,
   Storefront,
@@ -26,7 +27,7 @@ import {
 
 export const HomeSeller = () => {
   const { user } = useContext(UserContext);
-  const [activeItem, setActiveItem] = useState("shop-performance");
+  const { activeItem, setActiveItem } = useContext(ActiveItemContext);
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
 

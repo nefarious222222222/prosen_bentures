@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./assets/styles/App.css";
 import { UserContextProvider } from "./context/user-context";
 import { OrderContextProvider } from "./context/order-context";
+import { NotificationProvider } from "./context/notification-context";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Splash } from "./splash";
 import { Navbar } from "./components/navbar";
@@ -21,25 +22,27 @@ function App() {
     <div className="app">
       <UserContextProvider>
         <OrderContextProvider>
-          <Router>
-            <Navbar />
-            <Routes>
-              <Route path="/splash" element={<Splash />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/sign" element={<Sign />} />
-              <Route path="/menu" element={<Menu />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/order" element={<Order />} />
-              <Route path="/history" element={<History />} />
-              <Route
-                path="/individual-product/:productId"
-                element={<IndividualProduct />}
-              />
-              <Route path="/home-admin" element={<HomeAdmin />} />
-              <Route path="/home-seller" element={<HomeSeller />} />
-            </Routes>
-          </Router>
+          <NotificationProvider>
+            <Router>
+              <Navbar />
+              <Routes>
+                <Route path="/splash" element={<Splash />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/sign" element={<Sign />} />
+                <Route path="/menu" element={<Menu />} />
+                <Route path="/shop" element={<Shop />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/order" element={<Order />} />
+                <Route path="/history" element={<History />} />
+                <Route
+                  path="/individual-product/:productId"
+                  element={<IndividualProduct />}
+                />
+                <Route path="/home-admin" element={<HomeAdmin />} />
+                <Route path="/home-seller" element={<HomeSeller />} />
+              </Routes>
+            </Router>{" "}
+          </NotificationProvider>
         </OrderContextProvider>
       </UserContextProvider>
     </div>

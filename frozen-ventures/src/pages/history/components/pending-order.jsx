@@ -96,10 +96,7 @@ export const PendingOrder = ({ orders, cancelRequest }) => {
           </div>
         ))
       ) : (
-        <div className="empty-pending">
-          <h1>Empty</h1>
-          <p>No pending or cancel requested orders</p>
-        </div>
+        null
       )}
     </div>
   );
