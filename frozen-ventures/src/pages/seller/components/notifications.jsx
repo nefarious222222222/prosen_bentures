@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { ActiveItemContext } from "../../../context/notification-context";
 import { WarningCircle } from "phosphor-react";
 
-export const Notifications = ({productsBelow20}) => {
+export const Notifications = React.forwardRef(({ productsBelow20 }, ref) => {
   const { setActiveItem } = useContext(ActiveItemContext);
 
   const handleNotificationClick = () => {
@@ -10,7 +10,7 @@ export const Notifications = ({productsBelow20}) => {
   };
 
   return (
-    <div className="notifications">
+    <div className="notifications" ref={ref}>
       <h1>Notifications</h1>
       <div className="notification-container">
         {productsBelow20.length > 0
@@ -26,11 +26,13 @@ export const Notifications = ({productsBelow20}) => {
                   </p>
                 </div>
                 <div className="body">
-                  <img src={`http://localhost/prosen_bentures/api/productImages/${product.productImage}`} />
+                  <img
+                    src={`http://localhost/prosen_bentures/api/productImages/${product.productImage}`}
+                    alt={`${product.productName}`}
+                  />
                   <p>
                     The product <span>{product.productName} {product.productSize}</span> has only{" "}
-                    <span>{product.productStock}</span> items remaining in
-                    stock.
+                    <span>{product.productStock}</span> items remaining in stock.
                   </p>
                 </div>
                 <div className="footer">
@@ -43,4 +45,4 @@ export const Notifications = ({productsBelow20}) => {
       </div>
     </div>
   );
-};
+});

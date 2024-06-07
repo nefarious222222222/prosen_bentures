@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { UserContext } from "../context/user-context";
 import "../assets/styles/components.css";
 import axios from "axios";
@@ -19,6 +19,7 @@ export const Navbar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [productsBelow20, setProductsBelow20] = useState([]);
   const userRole = user?.userRole;
+  const notifContainerRef = useRef(null);
 
   useEffect(() => {
     const fetchLowStockProducts = async () => {
@@ -63,6 +64,19 @@ export const Navbar = () => {
   const toggleNotifications = () => {
     setShowNotifications((prevState) => !prevState);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifContainerRef.current && !notifContainerRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [notifContainerRef]);
 
   if (location.pathname === "/sign" || location.pathname === "/splash") {
     return null;
@@ -125,7 +139,9 @@ export const Navbar = () => {
               {productsBelow20.length > 0 && <div className="red-dot"></div>}
             </div>
 
-            {showNotifications && <Notifications productsBelow20={productsBelow20}/>}
+            {showNotifications && (
+              <Notifications ref={notifContainerRef} productsBelow20={productsBelow20} />
+            )}
           </>
         ) : null}
 
