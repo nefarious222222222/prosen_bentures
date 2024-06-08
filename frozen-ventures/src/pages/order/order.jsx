@@ -44,7 +44,7 @@ export const Order = () => {
     for (const productId in products) {
       const product = products[productId];
       totalProductAmount += product.productPrice * product.quantity;
-      productFee += product.productPrice * product.quantity * 0.01;
+      productFee += product.productPrice * product.quantity * (0.045 + 0.0012);
     }
   }
 
@@ -139,7 +139,7 @@ export const Order = () => {
     for (const productId in products) {
       const product = products[productId];
 
-      const productFee = product.productPrice * product.quantity * 0.01;
+      const productFee = product.productPrice * product.quantity * (0.045 + 0.0012);
       const shippingFee =
         shippingMode === "delivery" ? 10 * product.quantity : 0;
       const totalPrice =
@@ -353,7 +353,7 @@ export const Order = () => {
             <p className="price">Php {shippingCost.toFixed(2)}</p>
           </div>
           <div className="fee">
-            <p className="label">Platform Fee:</p>
+            <p className="label">Service Fee:</p>
             <p className="price">Php {productFee.toFixed(2)}</p>
           </div>
           <div className="line"></div>
