@@ -39,10 +39,6 @@ export const Cart = () => {
     fetchCartItems();
   }, [user.accountId, setCartItems]);
 
-  useEffect(() => {
-    clearOrder();
-  }, [clearOrder]);
-
   const updateSubTotal = (subTotal) => {
     setCartSubTotal(subTotal);
   };
@@ -78,6 +74,7 @@ export const Cart = () => {
             priceId: curr.priceID,
             shopId: curr.shopID,
             productImage: curr.productImage,
+            productBrand: curr.productBrand,
             productName: curr.productName,
             productFlavor: curr.productFlavor,
             productSize: curr.productSize,

@@ -182,7 +182,7 @@
 
         th {
           display: flex;
-          min-width: 20vw;
+          min-width: 15vw;
           justify-content: center;
           align-items: center;
           font-size: 1.5rem;
@@ -193,7 +193,7 @@
 
         td {
           display: flex;
-          min-width: 20vw;
+          min-width: 15vw;
           justify-content: center;
           align-items: center;
           padding: 20px 0;
@@ -241,7 +241,7 @@
         }
 
         img {
-          width: 200px;
+          width: 150px;
           border-radius: 20px;
         }
       }

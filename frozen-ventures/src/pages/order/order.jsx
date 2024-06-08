@@ -160,15 +160,18 @@ export const Order = () => {
 
       try {
         axios
-          .post("http://localhost/prosen_bentures/api/manageOrder.php", orderData)
+          .post(
+            "http://localhost/prosen_bentures/api/manageOrder.php",
+            orderData
+          )
           .then((response) => {
             if (response.data.status === 1) {
-                clearOrder();
-                setSuccessMessage(response.data.message);
+              clearOrder();
+              setSuccessMessage(response.data.message);
             } else if (response.data.status === 0) {
-                setErrorMessage(response.data.message);
+              setErrorMessage(response.data.message);
             } else {
-                setErrorMessage("Something went wrong");
+              setErrorMessage("Something went wrong");
             }
           });
       } catch (error) {
@@ -177,10 +180,10 @@ export const Order = () => {
     }
 
     setTimeout(() => {
-        setErrorMessage("");
-        setSuccessMessage("");
-        setShowConfirmOrder(false);
-        navigate("/");
+      setErrorMessage("");
+      setSuccessMessage("");
+      setShowConfirmOrder(false);
+      navigate("/");
     }, 2000);
   };
 
@@ -294,6 +297,7 @@ export const Order = () => {
             <thead>
               <tr>
                 <th>Product</th>
+                <th>ProductBrand</th>
                 <th>Retailer</th>
                 <th>Quantity</th>
                 <th>Total Price</th>
@@ -314,6 +318,9 @@ export const Order = () => {
                         <p>{product.productSize}</p>
                         <p>Php {product.productPrice}</p>
                       </div>
+                    </td>
+                    <td>
+                      <p>{product.productBrand}</p>
                     </td>
                     <td>
                       <p>{product.shopName}</p>

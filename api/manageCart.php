@@ -75,7 +75,7 @@ switch ($method) {
             }
 
             $insertSql = "INSERT INTO user_cart (cartID, accountID, productID, priceID, shopID, quantity, totalPrice) 
-    VALUES (null, :accountId, :productId, :priceId, :shopId, :quantity, :totalPrice)";
+                        VALUES (null, :accountId, :productId, :priceId, :shopId, :quantity, :totalPrice)";
 
             $stmt = $conn->prepare($insertSql);
             $stmt->bindParam(':accountId', $accountId);
@@ -99,6 +99,7 @@ switch ($method) {
         $sql = "SELECT 
                     uc.*,
                     si.shopName,
+                    pi.productBrand,
                     pi.productName,
                     pi.productFlavor,
                     pi.productImage,
