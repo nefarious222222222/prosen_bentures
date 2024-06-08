@@ -12,7 +12,7 @@ function reformatSize($size)
     if (preg_match('/^(\d+(\.\d+)?)([a-zA-Z]+)$/', $size, $matches)) {
         $number = $matches[1];
         $unit = ucfirst($matches[3]);
-        return $number . $unit;
+        return $number . ' ' . $unit;
     }
     return $size;
 }
@@ -136,7 +136,36 @@ switch ($method) {
 
         $formattedSize = reformatSize($productSize);
 
-        $sql = "UPDATE product_price SET productSize = :productSize, productPrice = :productPrice, productStock = :productStock WHERE productID = :productID AND  priceID = :priceID AND shopID = :shopID";
+        $checkSql = "SELECT COUNT(*) FROM product_price WHERE productID = :productID AND shopID = :shopID AND productSize = :productSize AND priceID != :priceID";
+        $checkStmt = $conn->prepare($checkSql);
+        $checkStmt->bindParam(':productID', $productID);
+        $checkStmt->bindParam(':shopID', $shopID);
+        $checkStmt->bindParam(':productSize', $formattedSize);
+        $checkStmt->bindParam(':priceID', $priceID);
+        $checkStmt->execute();
+        $sizeExists = $checkStmt->fetchColumn();
+
+        if ($sizeExists > 0) {
+            $response = ["status" => 0, "message" => "Size already exists"];
+            echo json_encode($response);
+            exit;
+        }
+
+        $currentSql = "SELECT productSize, productPrice, productStock FROM product_price WHERE priceID = :priceID AND productID = :productID AND shopID = :shopID";
+        $currentStmt = $conn->prepare($currentSql);
+        $currentStmt->bindParam(':priceID', $priceID);
+        $currentStmt->bindParam(':productID', $productID);
+        $currentStmt->bindParam(':shopID', $shopID);
+        $currentStmt->execute();
+        $currentData = $currentStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($currentData['productSize'] == $formattedSize && $currentData['productPrice'] == $productPrice && $currentData['productStock'] == $productStock) {
+            $response = ["status" => 0, "message" => "Nothing was changed"];
+            echo json_encode($response);
+            exit;
+        }
+
+        $sql = "UPDATE product_price SET productSize = :productSize, productPrice = :productPrice, productStock = :productStock WHERE productID = :productID AND priceID = :priceID AND shopID = :shopID";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':priceID', $priceID);
         $stmt->bindParam(':productID', $productID);
