@@ -39,9 +39,7 @@ export const Products = () => {
 
     fetchProducts();
   }, [shopType]);
-
-  console.log(products)
-
+  
   const handleClickOutside = (event) => {
     if (
       individualProductRef.current &&
