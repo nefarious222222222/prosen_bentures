@@ -194,12 +194,17 @@
 
   /* Seller shop css */
   .seller-shop {
-    .shop {
-      padding: 0;
+    h1 {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: solid 2px var(--color-violet);
     }
 
-    .text-container {
-      padding-top: 0;
+    .shops-container {
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 3vw;
     }
   }
 
