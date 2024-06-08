@@ -40,6 +40,8 @@ export const Products = () => {
     fetchProducts();
   }, [shopType]);
 
+  console.log(products)
+
   const handleClickOutside = (event) => {
     if (
       individualProductRef.current &&
@@ -72,6 +74,7 @@ export const Products = () => {
     setShowIndividualProduct(false);
   }
 
+
   const displayedProducts =
     location.pathname === "/" ? products.slice(0, 4) : products;
 
@@ -94,7 +97,11 @@ export const Products = () => {
             alt={product.productName}
           />
           <div className="product-details">
-            <p className="product-name">{product.productName}</p>
+            <p className="product-name">{product.productBrand}</p>
+            <p>
+              <span>Product: </span>
+              {product.productName}
+            </p>
             <p>
               <span>Flavor: </span>
               {product.productFlavor}
@@ -104,8 +111,8 @@ export const Products = () => {
               {product.shopName}
             </p>
             <div className="details">
-              <p>{product.productSize}</p>
-              <p>Php {product.productPrice}</p>
+              <p><span>Size: </span>{product.productSize}</p>
+              <p className="product-price">Php {product.productPrice}</p>
             </div>
           </div>
         </div>

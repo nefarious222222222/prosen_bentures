@@ -11,6 +11,7 @@ $shopType = isset($_GET['shopType']) ? $_GET['shopType'] : '';
 if (!empty($shopType)) {
     $sql = "SELECT 
                 pi.productID,
+                pi.productBrand,
                 pi.productName,
                 pi.productImage,
                 pi.productFlavor,

@@ -22,6 +22,11 @@
     .details {
       display: flex;
       justify-content: space-between;
+
+      .product-price {
+        font-weight: 800;
+        color: var(--color-violet);
+      }
     }
 
     p,
