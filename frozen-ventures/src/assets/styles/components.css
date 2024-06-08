@@ -222,7 +222,7 @@
     }
 
     textarea {
-      height: 10vh;
+      height: 15vh;
       resize: none;
     }
   }
@@ -251,14 +251,14 @@
       width: 150px;
       cursor: pointer;
       border: solid 2px var(--color-violet);
-      color: var(--color-violet);
-      background-color: white;
+      color: var(--color-white);
+      background-color: var(--color-violet);
       transition: all 0.3s ease;
     }
 
     button:hover {
-      background-color: var(--color-violet);
-      color: white;
+      background-color: var(--color-white);
+      color: var(--color-violet);
     }
   }
 }

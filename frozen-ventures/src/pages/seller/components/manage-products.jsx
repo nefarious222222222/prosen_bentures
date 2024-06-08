@@ -31,7 +31,6 @@ const formatDate = (dateString) => {
   return `${month} ${parseInt(day, 10)}, ${year}`;
 };
 
-
 export const ManageProducts = () => {
   const { user } = useContext(UserContext);
   const shopId = user.shopId;
@@ -42,6 +41,7 @@ export const ManageProducts = () => {
   const [editProductData, setEditProductData] = useState({
     shopID: shopId,
     productID: "",
+    productBrand: "",
     productName: "",
     productFlavor: "",
     productDescription: "",
@@ -49,6 +49,7 @@ export const ManageProducts = () => {
   const [newProductData, setNewProductData] = useState({
     shopID: shopId,
     productImage: "",
+    productBrand: "",
     productName: "",
     productFlavor: "",
     productDescription: "",
@@ -66,7 +67,9 @@ export const ManageProducts = () => {
   useEffect(() => {
     const fetchProducts = () => {
       axios
-        .get(`http://localhost/prosen_bentures/api/manageProduct.php?shopId=${shopId}&status=1`)
+        .get(
+          `http://localhost/prosen_bentures/api/manageProduct.php?shopId=${shopId}&status=1`
+        )
         .then((response) => {
           setProducts(Array.isArray(response.data) ? response.data : []);
         })
@@ -124,6 +127,7 @@ export const ManageProducts = () => {
     setNewProductData({
       shopID: shopId,
       productImage: "",
+      productBrand: "",
       productName: "",
       productDescription: "",
       status: "1",
@@ -150,6 +154,7 @@ export const ManageProducts = () => {
     setEditProductData({
       shopID: shopId,
       productID: "",
+      productBrand: "",
       productName: "",
       productFlavor: "",
       productDescription: "",
@@ -162,6 +167,7 @@ export const ManageProducts = () => {
     setEditProductData({
       shopID: shopId,
       productID: product.productID,
+      productBrand: product.productBrand,
       productName: product.productName,
       productFlavor: product.productFlavor,
       productDescription: product.productDescription,
@@ -194,11 +200,15 @@ export const ManageProducts = () => {
       formData.append("productImageType", imageFile.type);
 
       axios
-        .post("http://localhost/prosen_bentures/api/uploadProductImage.php", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post(
+          "http://localhost/prosen_bentures/api/uploadProductImage.php",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then((uploadResponse) => {
           if (uploadResponse.data.status === 1) {
             const imagePath = uploadResponse.data.imagePath;
@@ -208,7 +218,10 @@ export const ManageProducts = () => {
             }));
 
             axios
-              .post("http://localhost/prosen_bentures/api/addProduct.php", newProductData)
+              .put(
+                "http://localhost/prosen_bentures/api/manageProduct.php",
+                newProductData
+              )
               .then((response) => {
                 console.log(response.data);
                 if (response.data.status === 1) {
@@ -234,6 +247,7 @@ export const ManageProducts = () => {
         setNewProductData({
           shopID: shopId,
           productImage: "",
+          productBrand: "",
           productName: "",
           productDescription: "",
           status: "1",
@@ -252,7 +266,10 @@ export const ManageProducts = () => {
     }
 
     axios
-      .post("http://localhost/prosen_bentures/api/manageProduct.php", editProductData)
+      .post(
+        "http://localhost/prosen_bentures/api/manageProduct.php",
+        editProductData
+      )
       .then((response) => {
         console.log(response.data);
         if (response.data.status === 1) {
@@ -343,10 +360,13 @@ export const ManageProducts = () => {
               <div className="product">
                 <img
                   src={`http://localhost/prosen_bentures/api/productImages/${product.productImage}`}
-                  alt=""
+                  alt={product.productName}
                 />
                 <div className="product-text">
                   <div className="info">
+                    <p>
+                      <span>Product Brand:</span> {product.productBrand}
+                    </p>
                     <p>
                       <span>Product Name:</span> {product.productName}
                     </p>

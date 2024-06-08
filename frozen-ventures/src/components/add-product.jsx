@@ -1,6 +1,14 @@
 import React from "react";
 import "../assets/styles/components.css";
 
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+const filterNumbers = (string) => {
+  return string.replace(/[0-9]/g, '');
+};
+
 export const AddProduct = ({
   newProductData,
   showAddProductPopup,
@@ -9,8 +17,20 @@ export const AddProduct = ({
   imagePreview,
   handleProductFormChange,
   handleCancelAddProductClick,
-  handleAddProductClick
+  handleAddProductClick,
 }) => {
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    const filteredValue = filterNumbers(value);
+    handleProductFormChange({
+      target: {
+        name,
+        value: capitalizeFirstLetter(filteredValue),
+      },
+    });
+  };
+
   return (
     <div className="add-product">
       <h2>Add Product</h2>
@@ -33,6 +53,17 @@ export const AddProduct = ({
           )}
         </div>
 
+        <div className="input-field">
+          <label htmlFor="productBrand">Product Brand:</label>
+          <input
+            type="text"
+            id="productBrand"
+            name="productBrand"
+            value={newProductData.productBrand}
+            onChange={handleChange}
+          />
+        </div>
+
         <div className="input-container">
           <div className="input-field">
             <label htmlFor="productName">Product Name:</label>
@@ -41,7 +72,7 @@ export const AddProduct = ({
               id="productName"
               name="productName"
               value={newProductData.productName}
-              onChange={handleProductFormChange}
+              onChange={handleChange}
             />
           </div>
 
@@ -52,7 +83,7 @@ export const AddProduct = ({
               id="productFlavor"
               name="productFlavor"
               value={newProductData.productFlavor}
-              onChange={handleProductFormChange}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -64,17 +95,15 @@ export const AddProduct = ({
               id="productDescription"
               name="productDescription"
               value={newProductData.productDescription}
-              onChange={handleProductFormChange}
+              onChange={handleChange}
             ></textarea>
           </div>
         </div>
       </form>
       <div className="button-group">
-          <button onClick={handleCancelAddProductClick}>
-            Cancel
-          </button>
-          <button onClick={handleAddProductClick}>Add</button>
-        </div>
+        <button type="button" onClick={handleCancelAddProductClick}>Cancel</button>
+        <button type="button" onClick={handleAddProductClick}>Add</button>
+      </div>
     </div>
   );
 };
