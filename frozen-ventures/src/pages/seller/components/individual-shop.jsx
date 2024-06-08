@@ -37,6 +37,18 @@ export const IndividualShop = () => {
     }
   };
 
+  useEffect(() => {
+    if (showIndividualProduct) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showIndividualProduct]);
+
   const handleProductClick = (productId) => {
     setSelectedId(productId);
     setShowIndividualProduct(true);
