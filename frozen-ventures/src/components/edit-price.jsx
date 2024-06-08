@@ -3,11 +3,10 @@ import "../assets/styles/components.css";
 
 export const EditPrice = ({
   editTitle,
-  newProductData,
+  currentItem,
   handleChange,
   handleEditSave,
   handleEditCancel,
-  handleKeyPress,
 }) => {
   return (
     <div className="edit-price">
@@ -22,9 +21,8 @@ export const EditPrice = ({
             type="text"
             id="productSize"
             name="productSize"
-            value={newProductData.productSize}
+            value={currentItem.productSize}
             onChange={handleChange}
-            onKeyPress={handleKeyPress}
           />
         </div>
 
@@ -33,12 +31,11 @@ export const EditPrice = ({
             Product Price: <span>e.g. 20, 40 or 60</span>
           </label>
           <input
-            type="text"
+            type="number"
             id="productPrice"
             name="productPrice"
-            value={newProductData.productPrice}
+            value={currentItem.productPrice}
             onChange={handleChange}
-            onKeyPress={handleKeyPress}
           />
         </div>
 
@@ -47,12 +44,11 @@ export const EditPrice = ({
             Product Stock: <span>e.g. 50, 100 or 200</span>
           </label>
           <input
-            type="text"
+            type="number"
             id="productStock"
             name="productStock"
-            value={newProductData.productStock}
+            value={currentItem.productStock}
             onChange={handleChange}
-            onKeyPress={handleKeyPress}
           />
         </div>
       </form>

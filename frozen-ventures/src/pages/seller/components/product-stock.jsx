@@ -15,9 +15,6 @@ export const ProductStock = ({
   const [inventory, setInventory] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [newSize, setNewSize] = useState("");
-  const [newPrice, setNewPrice] = useState("");
-  const [newStock, setNewStock] = useState("");
   const [newProductSizeData, setNewProductSizeData] = useState({
     productSize: "",
     productPrice: "",
@@ -151,10 +148,17 @@ export const ProductStock = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewProductSizeData({
-      ...newProductSizeData,
-      [name]: value,
-    });
+    if (showEditForm) {
+      setCurrentItem({
+        ...currentItem,
+        [name]: value,
+      });
+    } else {
+      setNewProductSizeData({
+        ...newProductSizeData,
+        [name]: value,
+      });
+    }
   };
 
   const handleAddSize = () => {
@@ -198,7 +202,7 @@ export const ProductStock = ({
       {showEditForm && (
         <EditPrice
           editTitle="Edit Price"
-          newProductData={currentItem}
+          currentItem={currentItem}
           handleChange={handleInputChange}
           handleEditSave={handleEditSave}
           handleEditCancel={handleCancel}
