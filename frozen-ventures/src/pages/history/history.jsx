@@ -28,7 +28,6 @@ export const History = () => {
       const response = await axios.get(
         `http://localhost/prosen_bentures/api/managePendingOrders.php?accountId=${user.accountId}`
       );
-      console.log(response.data.sttatus, response.data.message)
       if (response.data.status === 0) {
         console.log(response.data.message);
       } else {
@@ -150,8 +149,6 @@ export const History = () => {
   const filterOrdersByStatus = (statuses) => {
     return orders.filter((order) => statuses.includes(order.status));
   };
-
-  console.log(orders)
 
   const reasons = [
     "Changed my mind",

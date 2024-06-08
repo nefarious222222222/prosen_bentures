@@ -18,7 +18,7 @@ export const Cart = () => {
 
   useEffect(() => {
     clearOrder();
-  }, []);
+  }, [clearOrder]);
 
   const updateSubTotal = (subTotal) => {
     setCartSubTotal(subTotal);
@@ -80,11 +80,16 @@ export const Cart = () => {
     return <Navigate to="/order" replace />;
   }
 
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (user.userRole !== "customer" && user.userRole !== "retailer" && user.userRole !== "distributor") {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <div className="container cart">
-      {user.userRole == "customer" ||
-        user.userRole == "retailer" ||
-        (user.userRole == "distributor" && <Navigate to="/" replace={true} />)}
       {cartItemError && (
         <ErrorMessage
           message={`Quantity for ${errorProduct} exceeds available stock`}
@@ -123,7 +128,7 @@ export const Cart = () => {
           </table>
         </div>
 
-        {cartItems ? (
+        {cartItems.length > 0 ? (
           <div className="cart-items">
             <CartItems
               cartItems={cartItems}

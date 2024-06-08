@@ -11,44 +11,30 @@ export const Splash = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      if (user.userRole == "admin") {
-        setTimeout(() => {
-          navigate("/home-admin");
-        }, 3000);
+    const navigateToHome = () => {
+      if (user?.userRole === "admin") {
+        navigate("/home-admin");
       } else if (
-        user.userRole == "retailer" ||
-        user.userRole == "distributor" ||
-        user.userRole == "manufacturer"
+        user?.userRole === "retailer" ||
+        user?.userRole === "distributor" ||
+        user?.userRole === "manufacturer"
       ) {
-        setTimeout(() => {
-          navigate("/home-seller");
-        }, 3000);
+        navigate("/home-seller");
       } else {
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
+        navigate("/");
       }
-    } catch {
-      setTimeout(() => {
-        navigate("/home");
-      }, 3000);
-    }
-  }, []);
+    };
+
+    setTimeout(navigateToHome, 3000);
+  }, [navigate, user]);
 
   return (
     <div className="loading">
       <div className="header">
-        <img src={Logo} />
+        <img src={Logo} alt="FrozenVentures Logo" />
         <p>FrozenVentures</p>
       </div>
-      <WhisperSpinner
-        size={200}
-        color="#533d70"
-        frontColor="#533d70"
-        backColor="#533d70"
-        loading={loading}
-      />
+      <WhisperSpinner size={200} loading={loading} />
     </div>
   );
 };
