@@ -111,6 +111,7 @@ export const ProductStock = ({
             "An error occurred while editing size, price, and stock"
           );
         });
+      setShowEditForm(false);
     } else if (confirmTitle === "Remove Size" && currentItem) {
       axios
         .delete(`http://localhost/prosen_bentures/api/manageInventory.php`, {

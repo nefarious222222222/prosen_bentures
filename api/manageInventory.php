@@ -100,17 +100,17 @@ switch ($method) {
         $priceID = $data['priceID'];
         $productID = $data['productID'];
         $shopID = $data['shopID'];
-        $productPrice = $data['productPrice'];
         $productSize = $data['productSize'];
+        $productPrice = $data['productPrice'];
         $productStock = $data['productStock'];
 
-        $sql = "UPDATE product_price SET productPrice = :productPrice, productSize = :productPrice, productStock = :productStock WHERE productID = :productID AND  priceID = :priceID AND shopID = :shopID";
+        $sql = "UPDATE product_price SET productSize = :productSize, productPrice = :productPrice, productStock = :productStock WHERE productID = :productID AND  priceID = :priceID AND shopID = :shopID";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':priceID', $priceID);
         $stmt->bindParam(':productID', $productID);
         $stmt->bindParam(':shopID', $shopID);
-        $stmt->bindParam(':productPrice', $productPrice);
         $stmt->bindParam(':productSize', $productSize);
+        $stmt->bindParam(':productPrice', $productPrice);
         $stmt->bindParam(':productStock', $productStock);
 
         if ($stmt->execute()) {
