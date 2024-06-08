@@ -4,9 +4,8 @@ import "../../../assets/styles/individual-shop.css";
 import { useParams } from "react-router-dom";
 
 export const IndividualShop = () => {
-  const { shopId } = useParams();
+  const { shopId, shopName } = useParams();
   const [products, setProducts] = useState([]);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -24,11 +23,11 @@ export const IndividualShop = () => {
     fetchProducts();
   }, [shopId]);
 
-  console.log(products)
+  console.log(products);
 
   return (
     <div className="container individual-shop">
-      <h1>Shop Products</h1>
+      <h1>{shopName}'s Products</h1>
       <div className="product-list">
         {products.length > 0 &&
           products.map((product) => (

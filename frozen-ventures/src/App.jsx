@@ -37,7 +37,7 @@ function App() {
                 <Route path="/home-admin" element={<HomeAdmin />} />
                 <Route path="/home-seller" element={<HomeSeller />} />
                 <Route
-                  path="/individual-shop/:shopId"
+                  path="/individual-shop/:shopId/:shopName"
                   element={<IndividualShop />}
                 />
               </Routes>

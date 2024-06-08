@@ -36,14 +36,14 @@ export const Shops = () => {
     fetchShops();
   }, [shopType]);
 
-  const handleShopClick = (shopId) => {
-    navigate(`/individual-shop/${shopId}`);
+  const handleShopClick = (shopId, shopName) => {
+    navigate(`/individual-shop/${shopId}/${shopName}`);
   }
 
   return (
     <>
       {shops.map((shop) => (
-        <div key={shop.shopID} className="individual-shops" onClick={() => {handleShopClick(shop.shopID)}}>
+        <div key={shop.shopID} className="individual-shops" onClick={() => {handleShopClick(shop.shopID, shop.shopName)}}>
           <img
             src={`http://localhost/prosen_bentures/api/${shop.shopLogo}`}
             alt={shop.shopName}
