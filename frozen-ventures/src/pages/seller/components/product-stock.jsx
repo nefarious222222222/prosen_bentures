@@ -177,6 +177,8 @@ export const ProductStock = ({
 
   const handleRemoveClick = (item) => {
     setCurrentItem(item);
+    setConfirmTitle("Remove Size");
+    setConfirmMessage("Are you sure you want to remove this size?");
     setShowConfirmationPopUp(true);
   };
 
