@@ -64,6 +64,7 @@ export const ToReceiveOrder = ({ orders, receiveOrder }) => {
                 />
                 <div className="product-details">
                   <p>{order.productName}</p>
+                  <p>{order.productBrand}</p>
                   <p>{order.productFlavor}</p>
                   <p>{order.productSize}</p>
                 </div>

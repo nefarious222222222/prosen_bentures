@@ -58,7 +58,9 @@ export const CompleteOrder = ({ orders }) => {
                 />
                 <div className="product-details">
                   <p>{order.productName}</p>
+                  <p>{order.productBrand}</p>
                   <p>{order.productFlavor}</p>
+                  <p>{order.productSize}</p>
                 </div>
               </div>
               <div className="order-details">

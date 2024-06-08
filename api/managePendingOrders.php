@@ -12,7 +12,7 @@ switch ($method) {
     case 'GET':
         $accountId = $_GET['accountId'];
 
-        $sql = "SELECT uo.*, pp.productSize, pi.productName, pi.productFlavor, pi.productImage, si.shopName
+        $sql = "SELECT uo.*, pp.productSize, pi.productBrand, pi.productName, pi.productFlavor, pi.productImage, si.shopName
                 FROM user_order uo
                 INNER JOIN product_info pi ON uo.productID = pi.productID
                 INNER JOIN shop_info si ON pi.shopID = si.shopID
