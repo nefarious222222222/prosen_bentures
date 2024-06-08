@@ -7,6 +7,16 @@ include 'DbConnect.php';
 $objDb = new DbConnect;
 $conn = $objDb->connect();
 
+function reformatSize($size)
+{
+    if (preg_match('/^(\d+(\.\d+)?)([a-zA-Z]+)$/', $size, $matches)) {
+        $number = $matches[1];
+        $unit = ucfirst($matches[3]);
+        return $number . $unit;
+    }
+    return $size;
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
     case 'GET':
@@ -40,24 +50,26 @@ switch ($method) {
     case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);
 
-        $productSize = strtolower($data['productSize']);
-        $productPrice = $data['productPrice'];
-        $productStock = $data['productStock'];
-        $shopId = $data['shopId'];
-        $productId = $data['productId'];
+        $productSize = trim(strtolower($data['productSize']));
+        $productPrice = trim($data['productPrice']);
+        $productStock = trim($data['productStock']);
+        $shopId = trim($data['shopId']);
+        $productId = trim($data['productId']);
 
-        function reformatSize($size)
-        {
-            if (preg_match('/^(\d+(\.\d+)?)([a-zA-Z]+)$/', $size, $matches)) {
-                $number = $matches[1];
-                $unit = ucfirst($matches[3]);
-                return $number . $unit;
-            }
-            return $size;
+        if (empty($productSize) || empty($productPrice) || empty($productStock)) {
+            $response = ["status" => 0, "message" => "Product size, price, and stock cannot be empty"];
+            echo json_encode($response);
+            exit;
         }
 
         if (!preg_match('/oz$/i', $productSize)) {
             $response = ["status" => 0, "message" => "Product size must end with 'Oz'"];
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($productPrice) || !is_numeric($productStock)) {
+            $response = ["status" => 0, "message" => "Product price and stock must be numeric"];
             echo json_encode($response);
             exit;
         }
@@ -97,19 +109,39 @@ switch ($method) {
 
     case 'PUT':
         $data = json_decode(file_get_contents('php://input'), true);
-        $priceID = $data['priceID'];
-        $productID = $data['productID'];
-        $shopID = $data['shopID'];
-        $productSize = $data['productSize'];
-        $productPrice = $data['productPrice'];
-        $productStock = $data['productStock'];
+        $priceID = trim($data['priceID']);
+        $productID = trim($data['productID']);
+        $shopID = trim($data['shopID']);
+        $productSize = trim(strtolower($data['productSize']));
+        $productPrice = trim($data['productPrice']);
+        $productStock = trim($data['productStock']);
+
+        if (empty($productSize) || empty($productPrice) || empty($productStock)) {
+            $response = ["status" => 0, "message" => "Product size, price, and stock cannot be empty"];
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!preg_match('/oz$/i', $productSize)) {
+            $response = ["status" => 0, "message" => "Product size must end with 'Oz'"];
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($productPrice) || !is_numeric($productStock)) {
+            $response = ["status" => 0, "message" => "Product price and stock must be numeric"];
+            echo json_encode($response);
+            exit;
+        }
+
+        $formattedSize = reformatSize($productSize);
 
         $sql = "UPDATE product_price SET productSize = :productSize, productPrice = :productPrice, productStock = :productStock WHERE productID = :productID AND  priceID = :priceID AND shopID = :shopID";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':priceID', $priceID);
         $stmt->bindParam(':productID', $productID);
         $stmt->bindParam(':shopID', $shopID);
-        $stmt->bindParam(':productSize', $productSize);
+        $stmt->bindParam(':productSize', $formattedSize);
         $stmt->bindParam(':productPrice', $productPrice);
         $stmt->bindParam(':productStock', $productStock);
 
@@ -124,7 +156,7 @@ switch ($method) {
 
     case 'DELETE':
         $data = json_decode(file_get_contents('php://input'), true);
-        $priceID = $data['priceID'];
+        $priceID = trim($data['priceID']);
 
         if ($priceID) {
             $sql = "DELETE FROM product_price WHERE priceID = :priceID";
