@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../../assets/styles/cart.css";
+import axios from "axios";
 import { UserContext } from "../../context/user-context";
 import { OrderContext } from "../../context/order-context";
 import { CartItems } from "./components/cart-item";
 import { Navigate, Link } from "react-router-dom";
-import { ErrorMessage } from "../../components/error-message";
 import { ShoppingCart, Storefront } from "phosphor-react";
+import { SuccessMessage } from "../../components/success-message";
+import { ErrorMessage } from "../../components/error-message";
+import { ConfirmationPopUp } from "../../components/confirmation-popup";
 
 export const Cart = () => {
   const { user } = useContext(UserContext);
@@ -13,8 +16,28 @@ export const Cart = () => {
   const [cartSubTotal, setCartSubTotal] = useState(0);
   const [cartItems, setCartItems] = useState([]);
   const [orderSet, setOrderSet] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const [cartItemError, setCartItemError] = useState(false);
   const [errorProduct, setErrorProduct] = useState(null);
+  const [selectedProductName, setSelectedProductName] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost/prosen_bentures/api/manageCart.php?accountId=${user.accountId}`
+        );
+        setCartItems(response.data);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+      }
+    };
+
+    fetchCartItems();
+  }, [user.accountId, setCartItems]);
 
   useEffect(() => {
     clearOrder();
@@ -70,10 +93,112 @@ export const Cart = () => {
       };
 
       setOrder(orderDetails);
+      console.log("asdas",orderDetails)
       setOrderSet(true);
     } catch (error) {
       console.error("Error during checkout:", error.message);
+      setErrorMessage("There was an error during checkout. Please try again.");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
     }
+  };
+
+  const handleQuantityChange = (
+    productId,
+    priceId,
+    newQuantity,
+    productPrice,
+    productStock
+  ) => {
+    const newTotalPrice = Number(productPrice * newQuantity).toFixed(2);
+
+    setCartItems((prevCartItems) =>
+      prevCartItems.map((cartItem) =>
+        cartItem.productID === productId && cartItem.priceID === priceId
+          ? {
+              ...cartItem,
+              quantity: Math.min(
+                Math.max(1, newQuantity),
+                cartItem.productStock
+              ),
+              totalPrice: Number(productPrice * newQuantity).toFixed(2),
+            }
+          : cartItem
+      )
+    );
+    axios
+      .put(`http://localhost/prosen_bentures/api/manageCart.php`, {
+        accountId: user.accountId,
+        productId,
+        priceId,
+        totalPrice: newTotalPrice,
+        quantity: newQuantity,
+        productStock: productStock,
+      })
+      .then((response) => {
+        if (response.data.status === 1) {
+          setSuccessMessage(response.data.message);
+        } else {
+          setErrorMessage(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating quantity:", error);
+      });
+    setTimeout(() => {
+      setSuccessMessage("");
+      setErrorMessage("");
+    }, 2000);
+  };
+
+  const handleDeleteClick = (productId, priceId, productName) => {
+    setSelectedItemId({ productId, priceId });
+    setSelectedProductName(productName);
+    setShowConfirmationPopUp(true);
+  };
+
+  const handleCancelClick = () => {
+    setSelectedItemId([]);
+    setSelectedProductName("");
+    setShowConfirmationPopUp(false);
+  };
+
+  const handleConfirmDeleteClick = () => {
+    axios
+      .delete(`http://localhost/prosen_bentures/api/manageCart.php`, {
+        data: {
+          accountId: user.accountId,
+          productId: selectedItemId.productId,
+          priceId: selectedItemId.priceId,
+        },
+      })
+      .then((response) => {
+        if (response.data.status === 1) {
+          setCartItems((prevCartItems) =>
+            prevCartItems.filter(
+              (cartItem) =>
+                !(
+                  cartItem.productID === selectedItemId.productId &&
+                  cartItem.priceID === selectedItemId.priceId
+                )
+            )
+          );
+          setSuccessMessage(response.data.message);
+        } else {
+          setErrorMessage(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting cart item:", error);
+        setErrorMessage("Failed to remove product from cart");
+      });
+    setShowConfirmationPopUp(false);
+    setSelectedItemId(null);
+    setTimeout(() => {
+      setSuccessMessage("");
+      setErrorMessage("");
+    }, 2000);
   };
 
   if (orderSet) {
@@ -84,7 +209,11 @@ export const Cart = () => {
     return <Navigate to="/" replace />;
   }
 
-  if (user.userRole !== "customer" && user.userRole !== "retailer" && user.userRole !== "distributor") {
+  if (
+    user.userRole !== "customer" &&
+    user.userRole !== "retailer" &&
+    user.userRole !== "distributor"
+  ) {
     return <Navigate to="/" replace />;
   }
 
@@ -93,6 +222,16 @@ export const Cart = () => {
       {cartItemError && (
         <ErrorMessage
           message={`Quantity for ${errorProduct} exceeds available stock`}
+        />
+      )}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
+      {showConfirmationPopUp && (
+        <ConfirmationPopUp
+          confirmTitle="Remove From Cart"
+          confirmMessage={`Would you like to remove ${selectedProductName} from your cart?`}
+          handleConfirm={handleConfirmDeleteClick}
+          handleCancel={handleCancelClick}
         />
       )}
 
@@ -132,8 +271,9 @@ export const Cart = () => {
           <div className="cart-items">
             <CartItems
               cartItems={cartItems}
-              setCartItems={setCartItems}
+              handleQuantityChange={handleQuantityChange}
               updateSubTotal={updateSubTotal}
+              handleDeleteClick={handleDeleteClick}
             />
           </div>
         ) : (
