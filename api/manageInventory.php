@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: GET, POST, DELETE");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
 include 'DbConnect.php';
 $objDb = new DbConnect;
@@ -40,9 +40,9 @@ switch ($method) {
     case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);
 
-        $newSize = strtolower($data['newSize']);
-        $newPrice = $data['newPrice'];
-        $newStock = $data['newStock'];
+        $productSize = strtolower($data['productSize']);
+        $productPrice = $data['productPrice'];
+        $productStock = $data['productStock'];
         $shopId = $data['shopId'];
         $productId = $data['productId'];
 
@@ -56,13 +56,19 @@ switch ($method) {
             return $size;
         }
 
-        $formattedSize = reformatSize($newSize);
+        if (!preg_match('/oz$/i', $productSize)) {
+            $response = ["status" => 0, "message" => "Product size must end with 'Oz'"];
+            echo json_encode($response);
+            exit;
+        }
 
-        $checkSql = "SELECT COUNT(*) FROM product_price WHERE productID = :productId AND shopID = :shopId AND productSize = :newSize";
+        $formattedSize = reformatSize($productSize);
+
+        $checkSql = "SELECT COUNT(*) FROM product_price WHERE productID = :productId AND shopID = :shopId AND productSize = :productSize";
         $checkStmt = $conn->prepare($checkSql);
         $checkStmt->bindParam(':productId', $productId);
         $checkStmt->bindParam(':shopId', $shopId);
-        $checkStmt->bindParam(':newSize', $formattedSize);
+        $checkStmt->bindParam(':productSize', $formattedSize);
         $checkStmt->execute();
         $sizeExists = $checkStmt->fetchColumn();
 
@@ -71,13 +77,13 @@ switch ($method) {
             echo json_encode($response);
         } else {
             $sql = "INSERT INTO product_price (productID, shopID, productSize, productPrice, productStock) 
-                        VALUES (:productId, :shopId, :newSize, :newPrice, :newStock)";
+                        VALUES (:productId, :shopId, :productSize, :productPrice, :productStock)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':productId', $productId);
             $stmt->bindParam(':shopId', $shopId);
-            $stmt->bindParam(':newSize', $formattedSize);
-            $stmt->bindParam(':newPrice', $newPrice);
-            $stmt->bindParam(':newStock', $newStock);
+            $stmt->bindParam(':productSize', $formattedSize);
+            $stmt->bindParam(':productPrice', $productPrice);
+            $stmt->bindParam(':productStock', $productStock);
 
             if ($stmt->execute()) {
                 $response = ["status" => 1, "message" => "Successfully inserted a new size, price and stock"];
@@ -86,6 +92,25 @@ switch ($method) {
                 $response = ["status" => 0, "message" => "Failed to insert new size, price and stock"];
                 echo json_encode($response);
             }
+        }
+        break;
+
+    case 'PUT':
+        $data = json_decode(file_get_contents('php://input'), true);
+        $priceID = $data['priceID'];
+        $newPrice = $data['newPrice'];
+
+        $sql = "UPDATE product_price SET productPrice = :newPrice WHERE productID = :productId";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':newPrice', $newPrice);
+        $stmt->bindParam(':priceID', $priceID);
+
+        if ($stmt->execute()) {
+            $response = ["status" => 1, "message" => "Successfully updated price"];
+            echo json_encode($response);
+        } else {
+            $response = ["status" => 0, "message" => "Failed to update price"];
+            echo json_encode($response);
         }
         break;
 

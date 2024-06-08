@@ -3,6 +3,8 @@ import axios from "axios";
 import { ErrorMessage } from "../../../components/error-message";
 import { SuccessMessage } from "../../../components/success-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
+import { EditPrice } from "../../../components/edit-price";
+import { AddPrice } from "../../../components/add-price";
 
 export const ProductStock = ({
   handleCancelClick,
@@ -13,24 +15,32 @@ export const ProductStock = ({
   const [inventory, setInventory] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [showAddForm, setShowAddForm] = useState(false);
   const [newSize, setNewSize] = useState("");
   const [newPrice, setNewPrice] = useState("");
   const [newStock, setNewStock] = useState("");
-  const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
-  const [action, setAction] = useState("");
+  const [newProductSizeData, setNewProductSizeData] = useState({
+    productSize: "",
+    productPrice: "",
+    productStock: "",
+  });
   const [currentItem, setCurrentItem] = useState(null);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+  const [confirmTitle, setConfirmTitle] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
 
   useEffect(() => {
     const fetchInventory = () => {
       axios
-        .get(`http://localhost/prosen_bentures/api/manageInventory.php?productId=${productId}`)
+        .get(
+          `http://localhost/prosen_bentures/api/manageInventory.php?productId=${productId}`
+        )
         .then((response) => {
           setInventory(Array.isArray(response.data) ? response.data : []);
         })
         .catch((error) => {
           console.error("Error:", error);
-          setErrorMessage("An error occurred while updating the product");
         });
     };
     fetchInventory();
@@ -40,70 +50,20 @@ export const ProductStock = ({
     return () => clearInterval(intervalId);
   }, [productId, shopId]);
 
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setNewSize(value.replace(/\s/g, ""));
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === " ") {
-      e.preventDefault();
-    }
-  };
-
-  const handleAddSize = () => {
-    setShowAddForm(true);
-  };
-
-  const handleCancel = () => {
-    setShowAddForm(false);
-    setShowConfirmationPopUp(false);
-  };
-
-  const validateSize = (size) => {
-    const regex = /^\d+(\.\d+)?[a-zA-Z]+$/;
-    return regex.test(size);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (!newPrice || !newSize || !newStock) {
-      setErrorMessage("Fields cannot be empty");
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 2500);
-      return;
-    }
-
-    if (!validateSize(newSize)) {
-      setErrorMessage("Size must include a number followed by a metric unit");
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 2500);
-      return;
-    }
-
-    setAction("submit");
-    setShowConfirmationPopUp(true);
-  };
-
-  const handleRemoveClick = (item) => {
-    setCurrentItem(item);
-    setAction("remove");
-    setShowConfirmationPopUp(true);
-  };
-
   const handleConfirm = () => {
-    if (action === "submit") {
+    if (confirmTitle === "Add Size") {
       const sizeData = {
-        newSize: newSize,
-        newPrice: newPrice,
-        newStock: newStock,
+        productSize: newProductSizeData.productSize,
+        productPrice: newProductSizeData.productPrice,
+        productStock: newProductSizeData.productStock,
         shopId: shopId,
         productId: productId,
       };
       axios
-        .post("http://localhost/prosen_bentures/api/manageInventory.php", sizeData)
+        .post(
+          "http://localhost/prosen_bentures/api/manageInventory.php",
+          sizeData
+        )
         .then((response) => {
           console.log(response.data);
           if (response.data.status === 1) {
@@ -119,17 +79,42 @@ export const ProductStock = ({
             setErrorMessage(response.data.message);
           }
           setShowAddForm(false);
-          setNewSize("");
-          setNewPrice("");
-          setNewStock("");
+          setNewProductSizeData([]);
         })
         .catch((error) => {
           console.error("Error:", error);
           setErrorMessage(
-            "An error occurred while adding size, price and stock"
+            "An error occurred while adding size, price, and stock"
           );
         });
-    } else if (action === "remove" && currentItem) {
+    } else if (confirmTitle === "Edit Title" && currentItem) {
+      axios
+        .put(
+          `http://localhost/prosen_bentures/api/manageInventory.php`,
+          currentItem
+        )
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.status === 1) {
+            setSuccessMessage(response.data.message);
+            axios
+              .get(
+                `http://localhost/prosen_bentures/api/manageInventory.php?productId=${productId}`
+              )
+              .then((response) => {
+                setInventory(Array.isArray(response.data) ? response.data : []);
+              });
+          } else {
+            setErrorMessage(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setErrorMessage(
+            "An error occurred while editing size, price, and stock"
+          );
+        });
+    } else if (confirmTitle === "Remove Size" && currentItem) {
       axios
         .delete(`http://localhost/prosen_bentures/api/manageInventory.php`, {
           data: { priceID: currentItem.priceID },
@@ -152,7 +137,7 @@ export const ProductStock = ({
         .catch((error) => {
           console.error("Error:", error);
           setErrorMessage(
-            "An error occurred while removing size, price and stock"
+            "An error occurred while removing size, price, and stock"
           );
         });
     }
@@ -164,28 +149,84 @@ export const ProductStock = ({
     }, 2500);
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewProductSizeData({
+      ...newProductSizeData,
+      [name]: value,
+    });
+  };
+
+  const handleAddSize = () => {
+    setShowAddForm(true);
+    setConfirmTitle("Add Size");
+    setConfirmMessage("Would like to add this price?");
+  };
+
+  const handleEditProductSize = (priceId) => {
+    setCurrentItem(inventory.find((item) => item.priceID === priceId));
+    setShowEditForm(true);
+    setConfirmTitle("Edit Title");
+    setConfirmMessage("Would you like to save your update on this price?");
+  };
+
+  const handleRemoveClick = (item) => {
+    setCurrentItem(item);
+    setShowConfirmationPopUp(true);
+  };
+
+  const handleEditSave = () => {
+    setShowConfirmationPopUp(true);
+  };
+
+  const handleAddProductPrice = () => {
+    setShowConfirmationPopUp(true);
+  };
+
+  const handleCancel = () => {
+    setShowAddForm(false);
+    setShowEditForm(false);
+    setShowConfirmationPopUp(false);
+    setConfirmTitle("");
+    setConfirmMessage("");
+  };
+
   return (
     <>
-      {errorMessage ? <ErrorMessage message={errorMessage} /> : null}
-      {successMessage ? <SuccessMessage message={successMessage} /> : null}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
+      {showEditForm && (
+        <EditPrice
+          editTitle="Edit Price"
+          newProductData={currentItem}
+          handleChange={handleInputChange}
+          handleEditSave={handleEditSave}
+          handleEditCancel={handleCancel}
+        />
+      )}
+      {showAddForm && (
+        <AddPrice
+          addTitle="Add Price"
+          newProductSizeData={newProductSizeData}
+          handleChange={handleInputChange}
+          handleAddProductPrice={handleAddProductPrice}
+          handleAddCancel={handleCancel}
+        />
+      )}
+      {showConfirmationPopUp && (
+        <ConfirmationPopUp
+          confirmTitle={confirmTitle}
+          confirmMessage={confirmMessage}
+          handleConfirm={handleConfirm}
+          handleCancel={handleCancel}
+        />
+      )}
       <div className="stock-container">
         <div className="header">
           <button onClick={handleCancelClick}>Cancel</button>
           <h2>{productName}</h2>
           <button onClick={handleAddSize}>Add</button>
         </div>
-        {showConfirmationPopUp ? (
-          <ConfirmationPopUp
-            confirmTitle={action === "submit" ? "Add Size" : "Remove Size"}
-            confirmMessage={
-              action === "submit"
-                ? "Would you like to add this size?"
-                : "Would you like to remove this size?"
-            }
-            handleConfirm={handleConfirm}
-            handleCancel={handleCancel}
-          />
-        ) : null}
         <div className="inventory-list">
           <table>
             <thead>
@@ -197,39 +238,6 @@ export const ProductStock = ({
               </tr>
             </thead>
             <tbody>
-              {showAddForm && (
-                <tr className="add-size">
-                  <td>
-                    <input
-                      type="text"
-                      placeholder="Example: 1liter"
-                      value={newSize}
-                      onChange={handleInputChange}
-                      onKeyPress={handleKeyPress}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      placeholder="0"
-                      value={newPrice}
-                      onChange={(e) => setNewPrice(e.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      placeholder="0"
-                      value={newStock}
-                      onChange={(e) => setNewStock(e.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <button onClick={handleCancel}>Cancel</button>
-                    <button onClick={handleSubmit}>Submit</button>
-                  </td>
-                </tr>
-              )}
               {inventory.length === 0 ? (
                 <tr>
                   <td colSpan="4">No records yet</td>
@@ -241,9 +249,18 @@ export const ProductStock = ({
                     <td>Php {item.productPrice}</td>
                     <td>x {item.productStock}</td>
                     <td>
-                      <button onClick={() => handleRemoveClick(item)}>
-                        Remove
-                      </button>
+                      <div className="button-group">
+                        <button onClick={() => handleRemoveClick(item)}>
+                          Remove
+                        </button>{" "}
+                        <button
+                          onClick={() => {
+                            handleEditProductSize(item.priceID);
+                          }}
+                        >
+                          Edit
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
