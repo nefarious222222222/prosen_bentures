@@ -11,13 +11,17 @@ $shopType = isset($_GET['shopType']) ? $_GET['shopType'] : '';
 if (!empty($shopType)) {
     $sql = "SELECT 
                 si.*, 
-                COUNT(pi.productID) as productCount
+                COUNT(DISTINCT pi.productID) as productCount
             FROM 
                 shop_info si
             JOIN 
                 product_info pi
             ON 
                 si.shopID = pi.shopID 
+            JOIN 
+                product_price pp
+            ON 
+                pi.productID = pp.productID
             WHERE 
                 si.isVerified = 1 
             AND 

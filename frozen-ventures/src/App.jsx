@@ -14,8 +14,8 @@ import { Shop } from "./pages/shop/shop";
 import { Cart } from "./pages/cart/cart";
 import { Order } from "./pages/order/order";
 import { History } from "./pages/history/history";
-import { IndividualProduct } from "./pages/shop/individual-product";
 import { HomeSeller } from "./pages/seller/home-seller";
+import { IndividualShop } from "./pages/seller/components/individual-shop";
 
 function App() {
   return (
@@ -34,12 +34,12 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/order" element={<Order />} />
                 <Route path="/history" element={<History />} />
-                <Route
-                  path="/individual-product/:productId"
-                  element={<IndividualProduct />}
-                />
                 <Route path="/home-admin" element={<HomeAdmin />} />
                 <Route path="/home-seller" element={<HomeSeller />} />
+                <Route
+                  path="/individual-shop/:shopId"
+                  element={<IndividualShop />}
+                />
               </Routes>
             </Router>{" "}
           </NotificationProvider>

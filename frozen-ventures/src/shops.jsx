@@ -2,10 +2,12 @@ import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import "./assets/styles/shops.css";
 import { UserContext } from "./context/user-context";
+import { useNavigate } from "react-router-dom";
 
 export const Shops = () => {
   const { user } = useContext(UserContext);
   const [shops, setShops] = useState([]);
+  const navigate = useNavigate();
 
   let shopType = "";
   if (user?.userRole === "customer" || user?.userRole === "") {
@@ -34,11 +36,14 @@ export const Shops = () => {
     fetchShops();
   }, [shopType]);
 
-  console.log(shops);
+  const handleShopClick = (shopId) => {
+    navigate(`/individual-shop/${shopId}`);
+  }
+
   return (
     <>
       {shops.map((shop) => (
-        <div key={shop.id} className="individual-shops">
+        <div key={shop.shopID} className="individual-shops" onClick={() => {handleShopClick(shop.shopID)}}>
           <img
             src={`http://localhost/prosen_bentures/api/${shop.shopLogo}`}
             alt={shop.shopName}
