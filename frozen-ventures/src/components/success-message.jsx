@@ -1,10 +1,19 @@
 import React from "react";
 import "../assets/styles/components.css";
+import { motion as m, AnimatePresence, easeInOut } from "framer-motion";
 
 export const SuccessMessage = ({ message }) => {
   return (
-    <div className="message success">
-      <p>{message}</p>
-    </div>
+    <AnimatePresence>
+      <m.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5, ease: easeInOut }}
+        className="message success"
+      >
+        <p>{message}</p>
+      </m.div>
+    </AnimatePresence>
   );
 };
