@@ -50,6 +50,11 @@
       background-color: var(--color-violet);
       cursor: pointer;
     }
+
+    button.active {
+      color: var(--color-pale-stone);
+      background-color: var(--color-violet);
+    }
   }
 
   .products-container {
