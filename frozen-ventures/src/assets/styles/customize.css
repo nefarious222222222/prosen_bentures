@@ -1,0 +1,112 @@
+.customize-order {
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-violet);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+
+  .custom-order-container {
+    height: 75vh;
+    display: flex;
+    gap: 40px;
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-violet);
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: solid 2px var(--color-violet);
+    }
+
+    .custom-selection {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
+
+      .input-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        label {
+          font-size: 1.25rem;
+          font-weight: 700;
+        }
+
+        select {
+          width: 100%;
+          border: none;
+          outline: none;
+          background-color: var(--color-light-gray);
+          padding: 5px;
+          border-radius: 5px;
+          border-bottom: solid 2px var(--color-violet);
+          border-right: solid 2px var(--color-violet);
+        }
+      }
+
+      .number-section {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 0;
+      }
+    }
+
+    .custom-product {
+      width: 25%;
+      display: flex;
+      flex-direction: column;
+      border-radius: 20px;
+      box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      justify-content: space-between;
+
+      .custom-details {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 0 0 40px 0;
+
+        .details {
+          display: flex;
+          p, span {
+            font-size: 1.25rem;
+          }
+
+          span {
+            font-weight: 700;
+          }
+        }
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: space-between;
+
+        button {
+          padding: 5px 20px;
+          width: 7.5vw;
+          border: solid 2px var(--color-violet);
+          border-radius: 5px;
+          font-weight: 800;
+          color: var(--color-white);
+          background-color: var(--color-violet);
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        button:hover {
+          color: var(--color-violet);
+          background-color: var(--color-white);
+        }
+      }
+    }
+  }
+}

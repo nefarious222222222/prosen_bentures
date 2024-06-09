@@ -11,6 +11,7 @@ import {
   ClockCounterClockwise,
   UserCircle,
   Bell,
+  FolderPlus,
 } from "phosphor-react";
 
 export const Navbar = () => {
@@ -40,7 +41,8 @@ export const Navbar = () => {
             const lowStockProducts = data.filter((product) => {
               if (userRole === "retailer") return product.productStock <= 20;
               if (userRole === "distributor") return product.productStock <= 50;
-              if (userRole === "manufacturer") return product.productStock <= 100;
+              if (userRole === "manufacturer")
+                return product.productStock <= 100;
               return false;
             });
             setProductsBelow20(lowStockProducts);
@@ -67,7 +69,10 @@ export const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (notifContainerRef.current && !notifContainerRef.current.contains(event.target)) {
+      if (
+        notifContainerRef.current &&
+        !notifContainerRef.current.contains(event.target)
+      ) {
         setShowNotifications(false);
       }
     };
@@ -105,6 +110,14 @@ export const Navbar = () => {
 
         {userRole === "customer" ? (
           <>
+            <Link to="/customize-order" title="Customize Order">
+              <FolderPlus
+                className="link fake-button"
+                size={30}
+                color={"#fff"}
+              />
+            </Link>
+
             <Link to="/cart" title="Cart">
               <ShoppingCart
                 className="link fake-button"
@@ -140,7 +153,10 @@ export const Navbar = () => {
             </div>
 
             {showNotifications && (
-              <Notifications ref={notifContainerRef} productsBelow20={productsBelow20} />
+              <Notifications
+                ref={notifContainerRef}
+                productsBelow20={productsBelow20}
+              />
             )}
           </>
         ) : null}

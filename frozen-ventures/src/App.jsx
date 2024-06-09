@@ -16,6 +16,7 @@ import { Order } from "./pages/order/order";
 import { History } from "./pages/history/history";
 import { HomeSeller } from "./pages/seller/home-seller";
 import { IndividualShop } from "./pages/seller/components/individual-shop";
+import { CustomizeOrder } from "./pages/customize/customize-order";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/sign" element={<Sign />} />
                 <Route path="/menu" element={<Menu />} />
                 <Route path="/shop" element={<Shop />} />
+                <Route path="/customize-order" element={<CustomizeOrder />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/order" element={<Order />} />
                 <Route path="/history" element={<History />} />
