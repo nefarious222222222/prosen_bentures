@@ -30,6 +30,18 @@ export const AddProduct = ({
     });
   };
 
+  const handleAllergenChange = (e) => {
+    if (e.key === " ") {
+      e.preventDefault();
+      handleProductFormChange({
+        target: {
+          name: "productAllergen",
+          value: newProductData.productAllergen + ", ",
+        },
+      });
+    }
+  };
+
   return (
     <div className="add-product">
       <h2>Add Product</h2>
@@ -101,6 +113,7 @@ export const AddProduct = ({
             name="productAllergen"
             value={newProductData.productAllergen}
             onChange={handleChange}
+            onKeyDown={handleAllergenChange}
           ></textarea>
         </div>
         <div className="input-field">

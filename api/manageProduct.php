@@ -80,19 +80,20 @@ switch ($method) {
     case 'PUT':
         $data = json_decode(file_get_contents('php://input'), true);
 
-        if (isset($data['shopID'], $data['productBrand'], $data['productName'], $data['productDescription'], $data['productImage'], $data['productFlavor'])) {
+        if (isset($data['shopID'], $data['productBrand'], $data['productName'], $data['productDescription'], $data['productImage'], $data['productFlavor'], $data['productAllergen'])) {
             $shopID = $data['shopID'];
             $productBrand = $data['productBrand'];
             $productName = $data['productName'];
             $productDescription = $data['productDescription'];
             $productImage = $data['productImage'];
             $productFlavor = $data['productFlavor'];
+            $productAllergen = $data['productAllergen'];
 
-            if (empty($shopID) || empty($productBrand) || empty($productName) || empty($productDescription) || empty($productImage) || empty($productFlavor)) {
+            if (empty($shopID) || empty($productBrand) || empty($productName) || empty($productDescription) || empty($productImage) || empty($productFlavor) || empty($productAllergen)) {
                 $response = ['status' => 0, 'message' => 'All fields are required.'];
             } else {
-                $sql = "INSERT INTO product_Info (productID, shopID, productBrand, productName, productDescription, productImage, productFlavor, dateAdded, status) 
-                            VALUES (null, :shopID, :productBrand, :productName, :productDescription, :productImage, :productFlavor, CURRENT_TIMESTAMP, '1')";
+                $sql = "INSERT INTO product_Info (productID, shopID, productBrand, productName, productDescription, productImage, productFlavor, productAllergen, dateAdded, status) 
+                        VALUES (null, :shopID, :productBrand, :productName, :productDescription, :productImage, :productFlavor, :productAllergen, CURRENT_TIMESTAMP, '1')";
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindParam(':shopID', $shopID);
@@ -101,6 +102,7 @@ switch ($method) {
                 $stmt->bindParam(':productDescription', $productDescription);
                 $stmt->bindParam(':productImage', $productImage);
                 $stmt->bindParam(':productFlavor', $productFlavor);
+                $stmt->bindParam(':productAllergen', $productAllergen);
 
                 if ($stmt->execute()) {
                     $response = ['status' => 1, 'message' => 'Product added successfully.'];

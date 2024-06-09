@@ -44,6 +44,7 @@ export const ManageProducts = () => {
     productBrand: "",
     productName: "",
     productFlavor: "",
+    productAllergen: "",
     productDescription: "",
   });
   const [newProductData, setNewProductData] = useState({
@@ -52,6 +53,7 @@ export const ManageProducts = () => {
     productBrand: "",
     productName: "",
     productFlavor: "",
+    productAllergen: "",
     productDescription: "",
     status: "1",
   });
@@ -372,6 +374,9 @@ export const ManageProducts = () => {
                     </p>
                     <p>
                       <span>Product Flavor:</span> {product.productFlavor}
+                    </p>
+                    <p>
+                      <span>Product Allergen:</span> {product.productAllergen}
                     </p>
                   </div>
                   <p className="description">{product.productDescription}</p>
