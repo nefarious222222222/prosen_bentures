@@ -38,7 +38,11 @@ export const Shop = () => {
   }, [shopType]);
 
   return (
-    <div className={`container shop${location.pathname === "/home-seller" ? " no-padding" : ""}`}>
+    <div
+      className={`container shop${
+        location.pathname === "/home-seller" ? " no-padding" : ""
+      }`}
+    >
       {location.pathname !== "/home-seller" && (
         <div className="carrousel">
           <img src={carrousel} alt="" />
@@ -51,6 +55,7 @@ export const Shop = () => {
       </div>
 
       <div className="button-container">
+        <button className="filterButton">All</button>
         <button className="filterButton">Peanut</button>
         <button className="filterButton">Chocolate</button>
         <button className="filterButton">Vanilla</button>
@@ -59,7 +64,7 @@ export const Shop = () => {
       </div>
 
       <div className="products-container">
-        <Products products={products}/>
+        <Products products={products} />
       </div>
     </div>
   );
