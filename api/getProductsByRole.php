@@ -15,6 +15,7 @@ if (!empty($shopType)) {
                 pi.productName,
                 pi.productImage,
                 pi.productFlavor,
+                pi.productAllergen,
                 pi.status,
                 pp.priceID,
                 pp.productSize,

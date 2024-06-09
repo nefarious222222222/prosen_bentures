@@ -1,45 +1,15 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./assets/styles/products.css";
-import axios from "axios";
-import { UserContext } from "./context/user-context";
 import { IndividualProduct } from "./pages/shop/individual-product";
 import { useLocation } from "react-router-dom";
 import Overlay from "./overlay";
 
-export const Products = () => {
-  const { user } = useContext(UserContext);
-  const [products, setProducts] = useState([]);
+export const Products = ({ products }) => {
   const [selectedId, setSelectedId] = useState("");
   const individualProductRef = useRef(null);
   const [showIndividualProduct, setShowIndividualProduct] = useState(false);
   const location = useLocation();
 
-  let shopType = "";
-  if (user?.userRole === "customer" || user?.userRole === "") {
-    shopType = "retailer";
-  } else if (user?.userRole === "retailer") {
-    shopType = "distributor";
-  } else if (user?.userRole === "distributor") {
-    shopType = "manufacturer";
-  } else {
-    shopType = "retailer";
-  }
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost/prosen_bentures/api/getProductsByRole.php?shopType=${shopType}`
-        );
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    fetchProducts();
-  }, [shopType]);
-  
   const handleClickOutside = (event) => {
     if (
       individualProductRef.current &&
@@ -70,18 +40,23 @@ export const Products = () => {
   const handleCancelClick = () => {
     setSelectedId("");
     setShowIndividualProduct(false);
-  }
+  };
 
-
-  const displayedProducts =
-    location.pathname === "/" ? products.slice(0, 4) : products;
+  const displayedProducts = products
+    ? location.pathname === "/"
+      ? products.slice(0, 4)
+      : products
+    : [];
 
   return (
     <>
       <Overlay show={showIndividualProduct} />
       {showIndividualProduct && (
         <div ref={individualProductRef}>
-          <IndividualProduct productId={selectedId} cancelClick={handleCancelClick} />
+          <IndividualProduct
+            productId={selectedId}
+            cancelClick={handleCancelClick}
+          />
         </div>
       )}
       {displayedProducts.map((product) => (
@@ -109,7 +84,10 @@ export const Products = () => {
               {product.shopName}
             </p>
             <div className="details">
-              <p><span>Size: </span>{product.productSize}</p>
+              <p>
+                <span>Size: </span>
+                {product.productSize}
+              </p>
               <p className="product-price">Php {product.productPrice}</p>
             </div>
           </div>

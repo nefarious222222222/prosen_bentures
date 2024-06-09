@@ -1,5 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "../../assets/styles/home.css";
+import axios from "axios";
 import { UserContext } from "../../context/user-context";
 import { OrderContext } from "../../context/order-context";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ import { Products } from "../../products";
 export const Home = () => {
   const { user } = useContext(UserContext);
   const { clearOrder } = useContext(OrderContext);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     clearOrder();
@@ -38,6 +40,32 @@ export const Home = () => {
   const handleMoreFlavorsClick = () => {
     navigate("/shop");
   };
+
+  let shopType = "";
+  if (user?.userRole === "customer" || user?.userRole === "") {
+    shopType = "retailer";
+  } else if (user?.userRole === "retailer") {
+    shopType = "distributor";
+  } else if (user?.userRole === "distributor") {
+    shopType = "manufacturer";
+  } else {
+    shopType = "retailer";
+  }
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost/prosen_bentures/api/getProductsByRole.php?shopType=${shopType}`
+        );
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [shopType]);
 
   return (
     <div className="home">
@@ -66,7 +94,7 @@ export const Home = () => {
         </div>
 
         <div className="product-container">
-          <Products />
+          <Products products={products} />
         </div>
       </div>
 
