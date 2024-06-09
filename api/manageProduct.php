@@ -18,18 +18,19 @@ switch ($method) {
     case 'POST':
         $data = json_decode(file_get_contents('php://input'));
 
-        if (isset($data->shopID) && isset($data->productID) && isset($data->productBrand) && isset($data->productName) && isset($data->productFlavor) && isset($data->productDescription)) {
+        if (isset($data->shopID) && isset($data->productID) && isset($data->productBrand) && isset($data->productName) && isset($data->productFlavor) && isset($data->productDescription) && isset($data->productAllergen)) {
             $shopID = $data->shopID;
             $productId = $data->productID;
             $productBrand = $data->productBrand;
             $productName = $data->productName;
             $productFlavor = $data->productFlavor;
             $productDescription = $data->productDescription;
+            $productAllergen = $data->productAllergen; // Added productAllergen
 
-            if (empty($shopID) || empty($productId) || empty($productBrand) || empty($productName) || empty($productDescription) || empty($productFlavor)) {
+            if (empty($shopID) || empty($productId) || empty($productBrand) || empty($productName) || empty($productDescription) || empty($productFlavor) || empty($productAllergen)) {
                 $response = ["status" => 0, "message" => "All fields are required"];
             } else {
-                $sql = "UPDATE product_info SET productBrand = :productBrand, productName = :productName, productFlavor = :productFlavor, productDescription = :productDescription WHERE productID = :productId AND shopID = :shopId";
+                $sql = "UPDATE product_info SET productBrand = :productBrand, productName = :productName, productFlavor = :productFlavor, productDescription = :productDescription, productAllergen = :productAllergen WHERE productID = :productId AND shopID = :shopId";
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindParam(':productId', $productId);
@@ -38,6 +39,7 @@ switch ($method) {
                 $stmt->bindParam(':productName', $productName);
                 $stmt->bindParam(':productFlavor', $productFlavor);
                 $stmt->bindParam(':productDescription', $productDescription);
+                $stmt->bindParam(':productAllergen', $productAllergen); // Binding productAllergen
 
                 if ($stmt->execute()) {
                     $rowCount = $stmt->rowCount();

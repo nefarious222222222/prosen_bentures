@@ -131,6 +131,8 @@ export const ManageProducts = () => {
       productImage: "",
       productBrand: "",
       productName: "",
+      productFlavor: "",
+      productAllergen: "",
       productDescription: "",
       status: "1",
     });
@@ -159,6 +161,7 @@ export const ManageProducts = () => {
       productBrand: "",
       productName: "",
       productFlavor: "",
+      productAllergen: "",
       productDescription: "",
     });
     setShowEditProductPopup(false);
@@ -172,6 +175,7 @@ export const ManageProducts = () => {
       productBrand: product.productBrand,
       productName: product.productName,
       productFlavor: product.productFlavor,
+      productAllergen: product.productAllergen,
       productDescription: product.productDescription,
     });
     setShowEditProductPopup(true);
@@ -251,6 +255,8 @@ export const ManageProducts = () => {
           productImage: "",
           productBrand: "",
           productName: "",
+          productFlavor: "",
+          productAllergen: "",
           productDescription: "",
           status: "1",
         });

@@ -28,6 +28,24 @@ export const EditProduct = ({
     });
   };
 
+  const handleAllergenChange = (e) => {
+    if (e.key === " ") {
+      e.preventDefault();
+      const currentValue = editProductData.productAllergen;
+      const newValue = currentValue + ", ";
+      const capitalizedValue = newValue.replace(
+        /, (\w)/g,
+        (_, letter) => `, ${letter.toUpperCase()}`
+      );
+      handleEditFormChange({
+        target: {
+          name: "productAllergen",
+          value: capitalizedValue,
+        },
+      });
+    }
+  };
+
   return (
     <div className="edit-product">
       <h2>{editTitle}</h2>
@@ -69,13 +87,17 @@ export const EditProduct = ({
 
         <div className="input-field">
           <label htmlFor="productAllergen">
-            Product Allergen: <span>Type <strong>none</strong> if there are no allergen/s</span>
+            Product Allergen:{" "}
+            <span>
+              Type <strong>none</strong> if there are no allergen/s
+            </span>
           </label>
           <textarea
             id="productAllergen"
             name="productAllergen"
             value={editProductData.productAllergen}
             onChange={handleChange}
+            onKeyDown={handleAllergenChange}
           ></textarea>
         </div>
         <div className="input-field">

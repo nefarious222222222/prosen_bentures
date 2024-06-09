@@ -33,10 +33,16 @@ export const AddProduct = ({
   const handleAllergenChange = (e) => {
     if (e.key === " ") {
       e.preventDefault();
+      const currentValue = newProductData.productAllergen;
+      const newValue = currentValue + ", ";
+      const capitalizedValue = newValue.replace(
+        /, (\w)/g,
+        (match, letter) => `, ${letter.toUpperCase()}`
+      );
       handleProductFormChange({
         target: {
           name: "productAllergen",
-          value: newProductData.productAllergen + ", ",
+          value: capitalizedValue,
         },
       });
     }
