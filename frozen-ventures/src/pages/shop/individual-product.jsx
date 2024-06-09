@@ -128,6 +128,25 @@ export const IndividualProduct = ({ productId, cancelClick }) => {
     if (user?.accountId == null) {
       setErrorMessage("You must be signed in to buy this product");
     } else {
+      const minQuantity =
+        user.userRole === "retailer"
+          ? 50
+          : user.userRole === "distributor"
+          ? 100
+          : 1;
+
+      if (quantity < minQuantity) {
+        setErrorMessage(
+          `${
+            user.userRole.charAt(0).toUpperCase() + user.userRole.slice(1)
+          }s must order at least ${minQuantity} units of this product`
+        );
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3000);
+        return;
+      }
+
       try {
         const currentDate = new Date().toLocaleDateString("en-US", {
           month: "long",
@@ -157,7 +176,6 @@ export const IndividualProduct = ({ productId, cancelClick }) => {
 
         setOrder(orderDetails);
         if (orderDetails !== null) {
-          console.log("SADNAKLSDNAS");
           navigate("/order");
         }
       } catch (error) {
