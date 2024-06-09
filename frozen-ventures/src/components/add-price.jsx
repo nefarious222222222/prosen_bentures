@@ -13,17 +13,36 @@ export const AddPrice = ({
       <h2>{addTitle}</h2>
 
       <form>
-        <div className="input-field">
-          <label htmlFor="productSize">
-            Product Size: <span>e.g. 1liter, 2liter or 3liter</span>
-          </label>
-          <input
-            type="text"
-            id="productSize"
-            name="productSize"
-            value={newProductSizeData.productSize}
-            onChange={handleChange}
-          />
+        <div className="input-container">
+          <div className="input-field">
+            <label htmlFor="productSizeAmount">Product Size Amount:</label>
+            <input
+              type="number"
+              id="productSizeAmount"
+              name="productSizeAmount"
+              value={newProductSizeData.productSizeAmount}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-field">
+            <label htmlFor="productSize">Product Size:</label>
+            <select
+              name="productSize"
+              id="productSize"
+              value={newProductSizeData.productSize}
+              onChange={handleChange}
+            >
+              <option value="" disabled>Select a size</option>
+              <option value="oz">Oz</option>
+              <option value="liter">Liter</option>
+              <option value="pint">Pint</option>
+              <option value="cone">Cone</option>
+              <option value="cup">Cup</option>
+              <option value="quart">Quart</option>
+              <option value="half-gallon">Half Gallon</option>
+              <option value="gallon">Gallon</option>
+            </select>
+          </div>
         </div>
 
         <div className="input-field">
@@ -53,9 +72,7 @@ export const AddPrice = ({
         </div>
       </form>
       <div className="button-group">
-        <button onClick={handleAddCancel}>
-          Cancel
-        </button>
+        <button onClick={handleAddCancel}>Cancel</button>
         <button onClick={handleAddProductPrice}>Add</button>
       </div>
     </div>

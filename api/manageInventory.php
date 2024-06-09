@@ -7,16 +7,6 @@ include 'DbConnect.php';
 $objDb = new DbConnect;
 $conn = $objDb->connect();
 
-function reformatSize($size)
-{
-    if (preg_match('/^(\d+(\.\d+)?)([a-zA-Z]+)$/', $size, $matches)) {
-        $number = $matches[1];
-        $unit = ucfirst($matches[3]);
-        return $number . ' ' . $unit;
-    }
-    return $size;
-}
-
 $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
     case 'GET':
@@ -50,7 +40,7 @@ switch ($method) {
     case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);
 
-        $productSize = trim(strtolower($data['productSize']));
+        $productSize = trim($data['productSize']);
         $productPrice = trim($data['productPrice']);
         $productStock = trim($data['productStock']);
         $shopId = trim($data['shopId']);
@@ -62,25 +52,17 @@ switch ($method) {
             exit;
         }
 
-        if (!preg_match('/oz$/i', $productSize)) {
-            $response = ["status" => 0, "message" => "Product size must end with 'Oz'"];
-            echo json_encode($response);
-            exit;
-        }
-
         if (!is_numeric($productPrice) || !is_numeric($productStock)) {
             $response = ["status" => 0, "message" => "Product price and stock must be numeric"];
             echo json_encode($response);
             exit;
         }
 
-        $formattedSize = reformatSize($productSize);
-
         $checkSql = "SELECT COUNT(*) FROM product_price WHERE productID = :productId AND shopID = :shopId AND productSize = :productSize";
         $checkStmt = $conn->prepare($checkSql);
         $checkStmt->bindParam(':productId', $productId);
         $checkStmt->bindParam(':shopId', $shopId);
-        $checkStmt->bindParam(':productSize', $formattedSize);
+        $checkStmt->bindParam(':productSize', $productSize);
         $checkStmt->execute();
         $sizeExists = $checkStmt->fetchColumn();
 
@@ -93,7 +75,7 @@ switch ($method) {
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':productId', $productId);
             $stmt->bindParam(':shopId', $shopId);
-            $stmt->bindParam(':productSize', $formattedSize);
+            $stmt->bindParam(':productSize', $productSize);
             $stmt->bindParam(':productPrice', $productPrice);
             $stmt->bindParam(':productStock', $productStock);
 
@@ -112,18 +94,12 @@ switch ($method) {
         $priceID = trim($data['priceID']);
         $productID = trim($data['productID']);
         $shopID = trim($data['shopID']);
-        $productSize = trim(strtolower($data['productSize']));
+        $productSize = trim($data['productSize']);
         $productPrice = trim($data['productPrice']);
         $productStock = trim($data['productStock']);
 
         if (empty($productSize) || empty($productPrice) || empty($productStock)) {
             $response = ["status" => 0, "message" => "Product size, price, and stock cannot be empty"];
-            echo json_encode($response);
-            exit;
-        }
-
-        if (!preg_match('/oz$/i', $productSize)) {
-            $response = ["status" => 0, "message" => "Product size must end with 'Oz'"];
             echo json_encode($response);
             exit;
         }
@@ -134,13 +110,11 @@ switch ($method) {
             exit;
         }
 
-        $formattedSize = reformatSize($productSize);
-
         $checkSql = "SELECT COUNT(*) FROM product_price WHERE productID = :productID AND shopID = :shopID AND productSize = :productSize AND priceID != :priceID";
         $checkStmt = $conn->prepare($checkSql);
         $checkStmt->bindParam(':productID', $productID);
         $checkStmt->bindParam(':shopID', $shopID);
-        $checkStmt->bindParam(':productSize', $formattedSize);
+        $checkStmt->bindParam(':productSize', $productSize);
         $checkStmt->bindParam(':priceID', $priceID);
         $checkStmt->execute();
         $sizeExists = $checkStmt->fetchColumn();
@@ -159,7 +133,7 @@ switch ($method) {
         $currentStmt->execute();
         $currentData = $currentStmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($currentData['productSize'] == $formattedSize && $currentData['productPrice'] == $productPrice && $currentData['productStock'] == $productStock) {
+        if ($currentData['productSize'] == $productSize && $currentData['productPrice'] == $productPrice && $currentData['productStock'] == $productStock) {
             $response = ["status" => 0, "message" => "Nothing was changed"];
             echo json_encode($response);
             exit;
@@ -170,7 +144,7 @@ switch ($method) {
         $stmt->bindParam(':priceID', $priceID);
         $stmt->bindParam(':productID', $productID);
         $stmt->bindParam(':shopID', $shopID);
-        $stmt->bindParam(':productSize', $formattedSize);
+        $stmt->bindParam(':productSize', $productSize);
         $stmt->bindParam(':productPrice', $productPrice);
         $stmt->bindParam(':productStock', $productStock);
 

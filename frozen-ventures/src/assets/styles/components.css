@@ -539,6 +539,12 @@
     color: var(--color-violet);
   }
 
+  .input-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+  }
+
   .input-field {
     width: 100%;
     display: flex;
@@ -551,7 +557,7 @@
       margin-bottom: 5px;
     }
 
-    input {
+    input, select {
       font-size: 1.25rem;
       font-weight: 500;
       outline: none;

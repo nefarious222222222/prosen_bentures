@@ -13,17 +13,36 @@ export const EditPrice = ({
       <h2>{editTitle}</h2>
 
       <form>
-        <div className="input-field">
-          <label htmlFor="productSize">
-            Product Size: <span>e.g. 1liter, 2liter or 3liter</span>
-          </label>
-          <input
-            type="text"
-            id="productSize"
-            name="productSize"
-            value={currentItem.productSize}
-            onChange={handleChange}
-          />
+        <div className="input-container">
+          <div className="input-field">
+            <label htmlFor="productSizeAmount">Product Size Amount:</label>
+            <input
+              type="number"
+              id="productSizeAmount"
+              name="productSizeAmount"
+              value={currentItem.productSizeAmount}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-field">
+            <label htmlFor="productSize">Product Size:</label>
+            <select
+              name="productSize"
+              id="productSize"
+              value={currentItem.productSize}
+              onChange={handleChange}
+            >
+              <option value="" disabled>Select a size</option>
+              <option value="oz">Oz</option>
+              <option value="liter">Liter</option>
+              <option value="pint">Pint</option>
+              <option value="cone">Cone</option>
+              <option value="cup">Cup</option>
+              <option value="quart">Quart</option>
+              <option value="half-gallon">Half Gallon</option>
+              <option value="gallon">Gallon</option>
+            </select>
+          </div>
         </div>
 
         <div className="input-field">

@@ -16,6 +16,7 @@ export const ProductStock = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [newProductSizeData, setNewProductSizeData] = useState({
+    productSizeAmount: "",
     productSize: "",
     productPrice: "",
     productStock: "",
@@ -49,8 +50,9 @@ export const ProductStock = ({
 
   const handleConfirm = () => {
     if (confirmTitle === "Add Size") {
+      const concatenatedSize = `${newProductSizeData.productSizeAmount} ${newProductSizeData.productSize}`;
       const sizeData = {
-        productSize: newProductSizeData.productSize,
+        productSize: concatenatedSize,
         productPrice: newProductSizeData.productPrice,
         productStock: newProductSizeData.productStock,
         shopId: shopId,
@@ -76,7 +78,12 @@ export const ProductStock = ({
             setErrorMessage(response.data.message);
           }
           setShowAddForm(false);
-          setNewProductSizeData([]);
+          setNewProductSizeData({
+            productSizeAmount: "",
+            productSize: "",
+            productPrice: "",
+            productStock: "",
+          });
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -85,10 +92,19 @@ export const ProductStock = ({
           );
         });
     } else if (confirmTitle === "Edit Title" && currentItem) {
+      const concatenatedSize = `${currentItem.productSizeAmount} ${currentItem.productSize}`;
+      const updatedItem = {
+        priceID: currentItem.priceID,
+        productID: currentItem.productID,
+        shopID: currentItem.shopID,
+        productPrice: currentItem.productPrice,
+        productSize: concatenatedSize,
+        productStock: currentItem.productStock,
+      };
       axios
         .put(
           `http://localhost/prosen_bentures/api/manageInventory.php`,
-          currentItem
+          updatedItem
         )
         .then((response) => {
           console.log(response.data);
@@ -169,7 +185,13 @@ export const ProductStock = ({
   };
 
   const handleEditProductSize = (priceId) => {
-    setCurrentItem(inventory.find((item) => item.priceID === priceId));
+    const item = inventory.find((item) => item.priceID === priceId);
+    const [amount, size] = item.productSize.split(" ");
+    setCurrentItem({
+      ...item,
+      productSizeAmount: amount,
+      productSize: size,
+    });
     setShowEditForm(true);
     setConfirmTitle("Edit Title");
     setConfirmMessage("Would you like to save your update on this price?");
