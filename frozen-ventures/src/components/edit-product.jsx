@@ -6,7 +6,7 @@ const capitalizeFirstLetter = (string) => {
 };
 
 const filterNumbers = (string) => {
-  return string.replace(/[0-9]/g, '');
+  return string.replace(/[0-9]/g, "");
 };
 
 export const EditProduct = ({
@@ -17,7 +17,6 @@ export const EditProduct = ({
   handleEditClick,
   handleSubmitEdit,
 }) => {
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     const filteredValue = filterNumbers(value);
@@ -68,21 +67,34 @@ export const EditProduct = ({
           </div>
         </div>
 
-        <div className="input-container">
-          <div className="input-field">
-            <label htmlFor="productDescription">Product Description:</label>
-            <textarea
-              id="productDescription"
-              name="productDescription"
-              value={editProductData.productDescription}
-              onChange={handleChange}
-            ></textarea>
-          </div>
+        <div className="input-field">
+          <label htmlFor="productAllergen">
+            Product Allergen: <span>Type <strong>none</strong> if there are no allergen/s</span>
+          </label>
+          <textarea
+            id="productAllergen"
+            name="productAllergen"
+            value={editProductData.productAllergen}
+            onChange={handleChange}
+          ></textarea>
+        </div>
+        <div className="input-field">
+          <label htmlFor="productDescription">Product Description:</label>
+          <textarea
+            id="productDescription"
+            name="productDescription"
+            value={editProductData.productDescription}
+            onChange={handleChange}
+          ></textarea>
         </div>
       </form>
       <div className="button-group">
-        <button type="button" onClick={handleCancelClick}>Cancel</button>
-        <button type="button" onClick={handleEditClick}>Edit</button>
+        <button type="button" onClick={handleCancelClick}>
+          Cancel
+        </button>
+        <button type="button" onClick={handleEditClick}>
+          Edit
+        </button>
       </div>
     </div>
   );

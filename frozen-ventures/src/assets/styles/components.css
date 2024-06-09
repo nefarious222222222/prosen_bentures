@@ -189,6 +189,25 @@
     padding-bottom: 20px;
   }
 
+  .input-image {
+    position: relative;
+
+    .input-field {
+      width: 75%;
+    }
+
+    .image-preview {
+      position: absolute;
+      top: -65px;
+      right: 0;
+
+      img {
+        width: 150px;
+        border-radius: 20px;
+      }
+    }
+  }
+
   .input-container {
     display: flex;
     justify-content: space-between;
@@ -221,19 +240,13 @@
       background-color: rgb(240, 240, 240);
     }
 
-    textarea {
-      height: 15vh;
-      resize: none;
+    strong {
+      font-weight: 700;
     }
-  }
 
-  .image-preview {
-    display: flex;
-    justify-content: center;
-
-    img {
-      width: 200px;
-      border-radius: 20px;
+    textarea {
+      height: 7.5vh;
+      resize: none;
     }
   }
 
@@ -557,7 +570,8 @@
       margin-bottom: 5px;
     }
 
-    input, select {
+    input,
+    select {
       font-size: 1.25rem;
       font-weight: 500;
       outline: none;
