@@ -45,6 +45,24 @@ export const Cart = () => {
 
   const handleCheckout = async () => {
     try {
+      if (user.userRole === "retailer" || user.userRole === "distributor") {
+        const minQuantity = user.userRole === "retailer" ? 50 : 100;
+        const invalidProducts = cartItems.filter(
+          (item) => item.quantity < minQuantity
+        );
+        if (invalidProducts.length > 0) {
+          setErrorMessage(
+            `${
+              user.userRole.charAt(0).toUpperCase() + user.userRole.slice(1)
+            }s must order at least ${minQuantity} units of each product.`
+          );
+          setTimeout(() => {
+            setErrorMessage("");
+          }, 3000);
+          return;
+        }
+      }
+
       const currentDate = new Date().toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
@@ -90,7 +108,7 @@ export const Cart = () => {
       };
 
       setOrder(orderDetails);
-      console.log("asdas",orderDetails)
+      console.log("asdas", orderDetails);
       setOrderSet(true);
     } catch (error) {
       console.error("Error during checkout:", error.message);
