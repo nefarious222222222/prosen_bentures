@@ -74,34 +74,6 @@ export const HomeSeller = () => {
             <Gauge size={40} />
             {isExpanded && <p>Shop Performance</p>}
           </li>
-          {user.userRole !== "manufacturer" && (
-            <>
-              <li
-                className={activeItem === "seller-shop" ? "active" : ""}
-                onClick={() => handleItemClick("seller-shop")}
-                data-tooltip="Shop"
-              >
-                <Storefront size={40} />
-                {isExpanded && <p>Shop</p>}
-              </li>
-              <li
-                className={activeItem === "seller-cart" ? "active" : ""}
-                onClick={() => handleItemClick("seller-cart")}
-                data-tooltip="Cart"
-              >
-                <ShoppingCart size={40} />
-                {isExpanded && <p>Cart</p>}
-              </li>
-              <li
-                className={activeItem === "seller-history" ? "active" : ""}
-                onClick={() => handleItemClick("seller-history")}
-                data-tooltip="History"
-              >
-                <ClockCounterClockwise size={40} />
-                {isExpanded && <p>History</p>}
-              </li>
-            </>
-          )}
           <li
             className={activeItem === "manage-order" ? "active" : ""}
             onClick={() => handleItemClick("manage-order")}
@@ -150,9 +122,6 @@ export const HomeSeller = () => {
         style={{ marginLeft: isExpanded ? "15vw" : "5vw" }}
       >
         {activeItem === "shop-performance" && <ShopPerformance />}
-        {activeItem === "seller-shop" && <SellerShop />}
-        {activeItem === "seller-cart" && <SellerCart />}
-        {activeItem === "seller-history" && <SellerHistory />}
         {activeItem === "manage-order" && <ManageOrder />}
         {activeItem === "manage-products" && <ManageProducts />}
         {activeItem === "manage-inventory" && <ManageInventory />}

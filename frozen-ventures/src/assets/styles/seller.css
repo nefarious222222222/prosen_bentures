@@ -192,46 +192,6 @@
     }
   }
 
-  /* Seller shop css */
-  .seller-shop {
-    h1 {
-      padding-bottom: 20px;
-      margin-bottom: 20px;
-      border-bottom: solid 2px var(--color-violet);
-    }
-
-    .shops-container {
-      display: flex;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      gap: 3vw;
-    }
-  }
-
-  /* Seller cart css */
-  .seller-cart {
-    .cart {
-      padding: 0;
-    }
-  }
-
-  /* Seller history css */
-  .seller-history {
-    .history {
-      padding: 0;
-    }
-
-    h1 {
-      padding-bottom: 20px;
-      margin-bottom: 20px;
-      border-bottom: solid 2px var(--color-violet);
-    }
-
-    .order-container {
-      min-height: 65vh;
-    }
-  }
-
   /* Manage order css */
   .manage-order {
     h1 {
@@ -738,5 +698,23 @@
       margin-bottom: 20px;
       border-bottom: solid 2px var(--color-violet);
     }
+  }
+}
+
+.seller-shop {
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-violet);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: solid 2px var(--color-violet);
+  }
+
+  .shops-container {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 3vw;
   }
 }

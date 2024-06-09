@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Shops } from "../../../shops";
 import { UserContext } from "../../../context/user-context";
+import "../../../assets/styles/seller.css"
 
 export const SellerShop = () => {
   const { user } = useContext(UserContext);
@@ -13,7 +14,7 @@ export const SellerShop = () => {
   }
 
   return (
-    <div className="seller-shop">
+    <div className="container seller-shop">
       <h1>List of {shopType}</h1>
 
       <div className="shops-container">

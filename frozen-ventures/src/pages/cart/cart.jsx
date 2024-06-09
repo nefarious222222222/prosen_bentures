@@ -37,6 +37,8 @@ export const Cart = () => {
     };
 
     fetchCartItems();
+    const intervalId = setInterval(fetchCartItems, 1000);
+    return () => clearInterval(intervalId);
   }, [user.accountId, setCartItems]);
 
   const updateSubTotal = (subTotal) => {

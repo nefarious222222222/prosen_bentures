@@ -12,6 +12,7 @@ import {
   UserCircle,
   Bell,
   FolderPlus,
+  HouseSimple,
 } from "phosphor-react";
 
 export const Navbar = () => {
@@ -127,6 +128,42 @@ export const Navbar = () => {
             </Link>
 
             <Link to="/history" title="History">
+              <ClockCounterClockwise
+                className="link fake-button"
+                size={30}
+                color={"#fff"}
+              />
+            </Link>
+          </>
+        ) : null}
+
+        {userRole === "retailer" || userRole === "distributor" ? (
+          <>
+            <Link to="/home-seller" title="Home">
+              <HouseSimple
+                className="link fake-button"
+                size={32}
+                color={"#fff"}
+              />
+            </Link>
+
+            <Link to="/seller-shop" title="Shop">
+              <Storefront
+                className="link fake-button"
+                size={32}
+                color={"#fff"}
+              />
+            </Link>
+
+            <Link to="/seller-cart" title="Cart">
+              <ShoppingCart
+                className="link fake-button"
+                size={30}
+                color={"#fff"}
+              />
+            </Link>
+
+            <Link to="/seller-history" title="History">
               <ClockCounterClockwise
                 className="link fake-button"
                 size={30}
