@@ -275,6 +275,7 @@ export const ManageOrder = () => {
                   <div className="product-details">
                     <p>{order.productName}</p>
                     <p>{order.productFlavor}</p>
+                    <p>{order.productSize}</p>
                   </div>
                 </div>
                 <div className="order-details">
@@ -297,7 +298,7 @@ export const ManageOrder = () => {
                         order.status === "cancel requested"
                           ? "cancel-requested"
                           : order.status === "order cancelled"
-                          ? "order-cancelled"
+                          ? "order-cancel"
                           : order.status === "pending" ||
                             order.status === "to receive" ||
                             order.status === "order received"

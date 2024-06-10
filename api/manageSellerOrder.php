@@ -19,7 +19,8 @@ switch ($method) {
                     pi.productFlavor, 
                     pi.productImage, 
                     si.shopName, 
-                    pei.*
+                    pei.*,
+                    pp.productSize
                 FROM 
                     user_order uo
                 INNER JOIN 
@@ -28,10 +29,12 @@ switch ($method) {
                     shop_info si ON pi.shopID = si.shopID
                 INNER JOIN 
                     personal_info pei ON uo.accountId = pei.accountId
+                INNER JOIN 
+                    product_price pp ON uo.priceID = pp.priceID
                 WHERE 
                     si.shopID = :shopId
                 ORDER BY 
-                    uo.orderDate DESC;";
+                    uo.orderDate DESC";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':shopId', $shopId);

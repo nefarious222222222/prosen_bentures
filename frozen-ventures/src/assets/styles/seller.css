@@ -200,7 +200,7 @@
       border-bottom: solid 2px var(--color-violet);
     }
 
-    .cancel-requested, .order-cancelled {
+    .cancel-requested, .order-cancel {
       color: red;
     }
 
@@ -356,11 +356,11 @@
 
       .order-cancelled {
         display: flex;
-        justify-content: center;
         gap: 20px;
+        padding-top: 20px;
 
         p {
-          font-size: 1.5rem;
+          font-size: 1.25rem;
         }
 
         p:first-child {
