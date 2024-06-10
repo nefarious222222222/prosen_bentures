@@ -248,6 +248,12 @@ export const ManageOrder = () => {
                     </button>
                   ))}
               </div>
+
+              <div className="customer-info">
+                <p><span>Name: </span>{order.firstName} {order.lastName}</p>
+                <p><span>Address: </span>{order.street} {order.barangay} {order.municipality} {order.province} {order.zip}</p>
+              </div>
+
               <div className="item-container">
                 <div className="product-item">
                   <img

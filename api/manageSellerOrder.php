@@ -13,12 +13,25 @@ switch ($method) {
     case 'GET':
         $shopId = $_GET['shopId'];
 
-        $sql = "SELECT uo.*, pi.productName, pi.productFlavor, pi.productImage, si.shopName
-                FROM user_order uo
-                INNER JOIN product_info pi ON uo.productID = pi.productID
-                INNER JOIN shop_info si ON pi.shopID = si.shopID
-                WHERE si.shopID = :shopId
-                ORDER BY uo.orderDate";
+        $sql = "SELECT 
+                    uo.*, 
+                    pi.productName, 
+                    pi.productFlavor, 
+                    pi.productImage, 
+                    si.shopName, 
+                    pei.*
+                FROM 
+                    user_order uo
+                INNER JOIN 
+                    product_info pi ON uo.productID = pi.productID
+                INNER JOIN 
+                    shop_info si ON pi.shopID = si.shopID
+                INNER JOIN 
+                    personal_info pei ON uo.accountId = pei.accountId
+                WHERE 
+                    si.shopID = :shopId
+                ORDER BY 
+                    uo.orderDate";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':shopId', $shopId);
