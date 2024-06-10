@@ -135,11 +135,12 @@ export const Order = () => {
     setShowConfirmOrder(false);
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     for (const productId in products) {
       const product = products[productId];
 
-      const productFee = product.productPrice * product.quantity * (0.045 + 0.0012);
+      const productFee =
+        product.productPrice * product.quantity * (0.045 + 0.0012);
       const shippingFee =
         shippingMode === "delivery" ? 10 * product.quantity : 0;
       const totalPrice =
@@ -159,21 +160,30 @@ export const Order = () => {
       };
 
       try {
-        axios
-          .post(
-            "http://localhost/prosen_bentures/api/manageOrder.php",
-            orderData
-          )
-          .then((response) => {
-            if (response.data.status === 1) {
-              clearOrder();
-              setSuccessMessage(response.data.message);
-            } else if (response.data.status === 0) {
-              setErrorMessage(response.data.message);
-            } else {
-              setErrorMessage("Something went wrong");
+        const response = await axios.post(
+          "http://localhost/prosen_bentures/api/manageOrder.php",
+          orderData
+        );
+
+        if (response.data.status === 1) {
+          await axios.delete(
+            `http://localhost/prosen_bentures/api/manageCart.php`,
+            {
+              data: {
+                accountId: user.accountId,
+                productId: product.productId,
+                priceId: product.priceId,
+              },
             }
-          });
+          );
+
+          clearOrder();
+          setSuccessMessage(response.data.message);
+        } else if (response.data.status === 0) {
+          setErrorMessage(response.data.message);
+        } else {
+          setErrorMessage("Something went wrong");
+        }
       } catch (error) {
         console.error("There was an error placing the order:", error);
       }

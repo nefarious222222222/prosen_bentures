@@ -13,16 +13,13 @@ import { useNavigate } from "react-router-dom";
 import { ActiveItemContext } from "../../context/notification-context";
 import {
   Gauge,
-  Storefront,
   Truck,
-  ClockCounterClockwise,
   Coin,
   Cube,
   Kanban,
   Envelope,
   CaretRight,
   CaretLeft,
-  ShoppingCart,
 } from "phosphor-react";
 
 export const HomeSeller = () => {
