@@ -200,6 +200,14 @@
       border-bottom: solid 2px var(--color-violet);
     }
 
+    .cancel-requested, .order-cancelled {
+      color: red;
+    }
+
+    .status-green {
+      color: green;
+    }
+
     .manage-order-container {
       border-bottom-left-radius: 20px;
       border-bottom-right-radius: 20px;
@@ -335,7 +343,8 @@
         .customer-info {
           padding-bottom: 20px;
 
-          p, span {
+          p,
+          span {
             font-size: 1.25rem;
 
             span {

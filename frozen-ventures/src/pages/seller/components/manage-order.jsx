@@ -60,6 +60,11 @@ export const ManageOrder = () => {
 
   useEffect(() => {
     fetchOrders();
+    const intervalId = setInterval(() => {
+      fetchOrders();
+    }, 5000);
+
+    return () => clearInterval(intervalId);
   }, [user.shopId]);
 
   const handleItemClick = (item) => {
@@ -250,8 +255,15 @@ export const ManageOrder = () => {
               </div>
 
               <div className="customer-info">
-                <p><span>Name: </span>{order.firstName} {order.lastName}</p>
-                <p><span>Address: </span>{order.street} {order.barangay} {order.municipality} {order.province} {order.zip}</p>
+                <p>
+                  <span>Name: </span>
+                  {order.firstName} {order.lastName}
+                </p>
+                <p>
+                  <span>Address: </span>
+                  {order.street} {order.barangay} {order.municipality}{" "}
+                  {order.province} {order.zip}
+                </p>
               </div>
 
               <div className="item-container">
@@ -280,7 +292,21 @@ export const ManageOrder = () => {
                   </div>
                   <div className="detail">
                     <p className="label">Status:</p>
-                    <p>{capitalizeFirstLetter(order.status)}</p>
+                    <p
+                      className={`${
+                        order.status === "cancel requested"
+                          ? "cancel-requested"
+                          : order.status === "order cancelled"
+                          ? "order-cancelled"
+                          : order.status === "pending" ||
+                            order.status === "to receive" ||
+                            order.status === "order received"
+                          ? "status-green"
+                          : ""
+                      }`}
+                    >
+                      {capitalizeFirstLetter(order.status)}
+                    </p>
                   </div>
                 </div>
               </div>
