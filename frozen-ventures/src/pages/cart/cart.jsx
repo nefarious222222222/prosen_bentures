@@ -110,7 +110,6 @@ export const Cart = () => {
       };
 
       setOrder(orderDetails);
-      console.log("asdas", orderDetails);
       setOrderSet(true);
     } catch (error) {
       console.error("Error during checkout:", error.message);

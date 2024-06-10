@@ -65,7 +65,7 @@ export const Order = () => {
   }, [user.accountId]);
 
   const shippingCost =
-    shippingMode === "pickup" ? 0 : 10 * Object.keys(products).length;
+    shippingMode === "pickup" ? 0 : 10 * Object.keys(products || {}).length;
   const totalOrderCost =
     parseFloat(totalProductAmount) +
     parseFloat(shippingCost) +
