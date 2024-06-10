@@ -173,7 +173,9 @@ export const Navbar = () => {
           </>
         ) : null}
 
-        {user?.accountId && user?.userRole === "retailer" ? (
+        {user?.userRole === "retailer" ||
+        user?.userRole === "distributor" ||
+        user?.userRole === "manufacturer" ? (
           <>
             <div
               className={`notif-container ${
