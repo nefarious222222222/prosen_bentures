@@ -31,7 +31,7 @@ switch ($method) {
                 WHERE 
                     si.shopID = :shopId
                 ORDER BY 
-                    uo.orderDate";
+                    uo.orderDate DESC;";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':shopId', $shopId);

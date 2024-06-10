@@ -45,7 +45,7 @@ export const Shop = () => {
 
   const extractFlavors = (products) => {
     const uniqueFlavors = [
-      ...new Set(products.map((product) => product.productFlavor)),
+      ...new Set(products.map((product) => product.productFlavor).filter(Boolean)),
     ];
     setFlavors(uniqueFlavors);
   };
@@ -63,7 +63,8 @@ export const Shop = () => {
     products.forEach((product) => {
       const allergens = product.productAllergen
         .split(",")
-        .map((allergen) => allergen.trim());
+        .map((allergen) => allergen.trim())
+        .filter(Boolean);
       allAllergens = [...new Set([...allAllergens, ...allergens])];
     });
     setAllergens(allAllergens);
