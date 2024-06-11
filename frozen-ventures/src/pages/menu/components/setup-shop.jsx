@@ -69,7 +69,7 @@ export const SetUpShop = () => {
   }, [accountId]);
 
   const handleEditClick = () => {
-    if (personalInfo.length === 0) {
+    if (personalInfo.zip == null) {
       setErrorMessage("Please edit your personal information first");
       setTimeout(() => {
         setErrorMessage("");
