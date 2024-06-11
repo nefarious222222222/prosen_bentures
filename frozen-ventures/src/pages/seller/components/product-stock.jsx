@@ -171,10 +171,19 @@ export const ProductStock = ({
         [name]: value,
       });
     } else {
-      setNewProductSizeData({
-        ...newProductSizeData,
-        [name]: value,
-      });
+      if (name === "productSize") {
+        const shouldResetSizeAmount = ["oz", "liter", "gallon"].includes(value);
+        setNewProductSizeData({
+          ...newProductSizeData,
+          [name]: value,
+          productSizeAmount: shouldResetSizeAmount ? null : "",
+        });
+      } else {
+        setNewProductSizeData({
+          ...newProductSizeData,
+          [name]: value,
+        });
+      }
     }
   };
 

@@ -8,22 +8,15 @@ export const EditPrice = ({
   handleEditSave,
   handleEditCancel,
 }) => {
+  const showProductSizeAmountField =
+    ["oz", "liter", "gallon"].includes(currentItem.productSize);
+
   return (
     <div className="edit-price">
       <h2>{editTitle}</h2>
 
       <form>
         <div className="input-container">
-          <div className="input-field">
-            <label htmlFor="productSizeAmount">Product Size Amount:</label>
-            <input
-              type="number"
-              id="productSizeAmount"
-              name="productSizeAmount"
-              value={currentItem.productSizeAmount}
-              onChange={handleChange}
-            />
-          </div>
           <div className="input-field">
             <label htmlFor="productSize">Product Size:</label>
             <select
@@ -32,7 +25,9 @@ export const EditPrice = ({
               value={currentItem.productSize}
               onChange={handleChange}
             >
-              <option value="" disabled>Select a size</option>
+              <option value="" disabled>
+                Select a size
+              </option>
               <option value="oz">Oz</option>
               <option value="liter">Liter</option>
               <option value="pint">Pint</option>
@@ -43,6 +38,19 @@ export const EditPrice = ({
               <option value="gallon">Gallon</option>
             </select>
           </div>
+
+          {showProductSizeAmountField && (
+            <div className="input-field">
+              <label htmlFor="productSizeAmount">Product Size Amount:</label>
+              <input
+                type="number"
+                id="productSizeAmount"
+                name="productSizeAmount"
+                value={currentItem.productSizeAmount}
+                onChange={handleChange}
+              />
+            </div>
+          )}
         </div>
 
         <div className="input-field">

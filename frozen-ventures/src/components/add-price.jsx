@@ -8,22 +8,16 @@ export const AddPrice = ({
   handleAddProductPrice,
   handleAddCancel,
 }) => {
+  const showProductSizeAmountField = ["oz", "liter", "gallon"].includes(
+    newProductSizeData.productSize
+  );
+
   return (
     <div className="add-price">
       <h2>{addTitle}</h2>
 
       <form>
         <div className="input-container">
-          <div className="input-field">
-            <label htmlFor="productSizeAmount">Product Size Amount:</label>
-            <input
-              type="number"
-              id="productSizeAmount"
-              name="productSizeAmount"
-              value={newProductSizeData.productSizeAmount}
-              onChange={handleChange}
-            />
-          </div>
           <div className="input-field">
             <label htmlFor="productSize">Product Size:</label>
             <select
@@ -32,7 +26,9 @@ export const AddPrice = ({
               value={newProductSizeData.productSize}
               onChange={handleChange}
             >
-              <option value="" disabled>Select a size</option>
+              <option value="" disabled>
+                Select a size
+              </option>
               <option value="oz">Oz</option>
               <option value="liter">Liter</option>
               <option value="pint">Pint</option>
@@ -43,6 +39,19 @@ export const AddPrice = ({
               <option value="gallon">Gallon</option>
             </select>
           </div>
+
+          {showProductSizeAmountField && (
+            <div className="input-field">
+              <label htmlFor="productSizeAmount">Product Size Amount:</label>
+              <input
+                type="number"
+                id="productSizeAmount"
+                name="productSizeAmount"
+                value={newProductSizeData.productSizeAmount}
+                onChange={handleChange}
+              />
+            </div>
+          )}
         </div>
 
         <div className="input-field">
