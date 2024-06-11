@@ -299,8 +299,9 @@ export const ManageOrder = () => {
                           ? "cancel-requested"
                           : order.status === "order cancelled"
                           ? "order-cancel"
-                          : order.status === "pending" ||
-                            order.status === "to receive" ||
+                          : order.status === "pending"
+                          ? "status-pending"
+                          : order.status === "to receive" ||
                             order.status === "order received"
                           ? "status-green"
                           : ""

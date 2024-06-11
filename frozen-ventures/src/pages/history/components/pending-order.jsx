@@ -31,75 +31,83 @@ export const PendingOrder = ({ orders, cancelRequest }) => {
 
   return (
     <div className="pending-order">
-      {orders.length > 0 ? (
-        orders.map((order) => (
-          <div key={order.orderID} className="order-item">
-            <div className="item-header">
-              <p>
-                <span>Shop Name: </span>
-                {order.shopName}
-              </p>
+      {orders.length > 0
+        ? orders.map((order) => (
+            <div key={order.orderID} className="order-item">
+              <div className="item-header">
+                <p>
+                  <span>Shop Name: </span>
+                  {order.shopName}
+                </p>
 
-              <p>
-                <span>Order Date: </span>
-                {formatDate(order.orderDate)}
-              </p>
+                <p>
+                  <span>Order Date: </span>
+                  {formatDate(order.orderDate)}
+                </p>
 
-              <p>
-                <span>Receive Date: </span>
-                {formatDate(order.receiveDate)}
-              </p>
+                <p>
+                  <span>Receive Date: </span>
+                  {formatDate(order.receiveDate)}
+                </p>
 
-              {order.status === "pending" && (
-                <button onClick={() => cancelRequest(order.orderID)}>
-                  Request Cancel Order
-                </button>
+                {order.status === "pending" && (
+                  <button onClick={() => cancelRequest(order.orderID)}>
+                    Request Cancel Order
+                  </button>
+                )}
+              </div>
+              <div className="item-container">
+                <div className="product-item">
+                  <img
+                    src={`http://localhost/prosen_bentures/api/productImages/${order.productImage}`}
+                    alt={order.productName}
+                  />
+                  <div className="product-details">
+                    <p>{order.productName}</p>
+                    <p>{order.productBrand}</p>
+                    <p>{order.productFlavor}</p>
+                    <p>{order.productSize}</p>
+                  </div>
+                </div>
+                <div className="order-details">
+                  <div className="detail">
+                    <p className="label">Quantity:</p>
+                    <p>x{order.quantity}</p>
+                  </div>
+                  <div className="detail">
+                    <p className="label">Total Price:</p>
+                    <p>Php {order.totalPrice.toFixed(2)}</p>
+                  </div>
+                  <div className="detail">
+                    <p className="label">Shipping Mode:</p>
+                    <p>{capitalizeFirstLetter(order.shippingMode)}</p>
+                  </div>
+                  <div className="detail">
+                    <p className="label">Status:</p>
+                    <p
+                      className={`${
+                        order.status === "cancel requested"
+                          ? "cancel-requested"
+                          : order.status === "pending"
+                          ? "status-pending"
+                          : ""
+                      }`}
+                    >
+                      {capitalizeFirstLetter(order.status)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {order.status == "cancel requested" && (
+                <div className="order-cancelled">
+                  <p>Reason For Cancellation:</p>
+                  <p>{order.cancelReason}</p>
+                </div>
               )}
             </div>
-            <div className="item-container">
-              <div className="product-item">
-                <img
-                  src={`http://localhost/prosen_bentures/api/productImages/${order.productImage}`}
-                  alt={order.productName}
-                />
-                <div className="product-details">
-                  <p>{order.productName}</p>
-                  <p>{order.productBrand}</p>
-                  <p>{order.productFlavor}</p>
-                  <p>{order.productSize}</p>
-                </div>
-              </div>
-              <div className="order-details">
-                <div className="detail">
-                  <p className="label">Quantity:</p>
-                  <p>x{order.quantity}</p>
-                </div>
-                <div className="detail">
-                  <p className="label">Total Price:</p>
-                  <p>Php {order.totalPrice.toFixed(2)}</p>
-                </div>
-                <div className="detail">
-                  <p className="label">Shipping Mode:</p>
-                  <p>{capitalizeFirstLetter(order.shippingMode)}</p>
-                </div>
-                <div className="detail">
-                  <p className="label">Status:</p>
-                  <p>{capitalizeFirstLetter(order.status)}</p>
-                </div>
-              </div>
-            </div>
-
-            {order.status == "cancel requested" && (
-              <div className="order-cancelled">
-                <p>Reason For Cancellation:</p>
-                <p>{order.cancelReason}</p>
-              </div>
-            )}
-          </div>
-        ))
-      ) : (
-        null
-      )}
+          ))
+        : null}
     </div>
   );
 };

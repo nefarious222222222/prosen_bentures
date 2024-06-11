@@ -235,13 +235,25 @@
       border-bottom: solid 2px var(--color-violet);
     }
 
-    .cancel-requested,
-    .order-cancel {
-      color: red;
+    .status-pending {
+      padding: 5px;
+      border-radius: 5px;
+      background-color: rgb(251, 255, 33);
+      color: var(--color-white);
+    }
+
+    .order-cancel, .cancel-requested {
+      padding: 5px;
+      border-radius: 5px;
+      background-color: var(--color-dark-red);
+      color: var(--color-white);
     }
 
     .status-green {
-      color: green;
+      padding: 5px;
+      border-radius: 5px;
+      background-color: var(--color-dark-green);
+      color: var(--color-white);
     }
 
     .manage-order-container {
