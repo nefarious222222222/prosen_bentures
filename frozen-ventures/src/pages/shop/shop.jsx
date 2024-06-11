@@ -45,7 +45,9 @@ export const Shop = () => {
 
   const extractFlavors = (products) => {
     const uniqueFlavors = [
-      ...new Set(products.map((product) => product.productFlavor).filter(Boolean)),
+      ...new Set(
+        products.map((product) => product.productFlavor).filter(Boolean)
+      ),
     ];
     setFlavors(uniqueFlavors);
   };
@@ -138,24 +140,30 @@ export const Shop = () => {
         >
           No Milk
         </button>
-        {flavors.map((flavor) => (
-          <button
-            key={flavor}
-            className={activeFilter === flavor ? "active" : ""}
-            onClick={() => filterProductsByFlavor(flavor)}
-          >
-            {flavor}
-          </button>
-        ))}
-        {allergens.map((allergen) => (
-          <button
-            key={allergen}
-            className={activeFilter === allergen ? "active" : ""}
-            onClick={() => filterProductsByAllergen(allergen)}
-          >
-            {allergen}
-          </button>
-        ))}
+        {flavors.map(
+          (flavor) =>
+            flavor.toLowerCase() !== "none" && (
+              <button
+                key={flavor}
+                className={activeFilter === flavor ? "active" : ""}
+                onClick={() => filterProductsByFlavor(flavor)}
+              >
+                {flavor}
+              </button>
+            )
+        )}
+        {allergens.map(
+          (allergen) =>
+            allergen.toLowerCase() !== "none" && (
+              <button
+                key={allergen}
+                className={activeFilter === allergen ? "active" : ""}
+                onClick={() => filterProductsByAllergen(allergen)}
+              >
+                {allergen}
+              </button>
+            )
+        )}
       </div>
 
       <div className="products-container">
