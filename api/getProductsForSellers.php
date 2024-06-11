@@ -3,6 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 
 include 'DbConnect.php';
+
 $objDb = new DbConnect;
 $conn = $objDb->connect();
 
@@ -19,16 +20,15 @@ if (!empty($shopID)) {
                 pp.priceID,
                 pp.productSize,
                 pp.productPrice,
-                pp.productStock,
-                COALESCE(SUM(pp.productStock), 0) AS totalStock
+                pp.productStock
             FROM 
                 product_info pi
-            JOIN 
+            LEFT JOIN 
                 product_price pp 
             ON 
                 pi.productID = pp.productID 
             WHERE 
-                pi.shopID = :shopID 
+                pi.shopID = :shopID
             AND 
                 pi.status = 1";
 
@@ -38,7 +38,11 @@ if (!empty($shopID)) {
 
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode($products);
+    if ($products) {
+        echo json_encode($products);
+    } else {
+        echo json_encode(['status' => 0, 'message' => 'No products found for the provided shop ID']);
+    }
 } else {
     echo json_encode(['status' => 0, 'message' => 'Invalid shop ID']);
 }
