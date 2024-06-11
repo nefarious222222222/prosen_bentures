@@ -24,22 +24,22 @@ export const HomeSeller = () => {
   const { user } = useContext(UserContext);
   const { activeItem, setActiveItem } = useContext(ActiveItemContext);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [isShopVerified, setIsShopVerified] = useState(
+    user.shopVerified === "1"
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
+    setIsShopVerified(user.shopVerified == "1");
+
     if (
       user.userRole !== "retailer" &&
       user.userRole !== "distributor" &&
       user.userRole !== "manufacturer"
     ) {
       navigate("/");
-    } else if (user.shopVerified !== "1") {
-      setIsOverlayVisible(true);
-    } else {
-      setIsOverlayVisible(false);
     }
-  }, [user.userRole, user.shopVerified, navigate]);
+  }, [user.shopVerified, user.userRole, navigate]);
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
@@ -49,8 +49,22 @@ export const HomeSeller = () => {
     setActiveItem(item);
   };
 
+  console.log("isShopVerified:", isShopVerified);
+
   return (
     <div className="container seller">
+      {!isShopVerified && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <h2>Your shop is not yet verified</h2>
+            <p>
+              Please go to settings to set up your shop. If you've already done
+              so, kindly wait
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className={`side-bar ${isExpanded ? "expanded" : ""}`}>
         {isExpanded ? (
           <CaretLeft
@@ -127,18 +141,6 @@ export const HomeSeller = () => {
         {activeItem === "manage-inventory" && <ManageInventory />}
         {activeItem === "manage-shop" && <ManageShop />}
       </div>
-
-      {isOverlayVisible && (
-        <div className="overlay">
-          <div className="overlay-content">
-            <h2>Your shop is not yet verified</h2>
-            <p>
-              Please go to settings to set up your shop. If you've already done
-              so, kindly wait
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
