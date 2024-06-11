@@ -24,7 +24,6 @@ export const HomeSeller = () => {
   const { user } = useContext(UserContext);
   const { activeItem, setActiveItem } = useContext(ActiveItemContext);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [shopInfo, setShopInfo] = useState({});
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -35,27 +34,6 @@ export const HomeSeller = () => {
       user.userRole !== "manufacturer"
     ) {
       navigate("/");
-    } else {
-      const accountId = user.accountId;
-      const status = 1;
-
-      axios
-        .get(`http://localhost/prosen_bentures/api/setUpShop.php`, {
-          params: {
-            accountId: accountId,
-            status: status,
-          },
-        })
-        .then((response) => {
-          setShopInfo(response.data);
-
-          if (response.data.isVerified == null) {
-            setIsOverlayVisible(true);
-          }
-        })
-        .catch((error) => {
-          console.error("There was an error fetching the shop info!", error);
-        });
     }
   }, [user.userRole, user.accountId, navigate]);
 
