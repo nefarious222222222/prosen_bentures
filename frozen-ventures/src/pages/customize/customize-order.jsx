@@ -9,6 +9,25 @@ export const CustomizeOrder = () => {
   const [selectedAddOns, setSelectedAddOns] = useState([]);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedShop, setSelectedShop] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const itemPrices = {
+    Matcha: 20.0,
+    Chocolate: 15.0,
+    Vanilla: 15.0,
+    "Rocky Road": 18.0,
+    Strawberry: 16.0,
+    "1 liter": 50.0,
+    "2 liters": 80.0,
+    "3 liters": 110.0,
+    "4 liters": 140.0,
+    Marshmallow: 5.0,
+    Sprinkles: 3.0,
+    "Caramel Sauce": 7.0,
+    Nuts: 8.0,
+    "Whipped Cream": 5.0,
+    "Cookie Dough": 10.0,
+  };
 
   const handleNumFlavorsChange = (e) => {
     setNumFlavors(parseInt(e.target.value));
@@ -22,20 +41,39 @@ export const CustomizeOrder = () => {
     const newSelectedFlavors = [...selectedFlavors];
     newSelectedFlavors[index] = e.target.value;
     setSelectedFlavors(newSelectedFlavors);
+    calculateTotalPrice();
   };
 
   const handleAddOnChange = (e, index) => {
     const newSelectedAddOns = [...selectedAddOns];
     newSelectedAddOns[index] = e.target.value;
     setSelectedAddOns(newSelectedAddOns);
+    calculateTotalPrice();
   };
 
   const handleSizeChange = (e) => {
     setSelectedSize(e.target.value);
+    calculateTotalPrice();
   };
 
   const handleShopChange = (e) => {
     setSelectedShop(e.target.value);
+  };
+
+  const calculateTotalPrice = () => {
+    let totalPrice = 0;
+
+    selectedFlavors.forEach((flavor) => {
+      totalPrice += itemPrices[flavor];
+    });
+
+    selectedAddOns.forEach((addon) => {
+      totalPrice += itemPrices[addon];
+    });
+
+    totalPrice += itemPrices[selectedSize];
+
+    setTotalPrice(totalPrice);
   };
 
   return (
@@ -169,8 +207,8 @@ export const CustomizeOrder = () => {
             ))}
 
             <div className="details">
-              <span>Price: </span>
-              <p>Php 100.00</p>
+              <span>Total Price: </span>
+              <p>{totalPrice.toFixed(2)}</p>
             </div>
           </div>
 

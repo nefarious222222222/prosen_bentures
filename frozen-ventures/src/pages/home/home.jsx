@@ -135,7 +135,7 @@ export const Home = () => {
             <h3>
               <i class="bx bx-money"></i> Payment
             </h3>
-            <p>We accept payment via GCash and cash for your convenience.</p>
+            <p>We accept payment via cash for your convenience.</p>
           </div>
 
           <div class="service">
@@ -157,17 +157,18 @@ export const Home = () => {
           </div>
 
           <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cupiditate
-            neque veniam perferendis nihil fuga, corporis quidem voluptatum
-            iusto, modi quod minus mollitia maxime inventore ad recusandae iure
-            deserunt laborum sint!
+            At FrozenVentures, we are passionate about delivering top-quality
+            ice cream to our customers. Our dedicated team ensures every batch
+            is crafted with care, providing a delightful and unforgettable
+            experience. Join us on this sweet journey and savor the best flavors
+            in town!
           </p>
         </div>
 
         <div class="contact-container">
           <h4>Contact Us</h4>
 
-          <p>#420 Weederoo Street Showbu City</p>
+          <p>#411 Balanga City Bataan</p>
 
           <p>frozenventures@icecream.com</p>
 
