@@ -101,6 +101,22 @@ export const Shop = () => {
     setActiveFilter("No Milk");
   };
 
+  const filterProductsNoEggs = () => {
+    const filtered = products.filter(
+      (product) => !product.productAllergen.toLowerCase().includes("eggs")
+    );
+    setFilteredProducts(filtered);
+    setActiveFilter("No Eggs");
+  };
+
+  const filterProductsNoWheat = () => {
+    const filtered = products.filter(
+      (product) => !product.productAllergen.toLowerCase().includes("wheat")
+    );
+    setFilteredProducts(filtered);
+    setActiveFilter("No Wheat");
+  };
+
   return (
     <div
       className={`container shop${
@@ -140,30 +156,18 @@ export const Shop = () => {
         >
           No Milk
         </button>
-        {flavors.map(
-          (flavor) =>
-            flavor.toLowerCase() !== "none" && (
-              <button
-                key={flavor}
-                className={activeFilter === flavor ? "active" : ""}
-                onClick={() => filterProductsByFlavor(flavor)}
-              >
-                {flavor}
-              </button>
-            )
-        )}
-        {allergens.map(
-          (allergen) =>
-            allergen.toLowerCase() !== "none" && (
-              <button
-                key={allergen}
-                className={activeFilter === allergen ? "active" : ""}
-                onClick={() => filterProductsByAllergen(allergen)}
-              >
-                {allergen}
-              </button>
-            )
-        )}
+        <button
+          className={activeFilter === "No Eggs" ? "active" : ""}
+          onClick={filterProductsNoEggs}
+        >
+          No Eggs
+        </button>
+        <button
+          className={activeFilter === "No Wheat" ? "active" : ""}
+          onClick={filterProductsNoWheat}
+        >
+          No Wheat
+        </button>
       </div>
 
       <div className="products-container">
