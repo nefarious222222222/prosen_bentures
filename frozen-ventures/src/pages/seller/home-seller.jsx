@@ -1,10 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../context/user-context";
 import "../../assets/styles/seller.css";
+import axios from "axios";
 import { ShopPerformance } from "./components/shop-performance";
-import { SellerShop } from "./components/seller-shop";
-import { SellerCart } from "./components/seller-cart";
-import { SellerHistory } from "./components/seller-history";
 import { ManageOrder } from "./components/manage-order";
 import { ManageProducts } from "./components/manage-products";
 import { ManageInventory } from "./components/manage-inventory";
@@ -26,6 +24,8 @@ export const HomeSeller = () => {
   const { user } = useContext(UserContext);
   const { activeItem, setActiveItem } = useContext(ActiveItemContext);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [shopInfo, setShopInfo] = useState({});
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,8 +35,29 @@ export const HomeSeller = () => {
       user.userRole !== "manufacturer"
     ) {
       navigate("/");
+    } else {
+      const accountId = user.accountId;
+      const status = 1;
+
+      axios
+        .get(`http://localhost/prosen_bentures/api/setUpShop.php`, {
+          params: {
+            accountId: accountId,
+            status: status,
+          },
+        })
+        .then((response) => {
+          setShopInfo(response.data);
+
+          if (response.data.isVerified == null) {
+            setIsOverlayVisible(true);
+          }
+        })
+        .catch((error) => {
+          console.error("There was an error fetching the shop info!", error);
+        });
     }
-  }, [user.userRole, navigate]);
+  }, [user.userRole, user.accountId, navigate]);
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
@@ -124,6 +145,18 @@ export const HomeSeller = () => {
         {activeItem === "manage-inventory" && <ManageInventory />}
         {activeItem === "manage-shop" && <ManageShop />}
       </div>
+
+      {isOverlayVisible && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <h2>Your shop is not yet verified</h2>
+            <p>
+              Please go to settings to set up your shop. If you've already done
+              so, kindly wait
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
