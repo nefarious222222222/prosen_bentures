@@ -50,28 +50,33 @@ export const SetUpShop = () => {
           console.error("Error:", error);
         });
     };
+
+    const fetchPersonalInfo = () => {
+      axios
+        .get(
+          `http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${accountId}`
+        )
+        .then((response) => {
+          setPersonalInfo(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching personal information:", error);
+        });
+    };
+    
     fetchShopInfo();
+    fetchPersonalInfo();
   }, [accountId]);
 
   const handleEditClick = () => {
-    axios
-      .get(
-        `http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${user.accountId}`
-      )
-      .then((response) => {
-        setPersonalInfo(response.data);
-        if (personalInfo.length === 0) {
-          setErrorMessage("Please edit your personal information first");
-          setTimeout(() => {
-            setErrorMessage("");
-          }, 2500);
-        } else {
-          setEditable(!editable);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching personal information:", error);
-      });
+    if (personalInfo.length === 0) {
+      setErrorMessage("Please edit your personal information first");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 2500);
+    } else {
+      setEditable(!editable);
+    }
   };
 
   const handleConfirmEditShow = () => {

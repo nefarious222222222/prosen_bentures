@@ -17,7 +17,7 @@ export const VerifyShop = ({
           <li>Barangay Clearance</li>
           <li>Mayor's Permit</li>
           <li>Bureau of Internal Revenue</li>
-          <li>and Food and Drug Administration</li>
+          <li>Food and Drug Administration</li>
         </ul>
       </div>
 
