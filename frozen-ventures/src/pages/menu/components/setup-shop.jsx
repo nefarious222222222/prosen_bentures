@@ -55,19 +55,23 @@ export const SetUpShop = () => {
 
   const handleEditClick = () => {
     axios
-      .get(`http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${user.accountId}`)
+      .get(
+        `http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${user.accountId}`
+      )
       .then((response) => {
-        setPersonalInfo(Array.isArray(response.data) ? response.data : []);
+        setPersonalInfo(response.data);
+        if (personalInfo.length === 0) {
+          setErrorMessage("Please edit your personal information first");
+          setTimeout(() => {
+            setErrorMessage("");
+          }, 2500);
+        } else {
+          setEditable(!editable);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching personal information:", error);
       });
-
-    if (personalInfo.length == 0) {
-      setErrorMessage("Please edit your personal information first");
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 2500);
-    } else {
-      setEditable(!editable);
-    }
   };
 
   const handleConfirmEditShow = () => {
@@ -111,11 +115,15 @@ export const SetUpShop = () => {
     formData.append("shopImageType", imageFile.type);
 
     axios
-      .post("http://localhost/prosen_bentures/api/uploadShopLogo.php", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .post(
+        "http://localhost/prosen_bentures/api/uploadShopLogo.php",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((uploadResponse) => {
         if (uploadResponse.data.status === 1) {
           const imagePath = uploadResponse.data.imagePath;
@@ -125,7 +133,10 @@ export const SetUpShop = () => {
           };
 
           axios
-            .post("http://localhost/prosen_bentures/api/setUpShop.php", shopDataToSend)
+            .post(
+              "http://localhost/prosen_bentures/api/setUpShop.php",
+              shopDataToSend
+            )
             .then((response) => {
               if (response.data.status === 1) {
                 setSuccessMessage("Shop information saved successfully");
@@ -215,11 +226,15 @@ export const SetUpShop = () => {
     formData.append("shopDocument", file);
 
     axios
-      .post("http://localhost/prosen_bentures/api/uploadShopVerificationFiles.php", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .post(
+        "http://localhost/prosen_bentures/api/uploadShopVerificationFiles.php",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((response) => {
         if (response.data.status === 1) {
           const filePath = response.data.filePath;
