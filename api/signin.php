@@ -17,7 +17,15 @@ switch ($method) {
             exit();
         }
 
-        $sql = "SELECT ai.accountID, ai.userRole, ai.email, ai.password, si.shopID FROM account_info ai LEFT JOIN shop_info si ON ai.accountID = si.accountID WHERE ai.email = :email";
+        $sql = "SELECT  
+                    ai.accountID, ai.userRole, ai.email, ai.password, si.shopID , si.isVerified
+                FROM 
+                    account_info ai 
+                LEFT JOIN 
+                    shop_info si ON ai.accountID = si.accountID 
+                WHERE 
+                    ai.email = :email";
+
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':email', $loginInfo->email);
         $stmt->execute();

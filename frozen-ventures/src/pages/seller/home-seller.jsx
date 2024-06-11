@@ -34,8 +34,12 @@ export const HomeSeller = () => {
       user.userRole !== "manufacturer"
     ) {
       navigate("/");
+    } else if (user.shopVerified !== "1") {
+      setIsOverlayVisible(true);
+    } else {
+      setIsOverlayVisible(false);
     }
-  }, [user.userRole, user.accountId, navigate]);
+  }, [user.userRole, user.shopVerified, navigate]);
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);

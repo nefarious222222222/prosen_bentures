@@ -7,7 +7,8 @@ export const UserContextProvider = (props) => {
     const accountId = localStorage.getItem("accountId");
     const shopId = localStorage.getItem("shopId");
     const userRole = localStorage.getItem("userRole");
-    return accountId ? { accountId, shopId, userRole } : null;
+    const shopVerified = localStorage.getItem("shopVerified");
+    return accountId ? { accountId, shopId, userRole, shopVerified } : null;
   });
 
   useEffect(() => {
@@ -15,15 +16,17 @@ export const UserContextProvider = (props) => {
       localStorage.setItem("accountId", user.accountId);
       localStorage.setItem("shopId", user.shopId);
       localStorage.setItem("userRole", user.userRole);
+      localStorage.setItem("shopVerified", user.shopVerified);
     } else {
       localStorage.removeItem("accountId");
       localStorage.removeItem("shopId");
       localStorage.removeItem("userRole");
+      localStorage.removeItem("shopVerified");
     }
   }, [user]);
 
-  const addUser = (newAccountId, newShopId, newUserRole) => {
-    setUser({ accountId: newAccountId, shopId: newShopId, userRole: newUserRole });
+  const addUser = (newAccountId, newShopId, newUserRole, newShopVerified) => {
+    setUser({ accountId: newAccountId, shopId: newShopId, userRole: newUserRole, shopVerified: newShopVerified });
   };
 
   const clearUser = () => {
