@@ -1,26 +1,51 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
+import axios from "axios";
+import { UserContext } from "../../../context/user-context";
 import { LineChart } from "../../../components/line-chart";
 import { BarChart } from "../../../components/bar-chart";
 import { HorizontalBarChart } from "../../../components/horizontal-bar-chart";
 
 export const ShopPerformance = () => {
+  const { user } = useContext(UserContext);
+  const [shopPerformance, setShopPerformance] = useState({
+    totalRevenue: 0,
+    soldProducts: 0,
+    cancelledOrders: 0,
+    requestRefund: 0,
+  });
+
+  useEffect(() => {
+    const fetchShopPerformance = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost/prosen_bentures/api/manageShopPerformance.php?shopId=${user.shopId}`
+        );
+        setShopPerformance(response.data);
+      } catch (error) {
+        console.error("Error fetching shop performance:", error);
+      }
+    };
+
+    fetchShopPerformance();
+  }, [user.shopId]);
+
   return (
     <div className="shop-performance">
       <h1>Shop Performance</h1>
 
       <div className="metrics-container">
         <div className="metric">
-          <div className="metric-value">4500</div>
+          <div className="metric-value">{shopPerformance.totalRevenue}</div>
           <div className="metric-label">Total Revenue</div>
         </div>
 
         <div className="metric">
-          <div className="metric-value">180</div>
+          <div className="metric-value">{shopPerformance.soldProducts}</div>
           <div className="metric-label">Sold Products</div>
         </div>
 
         <div className="metric">
-          <div className="metric-value">4</div>
+          <div className="metric-value">{shopPerformance.cancelledOrders}</div>
           <div className="metric-label">Cancelled Order</div>
         </div>
 
