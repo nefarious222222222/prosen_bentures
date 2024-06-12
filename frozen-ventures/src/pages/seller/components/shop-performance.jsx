@@ -20,7 +20,14 @@ export const ShopPerformance = () => {
         const response = await axios.get(
           `http://localhost/prosen_bentures/api/manageShopPerformance.php?shopId=${user.shopId}`
         );
-        setShopPerformance(response.data);
+        const data = response.data;
+
+        setShopPerformance({
+          totalRevenue: data.totalRevenue ?? 0,
+          soldProducts: data.soldProducts ?? 0,
+          cancelledOrders: data.cancelledOrders ?? 0,
+          requestRefund: data.requestRefund ?? 0,
+        });
       } catch (error) {
         console.error("Error fetching shop performance:", error);
       }
@@ -50,7 +57,7 @@ export const ShopPerformance = () => {
         </div>
 
         <div className="metric">
-          <div className="metric-value">0</div>
+          <div className="metric-value">{shopPerformance.requestRefund}</div>
           <div className="metric-label">Request Refund</div>
         </div>
       </div>
