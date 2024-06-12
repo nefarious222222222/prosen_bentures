@@ -154,7 +154,7 @@ export const Shop = () => {
           className={activeFilter === "No Milk" ? "active" : ""}
           onClick={filterProductsNoMilk}
         >
-          No Milk
+          Non Dairy
         </button>
         <button
           className={activeFilter === "No Eggs" ? "active" : ""}
