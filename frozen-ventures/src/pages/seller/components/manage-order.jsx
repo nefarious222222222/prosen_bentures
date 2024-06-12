@@ -40,6 +40,7 @@ export const ManageOrder = () => {
   const [selectedOrderId, setSelectedOrderId] = useState("");
   const [selectedPriceId, setSelectedPriceId] = useState("");
   const [productQuantity, setProductQuantity] = useState("");
+  const [totalPrice, setTotalPrice] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
@@ -71,10 +72,11 @@ export const ManageOrder = () => {
     setActiveItem(item);
   };
 
-  const handleAcceptOrderClick = (orderId, priceId, productQuantity) => {
+  const handleAcceptOrderClick = (orderId, priceId, productQuantity, totalPrice) => {
     setSelectedOrderId(orderId);
     setSelectedPriceId(priceId);
     setProductQuantity(productQuantity);
+    setTotalPrice(totalPrice);
     setConfirmationTitle("Confirm Order");
     setConfirmationMessage("Are you sure you want to accept this order?");
     setShowConfirmationPopUp(true);
@@ -127,6 +129,27 @@ export const ManageOrder = () => {
                 setErrorMessage(
                   "Failed to update order status. Please try again."
                 );
+              });
+
+            const performanceTotalPrice = parseFloat(totalPrice);
+            const soldQuantity = parseInt(productQuantity);
+
+            const performanceData = {
+              shopId: user.shopId,
+              totalRevenue: performanceTotalPrice,
+              soldProducts: soldQuantity,
+            };
+
+            axios
+              .put(
+                "http://localhost/prosen_bentures/api/manageShopPerformance.php",
+                performanceData
+              )
+              .then((response) => {
+                console.log("Shop performance updated:", response.data);
+              })
+              .catch((error) => {
+                console.error("Error updating shop performance:", error);
               });
           } else {
             setErrorMessage(response.data.message);
@@ -236,7 +259,8 @@ export const ManageOrder = () => {
                       handleAcceptOrderClick(
                         order.orderID,
                         order.priceID,
-                        order.quantity
+                        order.quantity,
+                        order.totalPrice.toFixed(2)
                       );
                     }}
                   >
