@@ -252,7 +252,7 @@ export const IndividualProduct = ({ productId, cancelClick }) => {
                   </select>
                 </div>
               </div>
-
+              <p className="allergen"><span>Allergen: </span>{product.productAllergen}</p>
               <p className="description">{product.productDescription}</p>
             </div>
           </div>
