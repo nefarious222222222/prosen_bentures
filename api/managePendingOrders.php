@@ -18,7 +18,7 @@ switch ($method) {
                 INNER JOIN shop_info si ON pi.shopID = si.shopID
                 INNER JOIN product_price pp ON uo.priceID = pp.priceID
                 WHERE uo.accountID = :accountId
-                ORDER BY uo.orderDate";
+                ORDER BY uo.orderDate DESC";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':accountId', $accountId);
