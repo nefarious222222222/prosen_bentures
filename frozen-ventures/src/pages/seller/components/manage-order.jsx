@@ -72,7 +72,12 @@ export const ManageOrder = () => {
     setActiveItem(item);
   };
 
-  const handleAcceptOrderClick = (orderId, priceId, productQuantity, totalPrice) => {
+  const handleAcceptOrderClick = (
+    orderId,
+    priceId,
+    productQuantity,
+    totalPrice
+  ) => {
     setSelectedOrderId(orderId);
     setSelectedPriceId(priceId);
     setProductQuantity(productQuantity);
@@ -141,7 +146,7 @@ export const ManageOrder = () => {
             };
 
             axios
-              .put(
+              .post(
                 "http://localhost/prosen_bentures/api/manageShopPerformance.php",
                 performanceData
               )
@@ -172,6 +177,23 @@ export const ManageOrder = () => {
         .then((response) => {
           setSuccessMessage(response.data.message);
           fetchOrders();
+
+          const performanceData = {
+            shopId: user.shopId,
+            cancelledOrders: 1,
+          };
+
+          axios
+            .post(
+              "http://localhost/prosen_bentures/api/manageShopPerformance.php",
+              performanceData
+            )
+            .then((response) => {
+              console.log("Shop performance updated:", response.data);
+            })
+            .catch((error) => {
+              console.error("Error updating shop performance:", error);
+            });
         })
         .catch((error) => {
           console.error("Error updating order status:", error);

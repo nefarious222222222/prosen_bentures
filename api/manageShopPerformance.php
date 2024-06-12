@@ -9,7 +9,27 @@ $conn = $objDb->connect();
 
 $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
-    case 'PUT':
+    case 'GET':
+        $shopId = isset($_GET['shopId']) ? $_GET['shopId'] : '';
+
+        if ($shopId) {
+            $sqlSelect = "SELECT * FROM shop_performance WHERE shopId = :shopId";
+            $stmtSelect = $conn->prepare($sqlSelect);
+            $stmtSelect->bindParam(':shopId', $shopId);
+            $stmtSelect->execute();
+            $shopPerformance = $stmtSelect->fetch(PDO::FETCH_ASSOC);
+
+            if ($shopPerformance) {
+                echo json_encode($shopPerformance);
+            } else {
+                echo json_encode(["message" => "No performance data found for the given shopId"]);
+            }
+        } else {
+            echo json_encode(["message" => "shopId is required"]);
+        }
+        break;
+        
+    case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);
         $shopId = isset($data['shopId']) ? $data['shopId'] : '';
 
@@ -51,5 +71,6 @@ switch ($method) {
             echo json_encode(["message" => "shopId is required"]);
         }
         break;
+
 }
 ?>
