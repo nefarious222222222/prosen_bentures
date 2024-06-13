@@ -249,7 +249,7 @@ export const ManageProducts = () => {
             const imagePath = uploadResponse.data.imagePath;
             setNewProductData((prevData) => ({
               ...prevData,
-              productImage: imagePath,
+              productImage: imageFile.name,
             }));
 
             axios
@@ -309,20 +309,39 @@ export const ManageProducts = () => {
 
     axios
       .post(
-        "http://localhost/prosen_bentures/api/manageProduct.php",
-        editProductData
-      )
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.status === 1) {
-          setSuccessMessage(response.data.message);
-        } else {
-          setErrorMessage(response.data.message);
+        "http://localhost/prosen_bentures/api/uploadProductImage.php",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setErrorMessage("An error occurred while updating the product");
+      )
+      .then((uploadResponse) => {
+        if (uploadResponse.data.status === 1) {
+          const imagePath = uploadResponse.data.imagePath;
+          setEditProductData((prevData) => ({
+            ...prevData,
+            productImage: imageFile.name,
+          }));
+          axios
+            .post(
+              "http://localhost/prosen_bentures/api/manageProduct.php",
+              editProductData
+            )
+            .then((response) => {
+              console.log(response.data);
+              if (response.data.status === 1) {
+                setSuccessMessage(response.data.message);
+              } else {
+                setErrorMessage(response.data.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              setErrorMessage("An error occurred while updating the product");
+            });
+        }
       });
 
     setTimeout(() => {
