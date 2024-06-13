@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../assets/styles/components.css";
 
 const capitalizeFirstLetter = (string) => {
@@ -13,10 +13,23 @@ export const EditProduct = ({
   editTitle,
   editProductData,
   handleEditFormChange,
+  handleImageChange,
   handleCancelClick,
   handleEditClick,
   handleSubmitEdit,
 }) => {
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+
+  console.log(editProductData)
+  useEffect(() => {
+    if (editProductData.productImage) {
+      setImagePreview(
+        `http://localhost/prosen_bentures/api/productImages/${editProductData.productImage}`
+      );
+    }
+  }, [editProductData.productImage]);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     const filteredValue = filterNumbers(value);
@@ -28,21 +41,16 @@ export const EditProduct = ({
     });
   };
 
-  const handleAllergenChange = (e) => {
-    if (e.key === " ") {
-      e.preventDefault();
-      const currentValue = editProductData.productAllergen;
-      const newValue = currentValue + ", ";
-      const capitalizedValue = newValue.replace(
-        /, (\w)/g,
-        (_, letter) => `, ${letter.toUpperCase()}`
-      );
-      handleEditFormChange({
-        target: {
-          name: "productAllergen",
-          value: capitalizedValue,
-        },
-      });
+  const handleImageInputChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+
+      img.onload = () => {
+        setImageFile(file);
+        setImagePreview(img.src);
+      };
     }
   };
 
@@ -50,6 +58,25 @@ export const EditProduct = ({
     <div className="edit-product">
       <h2>{editTitle}</h2>
       <form onSubmit={handleSubmitEdit}>
+        <div className="input-image">
+          <div className="input-field">
+            <label htmlFor="productImage">Product Image:</label>
+            <input
+              type="file"
+              id="productImage"
+              name="productImage"
+              onChange={handleImageInputChange}
+              accept=".jpg, .jpeg, .png"
+            />
+          </div>
+
+          <div className="image-preview">
+            {imagePreview && (
+              <img src={imagePreview} alt="Product Preview" />
+            )}
+          </div>
+        </div>
+
         <div className="input-field">
           <label htmlFor="productBrand">Product Brand:</label>
           <input
@@ -97,7 +124,6 @@ export const EditProduct = ({
             name="productAllergen"
             value={editProductData.productAllergen}
             onChange={handleChange}
-            onKeyDown={handleAllergenChange}
           ></textarea>
         </div>
         <div className="input-field">
@@ -109,15 +135,16 @@ export const EditProduct = ({
             onChange={handleChange}
           ></textarea>
         </div>
+
+        <div className="button-group">
+          <button type="button" onClick={handleCancelClick}>
+            Cancel
+          </button>
+          <button type="button" onClick={handleEditClick}>
+            Edit
+          </button>
+        </div>
       </form>
-      <div className="button-group">
-        <button type="button" onClick={handleCancelClick}>
-          Cancel
-        </button>
-        <button type="button" onClick={handleEditClick}>
-          Edit
-        </button>
-      </div>
     </div>
   );
 };

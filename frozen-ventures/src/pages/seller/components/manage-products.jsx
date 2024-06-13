@@ -172,6 +172,7 @@ export const ManageProducts = () => {
     setEditProductData({
       shopID: shopId,
       productID: product.productID,
+      productImage: product.productImage,
       productBrand: product.productBrand,
       productName: product.productName,
       productFlavor: product.productFlavor,
