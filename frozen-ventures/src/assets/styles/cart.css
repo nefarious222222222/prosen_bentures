@@ -43,6 +43,7 @@
       h2 {
         font-size: 2rem;
         font-weight: 700;
+        padding-bottom: 20px;
       }
 
       ul {
@@ -74,6 +75,7 @@
       .checkout-total {
         display: flex;
         justify-content: space-between;
+        padding: 10px 0;
 
         p:first-child {
           font-size: 1.25rem;

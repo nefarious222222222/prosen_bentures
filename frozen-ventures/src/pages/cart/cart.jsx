@@ -288,7 +288,7 @@ export const Cart = () => {
 
             <div className="checkout-container">
               <div className="checkout">
-                <h2>Order Summary</h2>
+                <h2>Cart Summary</h2>
                 <ul>
                   {cartItems.map((item) => (
                     <li key={item.productID}>
