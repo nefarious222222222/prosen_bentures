@@ -19,6 +19,7 @@ export const AddProduct = ({
   handleCancelAddProductClick,
   handleAddProductClick,
 }) => {
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     const filteredValue = filterNumbers(value);

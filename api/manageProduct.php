@@ -18,28 +18,30 @@ switch ($method) {
     case 'POST':
         $data = json_decode(file_get_contents('php://input'));
 
-        if (isset($data->shopID) && isset($data->productID) && isset($data->productBrand) && isset($data->productName) && isset($data->productFlavor) && isset($data->productDescription) && isset($data->productAllergen)) {
+        if (isset($data->shopID) && isset($data->productID) && isset($data->productImage) && isset($data->productBrand) && isset($data->productName) && isset($data->productFlavor) && isset($data->productDescription) && isset($data->productAllergen)) {
             $shopID = $data->shopID;
             $productId = $data->productID;
+            $productImage = $data->productImage;
             $productBrand = $data->productBrand;
             $productName = $data->productName;
             $productFlavor = $data->productFlavor;
             $productDescription = $data->productDescription;
-            $productAllergen = $data->productAllergen; // Added productAllergen
+            $productAllergen = $data->productAllergen;
 
-            if (empty($shopID) || empty($productId) || empty($productBrand) || empty($productName) || empty($productDescription) || empty($productFlavor) || empty($productAllergen)) {
+            if (empty($shopID) || empty($productId) || empty($productImage) || empty($productBrand) || empty($productName) || empty($productDescription) || empty($productFlavor) || empty($productAllergen)) {
                 $response = ["status" => 0, "message" => "All fields are required"];
             } else {
-                $sql = "UPDATE product_info SET productBrand = :productBrand, productName = :productName, productFlavor = :productFlavor, productDescription = :productDescription, productAllergen = :productAllergen WHERE productID = :productId AND shopID = :shopId";
+                $sql = "UPDATE product_info SET productImage = :productImage, productBrand = :productBrand, productName = :productName, productFlavor = :productFlavor, productDescription = :productDescription, productAllergen = :productAllergen WHERE productID = :productId AND shopID = :shopId";
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindParam(':productId', $productId);
                 $stmt->bindParam(':shopId', $shopID);
+                $stmt->bindParam(':productImage', $productImage);
                 $stmt->bindParam(':productBrand', $productBrand);
                 $stmt->bindParam(':productName', $productName);
                 $stmt->bindParam(':productFlavor', $productFlavor);
                 $stmt->bindParam(':productDescription', $productDescription);
-                $stmt->bindParam(':productAllergen', $productAllergen); // Binding productAllergen
+                $stmt->bindParam(':productAllergen', $productAllergen);
 
                 if ($stmt->execute()) {
                     $rowCount = $stmt->rowCount();
@@ -94,7 +96,7 @@ switch ($method) {
             if (empty($shopID) || empty($productBrand) || empty($productName) || empty($productDescription) || empty($productImage) || empty($productFlavor) || empty($productAllergen)) {
                 $response = ['status' => 0, 'message' => 'All fields are required.'];
             } else {
-                $sql = "INSERT INTO product_Info (productID, shopID, productBrand, productName, productDescription, productImage, productFlavor, productAllergen, dateAdded, status) 
+                $sql = "INSERT INTO product_info (productID, shopID, productBrand, productName, productDescription, productImage, productFlavor, productAllergen, dateAdded, status) 
                         VALUES (null, :shopID, :productBrand, :productName, :productDescription, :productImage, :productFlavor, :productAllergen, CURRENT_TIMESTAMP, '1')";
                 $stmt = $conn->prepare($sql);
 

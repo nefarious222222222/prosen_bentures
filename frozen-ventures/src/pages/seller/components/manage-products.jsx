@@ -59,6 +59,7 @@ export const ManageProducts = () => {
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
+  const [imageEditPreview, setImageEditPreview] = useState("");
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -99,6 +100,30 @@ export const ManageProducts = () => {
           }));
           setImageFile(file);
           setImagePreview(img.src);
+          setErrorMessage("");
+        } else {
+          setErrorMessage("Please select a square image 1:1 ratio");
+        }
+      };
+    } else {
+      setErrorMessage("Please select a valid image file jpg, jpeg, png");
+    }
+  };
+
+  const handleEditImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+
+      img.onload = () => {
+        if (img.width === img.height) {
+          setEditProductData((prevData) => ({
+            ...prevData,
+            productImage: file.name,
+          }));
+          setImageFile(file);
+          setImageEditPreview(img.src);
           setErrorMessage("");
         } else {
           setErrorMessage("Please select a square image 1:1 ratio");
@@ -179,6 +204,9 @@ export const ManageProducts = () => {
       productAllergen: product.productAllergen,
       productDescription: product.productDescription,
     });
+    setImageEditPreview(
+      `http://localhost/prosen_bentures/api/productImages/${product.productImage}`
+    );
     setShowEditProductPopup(true);
   };
 
@@ -273,6 +301,11 @@ export const ManageProducts = () => {
       setErrorMessage("Product ID is missing");
       return;
     }
+
+    const formData = new FormData();
+    formData.append("productImage", imageFile);
+    formData.append("productImageName", imageFile.name);
+    formData.append("productImageType", imageFile.type);
 
     axios
       .post(
@@ -408,13 +441,13 @@ export const ManageProducts = () => {
           newProductData={newProductData}
           errorMessage={errorMessage}
           successMessage={successMessage}
-          handleImageChange={handleImageChange}
-          imagePreview={imagePreview}
           handleSubmit={handleSubmitAddProduct}
           handleProductFormChange={handleProductFormChange}
           handleCancelAddProductClick={handleCancelAddProduct}
           handleAddProductClick={handleAddProductClick}
           setShowAddProductPopup={setShowAddProductPopup}
+          handleImageChange={handleImageChange}
+          imagePreview={imagePreview}
         />
       )}
 
@@ -428,6 +461,8 @@ export const ManageProducts = () => {
           handleCancelClick={handleCancelEditProductClick}
           handleEditClick={handleEditProductClick}
           handleSubmitEdit={handleSubmitEditProduct}
+          handleEditImageChange={handleEditImageChange}
+          imageEditPreview={imageEditPreview}
         />
       )}
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "../assets/styles/components.css";
 
 const capitalizeFirstLetter = (string) => {
@@ -13,23 +13,12 @@ export const EditProduct = ({
   editTitle,
   editProductData,
   handleEditFormChange,
-  handleImageChange,
+  handleEditImageChange,
+  imageEditPreview,
   handleCancelClick,
   handleEditClick,
   handleSubmitEdit,
 }) => {
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState("");
-
-  console.log(editProductData)
-  useEffect(() => {
-    if (editProductData.productImage) {
-      setImagePreview(
-        `http://localhost/prosen_bentures/api/productImages/${editProductData.productImage}`
-      );
-    }
-  }, [editProductData.productImage]);
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     const filteredValue = filterNumbers(value);
@@ -39,19 +28,6 @@ export const EditProduct = ({
         value: capitalizeFirstLetter(filteredValue),
       },
     });
-  };
-
-  const handleImageInputChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-
-      img.onload = () => {
-        setImageFile(file);
-        setImagePreview(img.src);
-      };
-    }
   };
 
   return (
@@ -65,14 +41,14 @@ export const EditProduct = ({
               type="file"
               id="productImage"
               name="productImage"
-              onChange={handleImageInputChange}
+              onChange={handleEditImageChange}
               accept=".jpg, .jpeg, .png"
             />
           </div>
 
           <div className="image-preview">
-            {imagePreview && (
-              <img src={imagePreview} alt="Product Preview" />
+            {imageEditPreview && (
+              <img src={imageEditPreview} alt="Product Preview" />
             )}
           </div>
         </div>
