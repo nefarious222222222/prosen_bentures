@@ -4,48 +4,10 @@
   flex-direction: column;
   justify-content: space-between;
 
-  .cart-header {
-    display: flex;
-    justify-content: space-between;
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--color-violet);
-    }
-
-    .checkout {
-      display: flex;
-      align-items: center;
-      gap: 2vw;
-
-      p,
-      span {
-        font-size: 1.5rem;
-        font-weight: 500;
-
-        span {
-          font-weight: 700;
-        }
-      }
-
-      button {
-        font-size: 1.25rem;
-        font-weight: 800;
-        padding: 10px 20px;
-        border-radius: 10px;
-        border: solid 2px var(--color-violet);
-        color: var(--color-violet);
-        cursor: pointer;
-        background-color: white;
-        transition: all 0.3s ease;
-      }
-
-      button:hover {
-        color: white;
-        background-color: var(--color-violet);
-      }
-    }
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-violet);
   }
 
   .cart-container {
@@ -64,6 +26,84 @@
       .item {
         width: 300px;
         text-align: center;
+      }
+    }
+  }
+
+  .checkout-container {
+    display: flex;
+    justify-content: flex-end;
+
+    .checkout {
+      padding: 30px 40px;
+      width: 20vw;
+      border-radius: 20px;
+      background-color: var(--color-pale-violet);
+
+      h2 {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+
+      ul {
+        list-style-type: none;
+      }
+
+      li:last-child {
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: solid 2px black;
+      }
+
+      .price {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+
+        h3 {
+          font-size: 1.25rem;
+          font-weight: 700;
+        }
+      }
+
+      .checkout-total {
+        display: flex;
+        justify-content: space-between;
+
+        p:first-child {
+          font-size: 1.25rem;
+          font-weight: 700;
+        }
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 30px;
+
+        button {
+          width: 100%;
+          padding: 10px;
+          border: none;
+          border-radius: 5px;
+          font-size: 1.25rem;
+          font-weight: 800;
+          cursor: pointer;
+          border: solid 2px var(--color-violet);
+          color: var(--color-white);
+          background-color: var(--color-violet);
+          transition: all 0.3s ease;
+        }
+
+        button:hover {
+          background-color: var(--color-pale-violet);
+          color: var(--color-violet);
+        }
       }
     }
   }
@@ -118,39 +158,39 @@
       display: flex;
       justify-content: flex-start;
       gap: 20px;
-  
+
       img {
         width: 200px;
         border-radius: 20px;
       }
-  
+
       .description {
         height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
-  
+
         p {
           font-weight: 500;
         }
-  
+
         p:first-child {
           font-size: 1.5rem;
           font-weight: 600;
         }
       }
     }
-  
+
     .quantity {
       display: flex;
       gap: 10px;
-  
+
       button {
         border: none;
         background: none;
         cursor: pointer;
       }
-  
+
       input {
         border: none;
         outline: none;
@@ -160,12 +200,12 @@
         font-size: 1.5rem;
         font-weight: 600;
       }
-  
+
       input:focus {
         outline: 2px solid var(--color-violet);
       }
     }
-  
+
     .delete {
       button {
         border: none;
@@ -176,18 +216,18 @@
         cursor: pointer;
         transition: all 0.3s ease;
       }
-  
+
       button:hover {
         background-color: var(--color-pale-violet);
         color: var(--color-violet);
       }
     }
-  
+
     .button-container {
       width: 100%;
       display: flex;
       justify-content: space-evenly;
-  
+
       button {
         border: none;
         border-radius: 5px;
@@ -199,7 +239,7 @@
         background-color: var(--color-pale-stone);
         transition: all 0.3s ease;
       }
-  
+
       button:hover {
         color: var(--color-pale-stone);
         background-color: var(--color-violet);

@@ -268,6 +268,7 @@
         border-radius: 5px;
         font-size: 1.25rem;
         font-weight: 800;
+        cursor: pointer;
         border: solid 2px var(--color-violet);
         color: var(--color-white);
         background-color: var(--color-violet);
@@ -277,7 +278,6 @@
       button:hover {
         background-color: var(--color-pale-violet);
         color: var(--color-violet);
-        cursor: pointer;
       }
     }
   }

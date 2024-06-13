@@ -39,11 +39,19 @@ export const Cart = () => {
     fetchCartItems();
     const intervalId = setInterval(fetchCartItems, 1000);
     return () => clearInterval(intervalId);
-  }, [user.accountId, setCartItems]);
+  }, [user.accountId]);
 
-  const updateSubTotal = (subTotal) => {
-    setCartSubTotal(subTotal);
-  };
+  useEffect(() => {
+    const calculateSubTotal = () => {
+      const subTotal = cartItems.reduce(
+        (acc, item) => acc + parseFloat(item.productPrice) * item.quantity,
+        0
+      );
+      setCartSubTotal(subTotal);
+    };
+
+    calculateSubTotal();
+  }, [cartItems]);
 
   const handleCheckout = async () => {
     try {
@@ -252,23 +260,7 @@ export const Cart = () => {
       )}
 
       <div className="cart-container">
-        <div className="cart-header">
-          <h1>Your Cart Items</h1>
-
-          <div className="checkout">
-            <p>
-              <span>Sub Total: </span>Php {cartSubTotal.toFixed(2)}
-            </p>
-
-            <button
-              className="checkOutButton"
-              onClick={handleCheckout}
-              disabled={cartSubTotal === 0}
-            >
-              Check Out
-            </button>
-          </div>
-        </div>
+        <h1>Your Cart Items</h1>
 
         <div className="cart-item">
           <table>
@@ -284,14 +276,57 @@ export const Cart = () => {
         </div>
 
         {cartItems.length > 0 ? (
-          <div className="cart-items">
-            <CartItems
-              cartItems={cartItems}
-              handleQuantityChange={handleQuantityChange}
-              updateSubTotal={updateSubTotal}
-              handleDeleteClick={handleDeleteClick}
-            />
-          </div>
+          <>
+            <div className="cart-items">
+              <CartItems
+                cartItems={cartItems}
+                handleQuantityChange={handleQuantityChange}
+                updateSubTotal={setCartSubTotal}
+                handleDeleteClick={handleDeleteClick}
+              />
+            </div>
+
+            <div className="checkout-container">
+              <div className="checkout">
+                <h2>Order Summary</h2>
+                <ul>
+                  {cartItems.map((item) => (
+                    <li key={item.productID}>
+                      <div className="summary-item">
+                        <div className="item-info">
+                          <h3>{item.productName}</h3>
+                          <p>Quantity: {item.quantity}</p>
+                        </div>
+                        <div className="item-price">
+                          <p className="price">
+                            Php{" "}
+                            {(
+                              parseFloat(item.productPrice) * item.quantity
+                            ).toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="checkout-total">
+                  <p>Sub Total:</p>
+                  <p className="price">Php {cartSubTotal.toFixed(2)}</p>
+                </div>
+
+                <div className="button-container">
+                  <button
+                    className="checkOutButton"
+                    onClick={handleCheckout}
+                    disabled={cartSubTotal === 0}
+                  >
+                    Check Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
         ) : (
           <div key="empty-cart" className="empty-cart">
             <div className="message-one">
