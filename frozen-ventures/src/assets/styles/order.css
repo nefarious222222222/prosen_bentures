@@ -3,49 +3,10 @@
   flex-direction: column;
   gap: 30px;
 
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    h2 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--color-violet);
-    }
-
-    .tb-container {
-      display: flex;
-      align-items: center;
-      gap: 30px;
-
-      p {
-        font-size: 1.5rem;
-        font-weight: 700;
-      }
-
-      span {
-        font-size: 1.5rem;
-        font-weight: 500;
-      }
-
-      button {
-        border: none;
-        border-radius: 5px;
-        padding: 10px 50px;
-        font-weight: 900;
-        font-size: 1.25rem;
-        color: var(--color-violet);
-        background-color: var(--color-pale-stone);
-        transition: all 0.3s ease;
-      }
-
-      button:hover {
-        color: var(--color-pale-stone);
-        background-color: var(--color-violet);
-        cursor: pointer;
-      }
-    }
+  h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-violet);
   }
 
   .informations {
@@ -277,10 +238,7 @@
         color: var(--color-violet);
       }
 
-      .sub-total,
-      .shipping,
-      .fee,
-      .total {
+      .sub-total, .total {
         display: flex;
         justify-content: space-between;
         font-weight: 500;

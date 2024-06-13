@@ -17,6 +17,9 @@ const formatDate = (date) => {
 };
 
 export const Order = () => {
+  const VAT_RATE = 0.12;
+  const SERVICE_FEE_RATE = 0.05;
+
   const { user } = useContext(UserContext);
   const { orderProducts, clearOrder } = useContext(OrderContext);
   const { products } = orderProducts || {};
@@ -38,13 +41,13 @@ export const Order = () => {
   const [shippingMode, setShippingMode] = useState("pickup");
 
   let totalProductAmount = 0;
-  let productFee = 0;
+  let serviceFee = 0;
 
   if (products) {
     for (const productId in products) {
       const product = products[productId];
       totalProductAmount += product.productPrice * product.quantity;
-      productFee += product.productPrice * product.quantity * (0.045 + 0.0012);
+      serviceFee += product.productPrice * product.quantity * SERVICE_FEE_RATE;
     }
   }
 
@@ -66,10 +69,8 @@ export const Order = () => {
 
   const shippingCost =
     shippingMode === "pickup" ? 0 : 10 * Object.keys(products || {}).length;
-  const totalOrderCost =
-    parseFloat(totalProductAmount) +
-    parseFloat(shippingCost) +
-    parseFloat(productFee);
+  const vat = (totalProductAmount + shippingCost + serviceFee) * VAT_RATE;
+  const totalOrderCost = totalProductAmount + shippingCost + serviceFee + vat;
 
   const handleEditUserInfo = () => {
     navigate("/menu");
@@ -139,12 +140,10 @@ export const Order = () => {
     for (const productId in products) {
       const product = products[productId];
 
-      const productFee =
-        product.productPrice * product.quantity * (0.045 + 0.0012);
-      const shippingFee =
-        shippingMode === "delivery" ? 10 * product.quantity : 0;
-      const totalPrice =
-        Number(product.subTotal) + Number(productFee) + Number(shippingFee);
+      const serviceFee = product.productPrice * product.quantity * SERVICE_FEE_RATE;
+      const shippingFee = shippingMode === "delivery" ? 10 * product.quantity : 0;
+      const vat = (Number(product.subTotal) + serviceFee + shippingFee) * VAT_RATE;
+      const totalPrice = Number(product.subTotal) + serviceFee + shippingFee + vat;
 
       const orderData = {
         accountId: user.accountId,
@@ -209,20 +208,7 @@ export const Order = () => {
           handleConfirm={handlePlaceOrder}
         />
       )}
-      <header>
-        <h2>Order Confirmation</h2>
-
-        <div className="tb-container">
-          {totalProductAmount > 0 ? (
-            <>
-              <p>
-                Order Total: <span>Php {totalOrderCost.toFixed(2)}</span>
-              </p>
-              <button onClick={handlePlaceOrderClick}>Place Order</button>
-            </>
-          ) : null}
-        </div>
-      </header>
+      <h2>Order Confirmation</h2>
 
       <div className="informations">
         <div className="info">
@@ -358,13 +344,17 @@ export const Order = () => {
             <p className="label">Sub Total:</p>
             <p className="price">Php {totalProductAmount.toFixed(2)}</p>
           </div>
-          <div className="shipping">
+          <div className="sub-total">
             <p className="label">Shipping Fee:</p>
             <p className="price">Php {shippingCost.toFixed(2)}</p>
           </div>
-          <div className="fee">
+          <div className="sub-total">
             <p className="label">Service Fee:</p>
-            <p className="price">Php {productFee.toFixed(2)}</p>
+            <p className="price">Php {serviceFee.toFixed(2)}</p>
+          </div>
+          <div className="sub-total">
+            <p className="label">VAT:</p>
+            <p className="price">Php {vat.toFixed(2)}</p>
           </div>
           <div className="line"></div>
           <div className="total">
