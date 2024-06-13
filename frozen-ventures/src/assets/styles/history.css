@@ -47,6 +47,7 @@
       /* Pending order css */
       .pending-order {
         .order-item {
+          position: relative;
           display: flex;
           flex-direction: column;
           margin: 40px 0;
@@ -171,6 +172,26 @@
         font-weight: 700;
       }
     }
+  }
+
+  .review-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 8px 20px;
+    cursor: pointer;
+    border: solid 2px var(--color-violet);
+    border-radius: 5px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    background-color: var(--color-violet);
+    color: var(--color-white);
+    transition: all 0.3s ease;
+  }
+
+  .review-btn:hover {
+    background-color: var(--color-white);
+    color: var(--color-violet);
   }
 
   .status-pending {

@@ -1,0 +1,77 @@
+.review-product {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: 25vw;
+  gap: 40px;
+  padding: 30px 40px;
+  border-radius: 20px;
+  border: solid 3px var(--color-violet);
+  background-color: var(--color-white);
+  z-index: 998;
+
+  .rate-container {
+    display: flex;
+    justify-content: space-between;
+
+    .filled {
+      cursor: pointer;
+      color: gold;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .input-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      label {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      textarea {
+        resize: none;
+        padding: 5px;
+        height: 15vh;
+        outline: none;
+        border: none;
+        background-color: var(--color-light-gray);
+        border-radius: 5px;
+        border-bottom: solid 2px var(--color-violet);
+        border-right: solid 2px var(--color-violet);
+      }
+    }
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      padding: 8px 20px;
+      width: 10vw;
+      cursor: pointer;
+      border: solid 2px var(--color-violet);
+      border-radius: 5px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      background-color: var(--color-violet);
+      color: var(--color-white);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: var(--color-white);
+        color: var(--color-violet);
+      }
+    }
+  }
+}

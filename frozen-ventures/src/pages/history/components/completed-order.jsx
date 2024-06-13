@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { UserContext } from "../../../context/user-context";
+import { ReviewProduct } from "../../../components/review-product";
 
 export const CompleteOrder = ({ orders }) => {
   const capitalizeFirstLetter = (string) => {
@@ -29,8 +31,67 @@ export const CompleteOrder = ({ orders }) => {
     return `${month} ${parseInt(day, 10)}, ${year}`;
   };
 
+  const { user } = useContext(UserContext);
+  const [showReviewProduct, setShowReviewProduct] = useState(false);
+  const [currentReview, setCurrentReview] = useState({});
+  const [reviewData, setReviewData] = useState({
+    accountId: "",
+    productId: "",
+    rating: 0,
+    feedback: "",
+  });
+
+  const handleReviewProduct = (order) => {
+    setCurrentReview(order);
+    setReviewData({
+      accountId: user.accountId,
+      productId: order.productID,
+      rating: 0,
+      feedback: "",
+    });
+    setShowReviewProduct(true);
+  };
+
+  const handleCancelReview = () => {
+    setShowReviewProduct(false);
+    setReviewData({
+      accountId: "",
+      productId: "",
+      rating: 0,
+      feedback: "",
+    });
+  };
+
+  const handleSaveReview = () => {
+    console.log("Review saved:", reviewData);
+    handleCancelReview();
+  };
+
+  const handleSubmitReview = (e) => {
+    e.preventDefault();
+    handleSaveReview();
+  };
+
+  const handleRate = (rating) => {
+    setReviewData({ ...reviewData, rating });
+  };
+
+  const handleFeedbackChange = (e) => {
+    setReviewData({ ...reviewData, feedback: e.target.value });
+  };
+
   return (
     <div className="pending-order">
+      {showReviewProduct && (
+        <ReviewProduct
+          handleCancelReview={handleCancelReview}
+          handleSaveReview={handleSaveReview}
+          handleRate={handleRate}
+          reviewData={reviewData}
+          handleSubmitReview={handleSubmitReview}
+          handleFeedbackChange={handleFeedbackChange}
+        />
+      )}
       {orders.length > 0
         ? orders.map((order) => (
             <div key={order.orderID} className="order-item">
@@ -93,7 +154,16 @@ export const CompleteOrder = ({ orders }) => {
                 </div>
               </div>
 
-              {order.status == "order cancelled" && (
+              {order.status === "order received" && (
+                <button
+                  className="review-btn"
+                  onClick={() => handleReviewProduct(order)}
+                >
+                  Review Product
+                </button>
+              )}
+
+              {order.status === "order cancelled" && (
                 <div className="order-cancelled">
                   <p>Reason For Cancellation:</p>
                   <p>{order.cancelReason}</p>
