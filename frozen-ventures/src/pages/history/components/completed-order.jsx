@@ -72,8 +72,10 @@ export const CompleteOrder = ({ orders }) => {
     });
   };
 
+  console.log(orders)
+
   const handleSaveReview = () => {
-    setIsSubmitting(true); // Disable the button during the request
+    setIsSubmitting(true);
     axios
       .post("http://localhost/prosen_bentures/api/manageReview.php", reviewData)
       .then((response) => {
@@ -195,7 +197,7 @@ export const CompleteOrder = ({ orders }) => {
                 </div>
               </div>
 
-              {order.status === "order received" && (
+              {(order.status === "order received" && order.rating == null)  && (
                 <button
                   className="review-btn"
                   onClick={() => handleReviewProduct(order)}
