@@ -57,7 +57,11 @@ export const Profile = () => {
           province: userData.province,
           zip: userData.zip,
         });
-        setProfileImagePreview(userData.profileImage);
+        setProfileImagePreview(
+          userData.profileImage
+            ? `http://localhost/prosen_bentures/api/profileImages/${userData.profileImage}`
+            : null
+        );
         setEmail(userData.email);
         setPhone(userData.phone);
         setUserRole(userData.userRole);
@@ -119,11 +123,17 @@ export const Profile = () => {
   const handleConfirmEditShow = () => {
     setShowConfirmationPopup(true);
   };
-  
+
   const handleConfirmEditClose = () => {
     setEditable(false);
     setShowConfirmationPopup(false);
-    setProfileImagePreview(initialState.profileImage);
+
+    setProfileImagePreview(
+      initialState.profileImage
+        ? `http://localhost/prosen_bentures/api/profileImages/${initialState.profileImage}`
+        : null
+    );
+
     setEmail(initialState.email);
     setPhone(initialState.phone);
     setUserRole(initialState.userRole);
@@ -151,8 +161,8 @@ export const Profile = () => {
         );
       }
     }
+
     setProfileImage(null);
-    setProfileImagePreview(null);
   };
 
   const handleSaveEdit = () => {
@@ -248,8 +258,26 @@ export const Profile = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setProfileImage(file);
-    setProfileImagePreview(URL.createObjectURL(file));
+
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          if (img.width === img.height) {
+            setProfileImage(file);
+            setProfileImagePreview(URL.createObjectURL(file));
+          } else {
+            setErrorMessage("Please select a square image (1:1 aspect ratio).");
+            setTimeout(() => {
+              setErrorMessage("");
+            }, 3000);
+          }
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleProfileImageClick = () => {
@@ -272,7 +300,7 @@ export const Profile = () => {
         <div className="user-profile">
           {profileImagePreview ? (
             <img
-              src={`http://localhost/prosen_bentures/api/profileImages/${profileImagePreview}`}
+              src={profileImagePreview}
               alt="Profile"
               className="profile-image"
               onClick={handleProfileImageClick}
