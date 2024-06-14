@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ErrorMessage } from "../../../components/error-message";
 import { SuccessMessage } from "../../../components/success-message";
+import municipalitiesInBataan from "../../../municipalities";
 
 export const SignUp = () => {
   const [inputPass, setInputPass] = useState("");
@@ -17,7 +18,7 @@ export const SignUp = () => {
     street: "",
     barangay: "",
     municipality: "",
-    province: "",
+    province: "Bataan", // Hardcoded for Bataan
     zipCode: "",
   });
   const [currentStep, setCurrentStep] = useState(1);
@@ -25,6 +26,43 @@ export const SignUp = () => {
   const [message, setMessage] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [selectedMunicipality, setSelectedMunicipality] = useState("");
+  const [barangays, setBarangays] = useState([]);
+
+  // Initialize municipalities based on the imported data
+  const municipalities = municipalitiesInBataan.map((municipality) => ({
+    name: municipality.name,
+  }));
+
+  // Update barangays based on selected municipality
+  useEffect(() => {
+    if (selectedMunicipality) {
+      const selectedMunicipalityObj = municipalitiesInBataan.find(
+        (municipality) => municipality.name === selectedMunicipality
+      );
+      if (selectedMunicipalityObj) {
+        setBarangays(
+          selectedMunicipalityObj.barangays.map((barangay) => ({
+            name: barangay.name,
+            zipCode: barangay.zipCode,
+          }))
+        );
+      }
+    }
+  }, [selectedMunicipality]);
+
+  // Update zip code based on selected barangay
+  useEffect(() => {
+    const selectedBarangay = barangays.find(
+      (barangay) => barangay.name === address.barangay
+    );
+    if (selectedBarangay) {
+      setAddress((prevAddress) => ({
+        ...prevAddress,
+        zipCode: selectedBarangay.zipCode,
+      }));
+    }
+  }, [address.barangay, barangays]);
 
   const handleNext = () => {
     setCurrentStep((prevStep) => prevStep + 1);
@@ -87,6 +125,15 @@ export const SignUp = () => {
     } else {
       console.error("User must be at least 12 years old.");
     }
+  };
+
+  const handleChangeMunicipality = (e) => {
+    setSelectedMunicipality(e.target.value);
+    setAddress({
+      ...address,
+      municipality: e.target.value,
+      barangay: "", // Reset barangay when municipality changes
+    });
   };
 
   return (
@@ -244,28 +291,42 @@ export const SignUp = () => {
 
               <div className="input-group">
                 <div className="input-field">
+                  <label htmlFor="municipality">Municipality:</label>
+                  <select
+                    id="municipality"
+                    name="municipality"
+                    value={address.municipality}
+                    onChange={(e) => handleChangeMunicipality(e)}
+                  >
+                    <option value="" disabled>
+                      Select Municipality
+                    </option>
+                    {municipalities.map((municipality, index) => (
+                      <option key={index} value={municipality.name}>
+                        {municipality.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="input-field">
                   <label htmlFor="barangay">Barangay:</label>
-                  <input
-                    type="text"
+                  <select
                     id="barangay"
                     name="barangay"
                     value={address.barangay}
                     onChange={(e) =>
                       setAddress({ ...address, barangay: e.target.value })
                     }
-                  />
-                </div>
-                <div className="input-field">
-                  <label htmlFor="municipality">Municipality:</label>
-                  <input
-                    type="text"
-                    id="municipality"
-                    name="municipality"
-                    value={address.municipality}
-                    onChange={(e) =>
-                      setAddress({ ...address, municipality: e.target.value })
-                    }
-                  />
+                  >
+                    <option value="" disabled>
+                      Select Barangay
+                    </option>
+                    {barangays.map((barangay, index) => (
+                      <option key={index} value={barangay.name}>
+                        {barangay.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -277,9 +338,7 @@ export const SignUp = () => {
                     id="province"
                     name="province"
                     value={address.province}
-                    onChange={(e) =>
-                      setAddress({ ...address, province: e.target.value })
-                    }
+                    readOnly
                   />
                 </div>
                 <div className="input-field">
@@ -289,9 +348,7 @@ export const SignUp = () => {
                     id="zipCode"
                     name="zipCode"
                     value={address.zipCode}
-                    onChange={(e) =>
-                      setAddress({ ...address, zipCode: e.target.value })
-                    }
+                    readOnly
                   />
                 </div>
               </div>
