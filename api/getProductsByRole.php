@@ -23,7 +23,7 @@ if (!empty($shopType)) {
                 pp.productStock,
                 si.shopName,
                 COALESCE(SUM(pp.productStock), 0) AS totalStock,
-                COALESCE(ROUND(AVG(pr.rating), 2), 0) AS averageRating
+                COALESCE(ROUND(AVG(pr.rating), 1), 0) AS averageRating
             FROM 
                 product_info pi
             JOIN 
