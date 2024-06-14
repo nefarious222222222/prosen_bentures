@@ -268,7 +268,7 @@ export const Profile = () => {
             setProfileImage(file);
             setProfileImagePreview(URL.createObjectURL(file));
           } else {
-            setErrorMessage("Please select a square image (1:1 aspect ratio).");
+            setErrorMessage("Please select a square image 1:1 aspect ratio");
             setTimeout(() => {
               setErrorMessage("");
             }, 3000);
