@@ -4,8 +4,7 @@ import { UserContext } from "../../../context/user-context.jsx";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
 import { ErrorMessage } from "../../../components/error-message.jsx";
 import { SuccessMessage } from "../../../components/success-message.jsx";
-import UserImg from "../../../assets/images/1.jpg";
-import { NotePencil, X } from "phosphor-react";
+import { NotePencil, UserCircle, X } from "phosphor-react";
 import municipalitiesInBataan from "../../../municipalities";
 
 export const Profile = () => {
@@ -30,6 +29,8 @@ export const Profile = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [barangays, setBarangays] = useState([]);
   const [selectedMunicipality, setSelectedMunicipality] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
 
   const municipalities = municipalitiesInBataan.map((municipality) => ({
     name: municipality.name,
@@ -69,7 +70,7 @@ export const Profile = () => {
         setInputProvince(userData.province);
         setInputZip(userData.zip);
 
-        setSelectedMunicipality(userData.municipality); // Set the selected municipality
+        setSelectedMunicipality(userData.municipality);
 
         setMessage(response.data.message);
         if (response.data.status === 0) {
@@ -123,7 +124,6 @@ export const Profile = () => {
   const handleConfirmEditClose = () => {
     setEditable(false);
     setShowConfirmationPopup(false);
-    // Reset state to initial values when cancelling edit
     setEmail(initialState.email);
     setPhone(initialState.phone);
     setUserRole(initialState.userRole);
@@ -137,7 +137,22 @@ export const Profile = () => {
     setInputProvince(initialState.province);
     setInputZip(initialState.zip);
     setSelectedMunicipality(initialState.municipality);
-    setBarangays([]); // Clear barangays when municipality is reset
+
+    if (initialState.municipality) {
+      const selectedMunicipalityObj = municipalitiesInBataan.find(
+        (municipality) => municipality.name === initialState.municipality
+      );
+      if (selectedMunicipalityObj) {
+        setBarangays(
+          selectedMunicipalityObj.barangays.map((barangay) => ({
+            name: barangay.name,
+            zipCode: barangay.zipCode,
+          }))
+        );
+      }
+    }
+    setProfileImage(null);
+    setProfileImagePreview(null);
   };
 
   const handleSaveEdit = () => {
@@ -197,6 +212,16 @@ export const Profile = () => {
     setInputBarangay(e.target.value);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setProfileImage(file);
+    setProfileImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleProfileImageClick = () => {
+    document.getElementById("profileImageInput").click();
+  };
+
   return (
     <div className="profile">
       {showErrorMessage && <ErrorMessage message={message} />}
@@ -211,7 +236,25 @@ export const Profile = () => {
           />
         )}
         <div className="user-profile">
-          <img src={UserImg} alt="User" />
+          {profileImagePreview ? (
+            <img
+              src={profileImagePreview}
+              alt="Profile"
+              className="profile-image"
+              onClick={handleProfileImageClick}
+            />
+          ) : (
+            <UserCircle size={300} onClick={handleProfileImageClick} />
+          )}
+          <input
+            type="file"
+            id="profileImageInput"
+            name="profileImage"
+            accept="image/*"
+            style={{ display: "none" }}
+            disabled={!editable}
+            onChange={handleImageChange}
+          />
           <div className="account-info">
             <p>{email ? email : "No email"}</p>
             <p>{phone ? phone : "No phone number"}</p>
