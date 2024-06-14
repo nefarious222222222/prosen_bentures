@@ -9,6 +9,7 @@ export const ReviewProduct = ({
   reviewData,
   handleSubmitReview,
   handleFeedbackChange,
+  isSubmitting, // Added isSubmitting prop
 }) => {
   const [hoverIndex, setHoverIndex] = useState(-1);
 
@@ -49,8 +50,8 @@ export const ReviewProduct = ({
           <button type="button" onClick={handleCancelReview}>
             Cancel
           </button>
-          <button type="submit" onClick={handleSaveReview}>
-            Save Review
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : "Save Review"}
           </button>
         </div>
       </form>

@@ -1,6 +1,9 @@
 import React, { useContext, useState } from "react";
+import axios from "axios";
 import { UserContext } from "../../../context/user-context";
 import { ReviewProduct } from "../../../components/review-product";
+import { SuccessMessage } from "../../../components/success-message";
+import { ErrorMessage } from "../../../components/error-message";
 
 export const CompleteOrder = ({ orders }) => {
   const capitalizeFirstLetter = (string) => {
@@ -33,19 +36,25 @@ export const CompleteOrder = ({ orders }) => {
 
   const { user } = useContext(UserContext);
   const [showReviewProduct, setShowReviewProduct] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [currentReview, setCurrentReview] = useState({});
   const [reviewData, setReviewData] = useState({
     accountId: "",
     productId: "",
+    orderId: "",
     rating: 0,
     feedback: "",
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false); // Add state to manage submission status
 
   const handleReviewProduct = (order) => {
     setCurrentReview(order);
     setReviewData({
       accountId: user.accountId,
       productId: order.productID,
+      orderId: order.orderID,
       rating: 0,
       feedback: "",
     });
@@ -57,19 +66,48 @@ export const CompleteOrder = ({ orders }) => {
     setReviewData({
       accountId: "",
       productId: "",
+      orderId: "",
       rating: 0,
       feedback: "",
     });
   };
 
   const handleSaveReview = () => {
-    console.log("Review saved:", reviewData);
-    handleCancelReview();
+    setIsSubmitting(true); // Disable the button during the request
+    axios
+      .post("http://localhost/prosen_bentures/api/manageReview.php", reviewData)
+      .then((response) => {
+        if (response.data.status === 1) {
+          setSuccessMessage(response.data.message);
+          setErrorMessage("");
+        } else {
+          setErrorMessage(response.data.message);
+          setSuccessMessage("");
+        }
+
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+          handleCancelReview();
+        }, 2000);
+      })
+      .catch((error) => {
+        console.error("There was an error saving the review!", error);
+        setErrorMessage(
+          "There was an error saving the review. Please try again."
+        );
+        setSuccessMessage("");
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   const handleSubmitReview = (e) => {
     e.preventDefault();
-    handleSaveReview();
+    if (!isSubmitting) {
+      handleSaveReview();
+    }
   };
 
   const handleRate = (rating) => {
@@ -82,6 +120,8 @@ export const CompleteOrder = ({ orders }) => {
 
   return (
     <div className="pending-order">
+      {successMessage && <SuccessMessage message={successMessage} />}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
       {showReviewProduct && (
         <ReviewProduct
           handleCancelReview={handleCancelReview}
@@ -90,6 +130,7 @@ export const CompleteOrder = ({ orders }) => {
           reviewData={reviewData}
           handleSubmitReview={handleSubmitReview}
           handleFeedbackChange={handleFeedbackChange}
+          isSubmitting={isSubmitting}
         />
       )}
       {orders.length > 0
@@ -158,6 +199,7 @@ export const CompleteOrder = ({ orders }) => {
                 <button
                   className="review-btn"
                   onClick={() => handleReviewProduct(order)}
+                  disabled={isSubmitting}
                 >
                   Review Product
                 </button>
