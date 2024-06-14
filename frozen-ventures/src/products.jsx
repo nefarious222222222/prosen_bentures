@@ -86,7 +86,7 @@ export const Products = ({ products }) => {
             </p>
             <div className="details">
               <div className="rating">
-                <Star size={35} />
+                <Star size={30} weight="fill" color="gold"/>
                 <p>
                   (
                   {product.averageRating
