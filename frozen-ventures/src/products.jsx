@@ -3,6 +3,7 @@ import "./assets/styles/products.css";
 import { IndividualProduct } from "./pages/shop/individual-product";
 import { useLocation } from "react-router-dom";
 import Overlay from "./overlay";
+import { Star } from "phosphor-react";
 
 export const Products = ({ products }) => {
   const [selectedId, setSelectedId] = useState("");
@@ -70,10 +71,10 @@ export const Products = ({ products }) => {
             alt={product.productName}
           />
           <div className="product-details">
-            <p className="product-name">{product.productBrand}</p>
+            <p className="product-name">{product.productName}</p>
             <p>
-              <span>Product: </span>
-              {product.productName}
+              <span>Brand: </span>
+              {product.productBrand}
             </p>
             <p>
               <span>Flavor: </span>
@@ -84,10 +85,16 @@ export const Products = ({ products }) => {
               {product.shopName}
             </p>
             <div className="details">
-              <p>
-                <span>Size: </span>
-                {product.productSize}
-              </p>
+              <div className="rating">
+                <Star size={35} />
+                <p>
+                  (
+                  {product.averageRating
+                    ? product.averageRating
+                    : "0.00"}
+                  /5)
+                </p>
+              </div>
               <p className="product-price">Php {product.productPrice}</p>
             </div>
           </div>

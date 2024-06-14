@@ -22,20 +22,24 @@ if (!empty($shopType)) {
                 pp.productPrice,
                 pp.productStock,
                 si.shopName,
-                COALESCE(SUM(pp.productStock), 0) AS totalStock
+                COALESCE(SUM(pp.productStock), 0) AS totalStock,
+                COALESCE(ROUND(AVG(pr.rating), 2), 0) AS averageRating
             FROM 
                 product_info pi
             JOIN 
                 shop_info si ON pi.shopID = si.shopID
             LEFT JOIN
                 product_price pp ON pi.productID = pp.productID
+            LEFT JOIN
+                product_review pr ON pi.productID = pr.productID
             WHERE 
                 si.shopType = :shopType
                 AND pi.status = '1'
                 AND pp.priceID IS NOT NULL
             GROUP BY
                 pi.productID
-            ORDER BY RAND()";
+            ORDER BY 
+                RAND()";
 
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':shopType', $shopType);

@@ -10,9 +10,7 @@ export const Shop = () => {
   const { user } = useContext(UserContext);
   const location = useLocation();
   const [products, setProducts] = useState([]);
-  const [flavors, setFlavors] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [allergens, setAllergens] = useState([]);
   const [activeFilter, setActiveFilter] = useState("");
 
   let shopType = "";
@@ -33,8 +31,6 @@ export const Shop = () => {
           `http://localhost/prosen_bentures/api/getProductsByRole.php?shopType=${shopType}`
         );
         setProducts(response.data);
-        extractFlavors(response.data);
-        extractAllergens(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -42,43 +38,6 @@ export const Shop = () => {
 
     fetchProducts();
   }, [shopType]);
-
-  const extractFlavors = (products) => {
-    const uniqueFlavors = [
-      ...new Set(
-        products.map((product) => product.productFlavor).filter(Boolean)
-      ),
-    ];
-    setFlavors(uniqueFlavors);
-  };
-
-  const filterProductsByFlavor = (flavor) => {
-    const filtered = products.filter(
-      (product) => product.productFlavor === flavor
-    );
-    setFilteredProducts(filtered);
-    setActiveFilter(flavor);
-  };
-
-  const extractAllergens = (products) => {
-    let allAllergens = [];
-    products.forEach((product) => {
-      const allergens = product.productAllergen
-        .split(",")
-        .map((allergen) => allergen.trim())
-        .filter(Boolean);
-      allAllergens = [...new Set([...allAllergens, ...allergens])];
-    });
-    setAllergens(allAllergens);
-  };
-
-  const filterProductsByAllergen = (allergen) => {
-    const filtered = products.filter((product) =>
-      product.productAllergen.includes(allergen)
-    );
-    setFilteredProducts(filtered);
-    setActiveFilter(allergen);
-  };
 
   const filterProductsNoNuts = () => {
     const filtered = products.filter(
@@ -88,6 +47,7 @@ export const Shop = () => {
     setActiveFilter("No Nuts");
   };
 
+  console.log(products)
   const filterProductsNoMilk = () => {
     const filtered = products.filter(
       (product) =>
