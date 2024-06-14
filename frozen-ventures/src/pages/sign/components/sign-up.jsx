@@ -23,9 +23,8 @@ export const SignUp = () => {
   });
   const [currentStep, setCurrentStep] = useState(1);
   const [isSigningUp, setIsSigningUp] = useState(false);
-  const [message, setMessage] = useState("");
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [selectedMunicipality, setSelectedMunicipality] = useState("");
   const [barangays, setBarangays] = useState([]);
 
@@ -89,27 +88,23 @@ export const SignUp = () => {
     axios
       .post("http://localhost/prosen_bentures/api/signup.php", newAccountData)
       .then((response) => {
-        console.log("Response:", response.data);
-        setMessage(response.data.message);
         if (response.data.status === 1) {
-          setShowSuccessMessage(true);
+          setSuccessMessage(response.data.message);
           setTimeout(() => {
             window.location.reload();
           }, 3500);
         } else {
-          setShowErrorMessage(true);
+          setErrorMessage(response.data.message);
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        setMessage("Failed to create account");
-        setShowErrorMessage(true);
-      })
-      .finally(() => {
-        setIsSigningUp(false);
-        setShowErrorMessage(false);
-        setShowSuccessMessage(false);
+        setErrorMessage("Failed to create account");
       });
+
+    setTimeout(() => {
+      setIsSigningUp(false);
+    }, 2000);
   };
 
   const minBirthdate = new Date();
@@ -135,8 +130,8 @@ export const SignUp = () => {
 
   return (
     <div className="sign-up">
-      {showErrorMessage && <ErrorMessage message={message} />}
-      {showSuccessMessage && <SuccessMessage message={message} />}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
       <form onSubmit={handleSubmit}>
         {currentStep === 1 && (
           <div className="form-step">
@@ -149,7 +144,7 @@ export const SignUp = () => {
                   value={userRole}
                   onChange={(e) => setUserRole(e.target.value)}
                 >
-                  <option value="" disabled>
+                  <option value={null} disabled>
                     Select a role
                   </option>
                   <option value="customer">Customer</option>
