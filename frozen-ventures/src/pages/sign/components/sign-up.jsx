@@ -18,7 +18,7 @@ export const SignUp = () => {
     street: "",
     barangay: "",
     municipality: "",
-    province: "Bataan", // Hardcoded for Bataan
+    province: "Bataan",
     zipCode: "",
   });
   const [currentStep, setCurrentStep] = useState(1);
@@ -29,12 +29,10 @@ export const SignUp = () => {
   const [selectedMunicipality, setSelectedMunicipality] = useState("");
   const [barangays, setBarangays] = useState([]);
 
-  // Initialize municipalities based on the imported data
   const municipalities = municipalitiesInBataan.map((municipality) => ({
     name: municipality.name,
   }));
 
-  // Update barangays based on selected municipality
   useEffect(() => {
     if (selectedMunicipality) {
       const selectedMunicipalityObj = municipalitiesInBataan.find(
@@ -51,7 +49,6 @@ export const SignUp = () => {
     }
   }, [selectedMunicipality]);
 
-  // Update zip code based on selected barangay
   useEffect(() => {
     const selectedBarangay = barangays.find(
       (barangay) => barangay.name === address.barangay
@@ -132,7 +129,7 @@ export const SignUp = () => {
     setAddress({
       ...address,
       municipality: e.target.value,
-      barangay: "", // Reset barangay when municipality changes
+      barangay: "",
     });
   };
 
