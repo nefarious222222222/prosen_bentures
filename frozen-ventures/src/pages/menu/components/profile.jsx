@@ -6,6 +6,7 @@ import { ErrorMessage } from "../../../components/error-message.jsx";
 import { SuccessMessage } from "../../../components/success-message.jsx";
 import UserImg from "../../../assets/images/1.jpg";
 import { NotePencil, X } from "phosphor-react";
+import municipalitiesInBataan from "../../../municipalities";
 
 export const Profile = () => {
   const { user } = useContext(UserContext);
@@ -26,6 +27,12 @@ export const Profile = () => {
   const [message, setMessage] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [barangays, setBarangays] = useState([]);
+  const [selectedMunicipality, setSelectedMunicipality] = useState("");
+
+  const municipalities = municipalitiesInBataan.map((municipality) => ({
+    name: municipality.name,
+  }));
 
   const handleEditClick = () => {
     setEditable(!editable);
@@ -65,10 +72,12 @@ export const Profile = () => {
         setInputProvince(userData.province);
         setInputZip(userData.zip);
 
+        setSelectedMunicipality(userData.municipality); // Set the selected municipality
+
         setMessage(response.data.message);
         if (response.data.status === 0) {
           setShowErrorMessage(true);
-        } 
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -80,6 +89,31 @@ export const Profile = () => {
       setShowErrorMessage(false);
     }, 3000);
   }, [user.accountId]);
+
+  useEffect(() => {
+    if (selectedMunicipality) {
+      const selectedMunicipalityObj = municipalitiesInBataan.find(
+        (municipality) => municipality.name === selectedMunicipality
+      );
+      if (selectedMunicipalityObj) {
+        setBarangays(
+          selectedMunicipalityObj.barangays.map((barangay) => ({
+            name: barangay.name,
+            zipCode: barangay.zipCode,
+          }))
+        );
+      }
+    }
+  }, [selectedMunicipality]);
+
+  useEffect(() => {
+    const selectedBarangay = barangays.find(
+      (barangay) => barangay.name === inputBarangay
+    );
+    if (selectedBarangay) {
+      setInputZip(selectedBarangay.zipCode);
+    }
+  }, [inputBarangay, barangays]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -96,7 +130,10 @@ export const Profile = () => {
       zip: inputZip,
     };
     axios
-      .post("http://localhost/prosen_bentures/api/managePersonalInfo.php", newPersonalData)
+      .post(
+        "http://localhost/prosen_bentures/api/managePersonalInfo.php",
+        newPersonalData
+      )
       .then((response) => {
         console.log("Response:", response.data);
         setMessage(response.data.message);
@@ -108,7 +145,7 @@ export const Profile = () => {
       })
       .catch((error) => {
         console.error("Error:", error);
-        setMessage("Failed to create account");
+        setMessage("Failed to update information");
         setShowErrorMessage(true);
       });
 
@@ -117,6 +154,17 @@ export const Profile = () => {
       setShowErrorMessage(false);
       setShowSuccessMessage(false);
     }, 3000);
+  };
+
+  const handleChangeMunicipality = (e) => {
+    setSelectedMunicipality(e.target.value);
+    setInputMunicipality(e.target.value);
+    setInputBarangay("");
+    setInputZip("");
+  };
+
+  const handleChangeBarangay = (e) => {
+    setInputBarangay(e.target.value);
   };
 
   return (
@@ -224,27 +272,39 @@ export const Profile = () => {
               </div>
               <div className="field">
                 <label htmlFor="barangay">Barangay:</label>
-                <input
+                <select
                   name="barangay"
                   id="barangay"
-                  type="text"
-                  readOnly={!editable}
+                  disabled={!editable}
                   value={inputBarangay}
-                  onChange={(e) => setInputBarangay(e.target.value)}
-                />
+                  onChange={handleChangeBarangay}
+                >
+                  <option value="">Select Barangay</option>
+                  {barangays.map((barangay) => (
+                    <option key={barangay.name} value={barangay.name}>
+                      {barangay.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="field-container">
               <div className="field">
                 <label htmlFor="municipality">Municipality:</label>
-                <input
+                <select
                   name="municipality"
                   id="municipality"
-                  type="text"
-                  readOnly={!editable}
+                  disabled={!editable}
                   value={inputMunicipality}
-                  onChange={(e) => setInputMunicipality(e.target.value)}
-                />
+                  onChange={handleChangeMunicipality}
+                >
+                  <option value="">Select Municipality</option>
+                  {municipalities.map((municipality) => (
+                    <option key={municipality.name} value={municipality.name}>
+                      {municipality.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="field">
                 <label htmlFor="province">Province:</label>
@@ -260,7 +320,7 @@ export const Profile = () => {
             </div>
             <div className="field-container">
               <div className="field">
-                <label htmlFor="zip">Zip:</label>
+                <label htmlFor="zip">ZIP Code:</label>
                 <input
                   name="zip"
                   id="zip"
