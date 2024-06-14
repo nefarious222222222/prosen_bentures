@@ -10,6 +10,7 @@ import municipalitiesInBataan from "../../../municipalities";
 
 export const Profile = () => {
   const { user } = useContext(UserContext);
+  const [initialState, setInitialState] = useState({});
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [userRole, setUserRole] = useState("");
@@ -34,24 +35,6 @@ export const Profile = () => {
     name: municipality.name,
   }));
 
-  const handleEditClick = () => {
-    setEditable(!editable);
-  };
-
-  const handleConfirmEditShow = () => {
-    setShowConfirmationPopup(true);
-  };
-
-  const handleConfirmEditClose = () => {
-    setEditable(false);
-    setShowConfirmationPopup(false);
-  };
-
-  const handleSaveEdit = () => {
-    handleSubmit(new Event("submit", { cancelable: true }));
-    setShowConfirmationPopup(false);
-  };
-
   useEffect(() => {
     axios
       .get(
@@ -59,6 +42,20 @@ export const Profile = () => {
       )
       .then((response) => {
         const userData = response.data;
+        setInitialState({
+          email: userData.email,
+          phone: userData.phone,
+          userRole: userData.userRole,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          birthdate: userData.birthdate,
+          gender: userData.gender,
+          street: userData.street,
+          barangay: userData.barangay,
+          municipality: userData.municipality,
+          province: userData.province,
+          zip: userData.zip,
+        });
         setEmail(userData.email);
         setPhone(userData.phone);
         setUserRole(userData.userRole);
@@ -115,6 +112,39 @@ export const Profile = () => {
     }
   }, [inputBarangay, barangays]);
 
+  const handleEditClick = () => {
+    setEditable(!editable);
+  };
+
+  const handleConfirmEditShow = () => {
+    setShowConfirmationPopup(true);
+  };
+
+  const handleConfirmEditClose = () => {
+    setEditable(false);
+    setShowConfirmationPopup(false);
+    // Reset state to initial values when cancelling edit
+    setEmail(initialState.email);
+    setPhone(initialState.phone);
+    setUserRole(initialState.userRole);
+    setInputFirstName(initialState.firstName);
+    setInputLastName(initialState.lastName);
+    setInputBirthdate(initialState.birthdate);
+    setInputGender(initialState.gender);
+    setInputStreet(initialState.street);
+    setInputBarangay(initialState.barangay);
+    setInputMunicipality(initialState.municipality);
+    setInputProvince(initialState.province);
+    setInputZip(initialState.zip);
+    setSelectedMunicipality(initialState.municipality);
+    setBarangays([]); // Clear barangays when municipality is reset
+  };
+
+  const handleSaveEdit = () => {
+    handleSubmit(new Event("submit", { cancelable: true }));
+    setShowConfirmationPopup(false);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const newPersonalData = {
@@ -149,7 +179,7 @@ export const Profile = () => {
         setShowErrorMessage(true);
       });
 
-    setEditable(!editable);
+    setEditable(false);
     setTimeout(() => {
       setShowErrorMessage(false);
       setShowSuccessMessage(false);
