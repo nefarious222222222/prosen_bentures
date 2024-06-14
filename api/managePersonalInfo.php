@@ -32,37 +32,48 @@ switch ($method) {
     case 'POST':
         $personalInfo = json_decode(file_get_contents('php://input'));
 
-        if (empty($personalInfo->firstName) || empty($personalInfo->lastName) || empty($personalInfo->birthdate) || empty($personalInfo->gender) || empty($personalInfo->street) || empty($personalInfo->barangay) || empty($personalInfo->municipality) || empty($personalInfo->province) || empty($personalInfo->zip) || empty($personalInfo->accountID)) {
-            $response = ["status" => 0, "message" => "All fields are required"];
+        $requiredFields = ['firstName', 'lastName', 'birthdate', 'gender', 'street', 'barangay', 'municipality', 'province', 'zip', 'accountId', 'profileImage'];
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+            if (empty($personalInfo->$field)) {
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
+            $response = ["status" => 0, "message" => "Required fields are missing: " . implode(', ', $missingFields)];
             echo json_encode($response);
             exit();
         }
 
-        $sqlCheck = "SELECT * FROM personal_info WHERE accountID = :accountID";
+        $sqlCheck = "SELECT * FROM personal_info WHERE accountID = :accountId";
         $stmtCheck = $conn->prepare($sqlCheck);
-        $stmtCheck->bindParam(':accountID', $personalInfo->accountID);
+        $stmtCheck->bindParam(':accountId', $personalInfo->accountId);
         $stmtCheck->execute();
         $result = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
-        if ($result) {
-            $sql = "UPDATE personal_info SET 
-                            firstName = :firstName, 
-                            lastName = :lastName, 
-                            birthdate = :birthdate, 
-                            gender = :gender, 
-                            street = :street, 
-                            barangay = :barangay, 
-                            municipality = :municipality, 
-                            province = :province, 
-                            zip = :zip 
-                        WHERE accountID = :accountID";
-        } else {
-            $sql = "INSERT INTO personal_info (personalID, accountID, firstName, lastName, birthdate, gender, street, barangay, municipality, province, zip) 
-                        VALUES (null, :accountID, :firstName, :lastName, :birthdate, :gender, :street, :barangay, :municipality, :province, :zip)";
+        if (!$result) {
+            $response = ["status" => 0, "message" => "User with accountID does not exist"];
+            echo json_encode($response);
+            exit();
         }
 
+        $sql = "UPDATE personal_info SET 
+            firstName = :firstName, 
+            lastName = :lastName, 
+            birthdate = :birthdate, 
+            gender = :gender, 
+            street = :street, 
+            barangay = :barangay, 
+            municipality = :municipality, 
+            province = :province, 
+            zip = :zip, 
+            profileImage = :profileImage
+        WHERE accountID = :accountId";
+
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':accountID', $personalInfo->accountID);
+        $stmt->bindParam(':profileImage', $personalInfo->profileImage);
         $stmt->bindParam(':firstName', $personalInfo->firstName);
         $stmt->bindParam(':lastName', $personalInfo->lastName);
         $stmt->bindParam(':birthdate', $personalInfo->birthdate);
@@ -72,6 +83,7 @@ switch ($method) {
         $stmt->bindParam(':municipality', $personalInfo->municipality);
         $stmt->bindParam(':province', $personalInfo->province);
         $stmt->bindParam(':zip', $personalInfo->zip);
+        $stmt->bindParam(':accountId', $personalInfo->accountId);
 
         if ($stmt->execute()) {
             $response = ["status" => 1, "message" => "User personal data saved successfully"];

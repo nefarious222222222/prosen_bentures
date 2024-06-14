@@ -24,9 +24,8 @@ export const Profile = () => {
   const [inputZip, setInputZip] = useState("");
   const [editable, setEditable] = useState(false);
   const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
-  const [message, setMessage] = useState("");
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [barangays, setBarangays] = useState([]);
   const [selectedMunicipality, setSelectedMunicipality] = useState("");
   const [profileImage, setProfileImage] = useState(null);
@@ -44,6 +43,7 @@ export const Profile = () => {
       .then((response) => {
         const userData = response.data;
         setInitialState({
+          profileImage: userData.profileImage,
           email: userData.email,
           phone: userData.phone,
           userRole: userData.userRole,
@@ -57,6 +57,7 @@ export const Profile = () => {
           province: userData.province,
           zip: userData.zip,
         });
+        setProfileImagePreview(userData.profileImage);
         setEmail(userData.email);
         setPhone(userData.phone);
         setUserRole(userData.userRole);
@@ -72,19 +73,17 @@ export const Profile = () => {
 
         setSelectedMunicipality(userData.municipality);
 
-        setMessage(response.data.message);
         if (response.data.status === 0) {
-          setShowErrorMessage(true);
+          setErrorMessage(response.data.message);
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        setMessage("Failed to load information");
-        setShowErrorMessage(true);
+        setErrorMessage("Failed to load information");
       });
 
     setTimeout(() => {
-      setShowErrorMessage(false);
+      setErrorMessage("");
     }, 3000);
   }, [user.accountId]);
 
@@ -120,10 +119,11 @@ export const Profile = () => {
   const handleConfirmEditShow = () => {
     setShowConfirmationPopup(true);
   };
-
+  
   const handleConfirmEditClose = () => {
     setEditable(false);
     setShowConfirmationPopup(false);
+    setProfileImagePreview(initialState.profileImage);
     setEmail(initialState.email);
     setPhone(initialState.phone);
     setUserRole(initialState.userRole);
@@ -162,42 +162,76 @@ export const Profile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newPersonalData = {
-      accountID: user.accountId,
-      firstName: inputFirstName,
-      lastName: inputLastName,
-      birthdate: inputBirthdate,
-      gender: inputGender,
-      street: inputStreet,
-      barangay: inputBarangay,
-      municipality: inputMunicipality,
-      province: inputProvince,
-      zip: inputZip,
-    };
+    if (!profileImage) {
+      setErrorMessage("Please select an image");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 2000);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("profileImage", profileImage);
+    formData.append("profileImageName", profileImage.name);
+    formData.append("profileImageType", profileImage.type);
+
     axios
       .post(
-        "http://localhost/prosen_bentures/api/managePersonalInfo.php",
-        newPersonalData
+        "http://localhost/prosen_bentures/api/uploadProfileImage.php",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       )
-      .then((response) => {
-        console.log("Response:", response.data);
-        setMessage(response.data.message);
-        if (response.data.status === 1) {
-          setShowSuccessMessage(true);
+      .then((uploadResponse) => {
+        if (uploadResponse.data.status === 1) {
+          const imagePath = uploadResponse.data.imagePath;
+          const newPersonalData = {
+            accountId: user.accountId,
+            firstName: inputFirstName,
+            lastName: inputLastName,
+            birthdate: inputBirthdate,
+            gender: inputGender,
+            street: inputStreet,
+            barangay: inputBarangay,
+            municipality: inputMunicipality,
+            province: inputProvince,
+            zip: inputZip,
+            profileImage: profileImage.name,
+          };
+
+          axios
+            .post(
+              "http://localhost/prosen_bentures/api/managePersonalInfo.php",
+              newPersonalData
+            )
+            .then((response) => {
+              console.log("Response:", response.data);
+              if (response.data.status === 1) {
+                setSuccessMessage(response.data.message);
+              } else {
+                setErrorMessage(response.data.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              setErrorMessage("Failed to update information");
+            });
         } else {
-          setShowErrorMessage(true);
+          setErrorMessage("Failed to upload image");
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        setMessage("Failed to update information");
-        setShowErrorMessage(true);
+        setErrorMessage("An error occurred while uploading the image");
       });
 
     setEditable(false);
     setTimeout(() => {
-      setShowErrorMessage(false);
-      setShowSuccessMessage(false);
+      setErrorMessage("");
+      setSuccessMessage("");
     }, 3000);
   };
 
@@ -224,8 +258,8 @@ export const Profile = () => {
 
   return (
     <div className="profile">
-      {showErrorMessage && <ErrorMessage message={message} />}
-      {showSuccessMessage && <SuccessMessage message={message} />}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
       <form className="user" onSubmit={handleSubmit}>
         {showConfirmationPopup && (
           <ConfirmationPopUp
@@ -238,7 +272,7 @@ export const Profile = () => {
         <div className="user-profile">
           {profileImagePreview ? (
             <img
-              src={profileImagePreview}
+              src={`http://localhost/prosen_bentures/api/profileImages/${profileImagePreview}`}
               alt="Profile"
               className="profile-image"
               onClick={handleProfileImageClick}
@@ -406,6 +440,7 @@ export const Profile = () => {
             </div>
           </div>
         </div>
+        <button type="submit" style={{ display: "none" }}></button>
       </form>
     </div>
   );
