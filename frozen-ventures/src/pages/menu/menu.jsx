@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, forwardRef } from "react";
 import axios from "axios";
 import "../../assets/styles/menu.css";
 import { UserContext } from "../../context/user-context";
@@ -12,7 +12,7 @@ import {
   UserCircle,
 } from "phosphor-react";
 
-export const Menu = () => {
+export const Menu = forwardRef((props, ref) => {
   const { user, clearUser } = useContext(UserContext);
   const [account, setAccount] = useState({
     firstName: "",
@@ -79,7 +79,7 @@ export const Menu = () => {
   };
 
   return (
-    <div className="menu">
+    <div className="menu" ref={ref}>
       {showSignOutPopup && (
         <ConfirmationPopUp
           confirmTitle="Sign Out"
@@ -128,4 +128,4 @@ export const Menu = () => {
       </ul>
     </div>
   );
-};
+});

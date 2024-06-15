@@ -24,6 +24,7 @@ export const Navbar = () => {
   const [productsBelow20, setProductsBelow20] = useState([]);
   const userRole = user?.userRole;
   const notifContainerRef = useRef(null);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     axios
@@ -96,13 +97,16 @@ export const Navbar = () => {
       ) {
         setShowNotifications(false);
       }
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [notifContainerRef]);
+  }, []);
 
   if (location.pathname === "/sign" || location.pathname === "/splash") {
     return null;
@@ -193,7 +197,7 @@ export const Navbar = () => {
               />
             )}
 
-            {showMenu && <Menu />}
+            {showMenu && <Menu ref={menuRef} />}
           </>
         ) : (
           <Link to="/sign">
@@ -204,3 +208,4 @@ export const Navbar = () => {
     </div>
   );
 };
+
