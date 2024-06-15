@@ -370,7 +370,7 @@ export const SignUp = () => {
               {code && (
                 <div className="code">
                   <h3>Verification code has been sent to this email:</h3>
-                  <p className="code-email">{inputEmail} {code}</p>
+                  <p className="code-email">{inputEmail}</p>
                 </div>
               )}
               <div className="input-group code-container">
