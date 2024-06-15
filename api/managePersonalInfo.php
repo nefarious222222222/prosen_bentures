@@ -59,6 +59,20 @@ switch ($method) {
             exit();
         }
 
+        $isChanged = false;
+        foreach ($requiredFields as $field) {
+            if ($field !== 'accountId' && $personalInfo->$field != $result[$field]) {
+                $isChanged = true;
+                break;
+            }
+        }
+
+        if (!$isChanged) {
+            $response = ["status" => 0, "message" => "No changes detected"];
+            echo json_encode($response);
+            exit();
+        }
+
         $sql = "UPDATE personal_info SET 
             firstName = :firstName, 
             lastName = :lastName, 
@@ -86,7 +100,7 @@ switch ($method) {
         $stmt->bindParam(':accountId', $personalInfo->accountId);
 
         if ($stmt->execute()) {
-            $response = ["status" => 1, "message" => "User personal data saved successfully"];
+            $response = ["status" => 1, "message" => "Personal Information has been updated successfully"];
         } else {
             $response = ["status" => 0, "message" => "Failed to save user personal data"];
         }

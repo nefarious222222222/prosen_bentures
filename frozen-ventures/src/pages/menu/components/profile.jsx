@@ -173,7 +173,8 @@ export const Profile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!profileImage) {
+
+    if (!profileImage && !initialState.profileImage) {
       setErrorMessage("Please select an image");
       setTimeout(() => {
         setErrorMessage("");
@@ -181,69 +182,77 @@ export const Profile = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("profileImage", profileImage);
-    formData.append("profileImageName", profileImage.name);
-    formData.append("profileImageType", profileImage.type);
+    const newPersonalData = {
+      accountId: user.accountId,
+      firstName: inputFirstName,
+      lastName: inputLastName,
+      birthdate: inputBirthdate,
+      gender: inputGender,
+      street: inputStreet,
+      barangay: inputBarangay,
+      municipality: inputMunicipality,
+      province: inputProvince,
+      zip: inputZip,
+      profileImage: initialState.profileImage,
+    };
 
-    axios
-      .post(
-        "http://localhost/prosen_bentures/api/uploadProfileImage.php",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then((uploadResponse) => {
-        if (uploadResponse.data.status === 1) {
-          const imagePath = uploadResponse.data.imagePath;
-          const newPersonalData = {
-            accountId: user.accountId,
-            firstName: inputFirstName,
-            lastName: inputLastName,
-            birthdate: inputBirthdate,
-            gender: inputGender,
-            street: inputStreet,
-            barangay: inputBarangay,
-            municipality: inputMunicipality,
-            province: inputProvince,
-            zip: inputZip,
-            profileImage: profileImage.name,
-          };
+    if (profileImage) {
+      const formData = new FormData();
+      formData.append("profileImage", profileImage);
+      formData.append("profileImageName", profileImage.name);
+      formData.append("profileImageType", profileImage.type);
 
-          axios
-            .post(
-              "http://localhost/prosen_bentures/api/managePersonalInfo.php",
-              newPersonalData
-            )
-            .then((response) => {
-              console.log("Response:", response.data);
-              if (response.data.status === 1) {
-                setSuccessMessage(response.data.message);
-              } else {
-                setErrorMessage(response.data.message);
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              setErrorMessage("Failed to update information");
-            });
-        } else {
-          setErrorMessage("Failed to upload image");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setErrorMessage("An error occurred while uploading the image");
-      });
+      axios
+        .post(
+          "http://localhost/prosen_bentures/api/uploadProfileImage.php",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((uploadResponse) => {
+          if (uploadResponse.data.status === 1) {
+            newPersonalData.profileImage = profileImage.name;
+            saveUserData(newPersonalData);
+          } else {
+            setErrorMessage("Failed to upload image");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setErrorMessage("An error occurred while uploading the image");
+        });
+    } else {
+      saveUserData(newPersonalData);
+    }
 
     setEditable(false);
     setTimeout(() => {
       setErrorMessage("");
       setSuccessMessage("");
     }, 3000);
+  };
+
+  const saveUserData = (newPersonalData) => {
+    axios
+      .post(
+        "http://localhost/prosen_bentures/api/managePersonalInfo.php",
+        newPersonalData
+      )
+      .then((response) => {
+        console.log("Response:", response.data);
+        if (response.data.status === 1) {
+          setSuccessMessage(response.data.message);
+        } else {
+          setErrorMessage(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setErrorMessage("Failed to update information");
+      });
   };
 
   const handleChangeMunicipality = (e) => {
