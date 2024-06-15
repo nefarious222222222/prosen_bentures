@@ -3,6 +3,7 @@ import axios from "axios";
 import { ErrorMessage } from "../../../components/error-message";
 import { SuccessMessage } from "../../../components/success-message";
 import municipalitiesInBataan from "../../../municipalities";
+import { FiveDigitCodeGenerator } from "../../../components/code-generator";
 
 export const SignUp = () => {
   const [inputPass, setInputPass] = useState("");
@@ -27,6 +28,8 @@ export const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedMunicipality, setSelectedMunicipality] = useState("");
   const [barangays, setBarangays] = useState([]);
+  const [code, setCode] = useState("");
+  const [inputCode, setInputCode] = useState("");
 
   const municipalities = municipalitiesInBataan.map((municipality) => ({
     name: municipality.name,
@@ -72,37 +75,42 @@ export const SignUp = () => {
     e.preventDefault();
     setIsSigningUp(true);
 
-    const newAccountData = {
-      email: inputEmail,
-      phone: inputPhone,
-      userRole: userRole,
-      password: inputPass,
-      confirmPass: inputCPass,
-      firstName: firstName,
-      lastName: lastName,
-      gender: gender,
-      birthdate: birthdate,
-      address: address,
-    };
+    if (code === inputCode) {
+      const newAccountData = {
+        email: inputEmail,
+        phone: inputPhone,
+        userRole: userRole,
+        password: inputPass,
+        confirmPass: inputCPass,
+        firstName: firstName,
+        lastName: lastName,
+        gender: gender,
+        birthdate: birthdate,
+        address: address,
+      };
 
-    axios
-      .post("http://localhost/prosen_bentures/api/signup.php", newAccountData)
-      .then((response) => {
-        if (response.data.status === 1) {
-          setSuccessMessage(response.data.message);
-          setTimeout(() => {
-            window.location.reload();
-          }, 3500);
-        } else {
-          setErrorMessage(response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setErrorMessage("Failed to create account");
-      });
+      axios
+        .post("http://localhost/prosen_bentures/api/signup.php", newAccountData)
+        .then((response) => {
+          if (response.data.status === 1) {
+            setSuccessMessage(response.data.message);
+            setTimeout(() => {
+              window.location.reload();
+            }, 3500);
+          } else {
+            setErrorMessage(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setErrorMessage("Failed to create account");
+        });
+    } else {
+      setErrorMessage("Invalid Code");
+    }
 
     setTimeout(() => {
+      setErrorMessage("");
       setIsSigningUp(false);
     }, 2000);
   };
@@ -345,6 +353,43 @@ export const SignUp = () => {
                 </div>
               </div>
 
+              <div className="button-container">
+                <button type="button" onClick={handleBack}>
+                  Back
+                </button>
+                <button type="button" onClick={handleNext}>
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {currentStep === 4 && (
+          <div className="form-step">
+            <div className="input-container">
+              {code && (
+                <div className="code">
+                  <h3>Verification code has been sent to this email:</h3>
+                  <p className="code-email">{inputEmail} {code}</p>
+                </div>
+              )}
+              <div className="input-group code-container">
+                <div className="input-field">
+                  <label htmlFor="code">Code:</label>
+                  <input
+                    type="text"
+                    id="code"
+                    name="code"
+                    value={inputCode}
+                    onChange={(e) => setInputCode(e.target.value)}
+                  />
+                </div>
+                <FiveDigitCodeGenerator
+                  inputEmail={inputEmail}
+                  code={code}
+                  setCode={setCode}
+                />
+              </div>
               <div className="button-container">
                 <button type="button" onClick={handleBack}>
                   Back
