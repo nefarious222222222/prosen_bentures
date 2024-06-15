@@ -93,9 +93,13 @@ export const Menu = forwardRef((props, ref) => {
         {account ? (
           <li className="first-menu">
             <div className="account-container">
-              <img
-                src={`http://localhost/prosen_bentures/api/profileImages/${account.profileImage}`}
-              />
+              {account.profileImage == "" ? (
+                <UserCircle size={40} />
+              ) : (
+                <img
+                  src={`http://localhost/prosen_bentures/api/profileImages/${account.profileImage}`}
+                />
+              )}
               <p>
                 {account.firstName} {account.lastName}
               </p>

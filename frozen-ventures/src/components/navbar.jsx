@@ -29,7 +29,7 @@ export const Navbar = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${user.accountId}`
+        `http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${user?.accountId}`
       )
       .then((response) => {
         const userData = response.data;
@@ -38,7 +38,7 @@ export const Navbar = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, [user.accountId]);
+  }, [user?.accountId]);
 
   useEffect(() => {
     const fetchLowStockProducts = async () => {
