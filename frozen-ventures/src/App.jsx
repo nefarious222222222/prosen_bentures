@@ -14,6 +14,7 @@ import { Shop } from "./pages/shop/shop";
 import { Cart } from "./pages/cart/cart";
 import { Order } from "./pages/order/order";
 import { History } from "./pages/history/history";
+import { SetUpShop } from "./pages/menu/components/setup-shop";
 import { HomeSeller } from "./pages/seller/home-seller";
 import { IndividualShop } from "./pages/seller/components/individual-shop";
 import { CustomizeOrder } from "./pages/customize/customize-order";
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/order" element={<Order />} />
                 <Route path="/history" element={<History />} />
+                <Route path="/setup-shop" element={<SetUpShop />} />
                 <Route path="/home-admin" element={<HomeAdmin />} />
                 <Route path="/home-seller" element={<HomeSeller />} />
                 <Route path="/seller-shop" element={<SellerShop />} />

@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../../context/user-context";
 import { CheckCircle, NotePencil, X } from "phosphor-react";
 import axios from "axios";
+import "../../../assets/styles/setup-shop.css";
 import { ErrorMessage } from "../../../components/error-message";
 import { SuccessMessage } from "../../../components/success-message";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
@@ -308,7 +309,7 @@ export const SetUpShop = () => {
   };
 
   return (
-    <div className="setup-shop">
+    <div className="container setup-shop">
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
       {showVerifyShop && (

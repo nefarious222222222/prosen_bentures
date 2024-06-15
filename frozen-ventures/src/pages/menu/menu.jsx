@@ -10,6 +10,7 @@ import {
   ClockCounterClockwise,
   SignOut as SignOutIcon,
   UserCircle,
+  Storefront,
 } from "phosphor-react";
 
 export const Menu = forwardRef((props, ref) => {
@@ -42,6 +43,10 @@ export const Menu = forwardRef((props, ref) => {
 
   const handleSignOutCancel = () => {
     setShowSignOutPopup(false);
+  };
+
+  const handleYourShopClick = () => {
+    navigate("/setup-shop");
   };
 
   const handleProfileClick = () => {
@@ -113,10 +118,20 @@ export const Menu = forwardRef((props, ref) => {
             <p>Show Profile</p>
           </li>
         )}
-        <li onClick={handleCustomizeOrderClick}>
-          <FolderPlus size={40} />
-          <p>Customize Order</p>
-        </li>
+        {(user.userRole === "retailer" ||
+          user.userRole === "distributor" ||
+          user.userRole === "manufacturer") && (
+          <li onClick={handleYourShopClick}>
+            <Storefront size={40} />
+            <p>Your Shop</p>
+          </li>
+        )}
+        {user.userRole == "customer" && (
+          <li onClick={handleCustomizeOrderClick}>
+            <FolderPlus size={40} />
+            <p>Customize Order</p>
+          </li>
+        )}
         <li onClick={handleCartClick}>
           <ShoppingCart size={40} />
           <p>Cart</p>
