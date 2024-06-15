@@ -1,34 +1,71 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import axios from "axios";
 import "../../assets/styles/menu.css";
 import { UserContext } from "../../context/user-context";
-import { Profile } from "./components/profile";
-import { SetUpShop } from "./components/setup-shop";
-import { Setting } from "./components/setting";
 import { ConfirmationPopUp } from "../../components/confirmation-popup";
 import { useNavigate } from "react-router-dom";
 import {
-  UserSquare,
-  GearSix,
-  Storefront,
-  Warning,
+  FolderPlus,
+  ShoppingCart,
+  ClockCounterClockwise,
   SignOut as SignOutIcon,
-  CaretLeft,
-  CaretRight,
+  UserCircle,
 } from "phosphor-react";
 
 export const Menu = () => {
   const { user, clearUser } = useContext(UserContext);
-  const [activeItem, setActiveItem] = useState("profile");
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [account, setAccount] = useState({
+    firstName: "",
+    lastName: "",
+    profileImage: "",
+  });
   const [showSignOutPopup, setShowSignOutPopup] = useState(false);
   const navigate = useNavigate();
 
-  const toggleSidebar = () => {
-    setIsExpanded(!isExpanded);
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${user.accountId}`
+      )
+      .then((response) => {
+        const userData = response.data;
+        setAccount({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          profileImage: userData.profileImage,
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, [user.accountId]);
+
+  const handleSignOutCancel = () => {
+    setShowSignOutPopup(false);
   };
 
-  const handleItemClick = (item) => {
-    setActiveItem(item);
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
+  const handleCustomizeOrderClick = () => {
+    navigate("/customize-order");
+  };
+
+  const handleCartClick = () => {
+    if (user.userRole == "customer") {
+      navigate("/cart");
+    } else if (user.userRole == "retailer" || user.userRole == "distributor") {
+      navigate("/seller-cart");
+    }
+  };
+
+  const handleHistoryClick = () => {
+    if (user.userRole == "customer") {
+      navigate("/history");
+    } else if (user.userRole == "retailer" || user.userRole == "distributor") {
+      navigate("/seller-history");
+    }
   };
 
   const handleSignOutClick = () => {
@@ -41,12 +78,8 @@ export const Menu = () => {
     setShowSignOutPopup(false);
   };
 
-  const handleSignOutCancel = () => {
-    setShowSignOutPopup(false);
-  };
-
   return (
-    <div className="container menu">
+    <div className="menu">
       {showSignOutPopup && (
         <ConfirmationPopUp
           confirmTitle="Sign Out"
@@ -55,73 +88,44 @@ export const Menu = () => {
           handleCancel={handleSignOutCancel}
         />
       )}
-      <div className={`side-bar ${isExpanded ? "expanded" : ""}`}>
-        {isExpanded ? (
-          <CaretLeft
-            className="toggle-sidebar"
-            size={30}
-            onClick={toggleSidebar}
-          />
-        ) : (
-          <CaretRight
-            className="toggle-sidebar"
-            size={30}
-            onClick={toggleSidebar}
-          />
-        )}
-        <ul>
-          <li
-            className={activeItem === "profile" ? "active" : ""}
-            onClick={() => handleItemClick("profile")}
-            data-tooltip="Profile"
-          >
-            <UserSquare size={40} />
-            {isExpanded && <p>Profile</p>}
-          </li>
-          {user.userRole !== "customer" && user.userRole !== "admin" && (
-            <li
-              className={activeItem === "setup-shop" ? "active" : ""}
-              onClick={() => handleItemClick("setup-shop")}
-              data-tooltip="Set Up Shop"
-            >
-              <Storefront size={40} />
-              {isExpanded && <p>Set Up Shop</p>}
-            </li>
-          )}
-          <li
-            className={activeItem === "settings" ? "active" : ""}
-            onClick={() => handleItemClick("settings")}
-            data-tooltip="Settings"
-          >
-            <GearSix size={40} />
-            {isExpanded && <p>Settings</p>}
-          </li>
-          <li
-            className={activeItem === "report" ? "active" : ""}
-            data-tooltip="Report A Problem"
-          >
-            <Warning size={40} />
-            {isExpanded && <p>Report A Problem</p>}
-          </li>
-          <li
-            className={activeItem === "signout" ? "active" : ""}
-            onClick={handleSignOutClick}
-            data-tooltip="Sign Out"
-          >
-            <SignOutIcon size={40} />
-            {isExpanded && <p>Sign Out</p>}
-          </li>
-        </ul>
-      </div>
 
-      <div
-        className="selected-item"
-        style={{ marginLeft: isExpanded ? "15vw" : "5vw" }}
-      >
-        {activeItem === "profile" && <Profile />}
-        {activeItem === "setup-shop" && <SetUpShop />}
-        {activeItem === "settings" && <Setting />}
-      </div>
+      <ul className="menu-list">
+        {account ? (
+          <li className="first-menu">
+            <div className="account-container">
+              <img
+                src={`http://localhost/prosen_bentures/api/profileImages/${account.profileImage}`}
+              />
+              <p>
+                {account.firstName} {account.lastName}
+              </p>
+            </div>
+
+            <p onClick={handleProfileClick}>Show Profile</p>
+          </li>
+        ) : (
+          <li>
+            <UserCircle size={40} />
+            <p>Show Profile</p>
+          </li>
+        )}
+        <li onClick={handleCustomizeOrderClick}>
+          <FolderPlus size={40} />
+          <p>Customize Order</p>
+        </li>
+        <li onClick={handleCartClick}>
+          <ShoppingCart size={40} />
+          <p>Cart</p>
+        </li>
+        <li onClick={handleHistoryClick}>
+          <ClockCounterClockwise size={40} />
+          <p>Purchase History</p>
+        </li>
+        <li onClick={handleSignOutClick}>
+          <SignOutIcon size={40} />
+          <p>Sign Out</p>
+        </li>
+      </ul>
     </div>
   );
 };

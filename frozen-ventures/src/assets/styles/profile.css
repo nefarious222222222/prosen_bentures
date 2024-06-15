@@ -1,0 +1,134 @@
+.user {
+  display: flex;
+  gap: 5vw;
+
+  .user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+
+    img {
+      width: 300px;
+      border-radius: 50%;
+    }
+
+    .account-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1vh;
+
+      p {
+        font-size: 1.25rem;
+      }
+
+      p:first-child {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+    }
+
+    button {
+      margin-top: 3vh;
+      display: flex;
+      align-items: center;
+      width: 150px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      gap: 1vw;
+      padding: 5px 20px;
+      background-color: var(--color-violet);
+      border: solid 2px var(--color-violet);
+      transition: all 0.3s ease;
+
+      p {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      svg {
+        color: white;
+        transition: all 0.3s ease;
+      }
+    }
+
+    button:hover {
+      background-color: white;
+      box-shadow: 0 7px 25px rgba(0, 0, 0, 0.2);
+
+      p {
+        color: var(--color-violet);
+      }
+
+      svg {
+        color: var(--color-violet);
+      }
+    }
+  }
+
+  .user-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+
+    h2 {
+      font-size: 3rem;
+      color: var(--color-violet);
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 2.5vh;
+      gap: 2.5vh;
+
+      .field-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 5vw;
+        width: 100%;
+
+        .field {
+          display: flex;
+          flex-direction: column;
+          gap: 1vh;
+          width: 100%;
+
+          label {
+            font-size: 1.25rem;
+            font-weight: 600;
+          }
+
+          input,
+          select {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 10px;
+            font-size: 1.25rem;
+            font-weight: 500;
+            background-color: rgb(230, 230, 230);
+            border-radius: 5px;
+          }
+
+          select {
+            width: calc(100% + 1vw);
+          }
+
+          input::placeholder {
+            color: black;
+          }
+
+          select option {
+            font-size: 1.25rem;
+          }
+        }
+      }
+    }
+  }
+}

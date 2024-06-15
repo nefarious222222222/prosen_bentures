@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { UserContext } from "../context/user-context";
 import "../assets/styles/components.css";
 import axios from "axios";
+import { Menu } from "../pages/menu/menu";
 import { Notifications } from "../pages/seller/components/notifications";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/images/logo.jpg";
@@ -11,17 +12,32 @@ import {
   ClockCounterClockwise,
   UserCircle,
   Bell,
-  FolderPlus,
   HouseSimple,
 } from "phosphor-react";
 
 export const Navbar = () => {
   const { user } = useContext(UserContext);
   const location = useLocation();
+  const [profileImage, setProfileImage] = useState(null);
+  const [showMenu, setShowMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [productsBelow20, setProductsBelow20] = useState([]);
   const userRole = user?.userRole;
   const notifContainerRef = useRef(null);
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost/prosen_bentures/api/managePersonalInfo.php?accountId=${user.accountId}`
+      )
+      .then((response) => {
+        const userData = response.data;
+        setProfileImage(userData.profileImage);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, [user.accountId]);
 
   useEffect(() => {
     const fetchLowStockProducts = async () => {
@@ -63,6 +79,10 @@ export const Navbar = () => {
 
     return () => clearInterval(interval);
   }, [user?.shopId, userRole]);
+
+  const toggleMenu = () => {
+    setShowMenu((prevState) => !prevState);
+  };
 
   const toggleNotifications = () => {
     setShowNotifications((prevState) => !prevState);
@@ -109,34 +129,6 @@ export const Navbar = () => {
           </Link>
         ) : null}
 
-        {userRole === "customer" ? (
-          <>
-            <Link to="/customize-order" title="Customize Order">
-              <FolderPlus
-                className="link fake-button"
-                size={30}
-                color={"#fff"}
-              />
-            </Link>
-
-            <Link to="/cart" title="Cart">
-              <ShoppingCart
-                className="link fake-button"
-                size={30}
-                color={"#fff"}
-              />
-            </Link>
-
-            <Link to="/history" title="History">
-              <ClockCounterClockwise
-                className="link fake-button"
-                size={30}
-                color={"#fff"}
-              />
-            </Link>
-          </>
-        ) : null}
-
         {userRole === "retailer" || userRole === "distributor" ? (
           <>
             <Link to="/home-seller" title="Home">
@@ -151,22 +143,6 @@ export const Navbar = () => {
               <Storefront
                 className="link fake-button"
                 size={32}
-                color={"#fff"}
-              />
-            </Link>
-
-            <Link to="/seller-cart" title="Cart">
-              <ShoppingCart
-                className="link fake-button"
-                size={30}
-                color={"#fff"}
-              />
-            </Link>
-
-            <Link to="/seller-history" title="History">
-              <ClockCounterClockwise
-                className="link fake-button"
-                size={30}
                 color={"#fff"}
               />
             </Link>
@@ -201,9 +177,24 @@ export const Navbar = () => {
         ) : null}
 
         {userRole != null ? (
-          <Link to="/menu" title="Menu">
-            <UserCircle className="link fake-button" size={40} color="white" />
-          </Link>
+          <>
+            {profileImage ? (
+              <img
+                src={`http://localhost/prosen_bentures/api/profileImages/${profileImage}`}
+                onClick={toggleMenu}
+                className="profile-image"
+              />
+            ) : (
+              <UserCircle
+                className="link fake-button"
+                size={40}
+                color="white"
+                onClick={toggleMenu}
+              />
+            )}
+
+            {showMenu && <Menu />}
+          </>
         ) : (
           <Link to="/sign">
             <button>Sign In</button>

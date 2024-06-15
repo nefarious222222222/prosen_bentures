@@ -9,7 +9,7 @@ import { Navbar } from "./components/navbar";
 import { Home } from "./pages/home/home";
 import { HomeAdmin } from "./pages/admin/home-admin";
 import { Sign } from "./pages/sign/sign";
-import { Menu } from "./pages/menu/menu";
+import { Profile } from "./pages/menu/components/profile";
 import { Shop } from "./pages/shop/shop";
 import { Cart } from "./pages/cart/cart";
 import { Order } from "./pages/order/order";
@@ -33,8 +33,8 @@ function App() {
                 <Route path="/splash" element={<Splash />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/sign" element={<Sign />} />
-                <Route path="/menu" element={<Menu />} />
                 <Route path="/shop" element={<Shop />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/customize-order" element={<CustomizeOrder />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/order" element={<Order />} />

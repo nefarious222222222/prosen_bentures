@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import "../../../assets/styles/profile.css";
 import axios from "axios";
 import { UserContext } from "../../../context/user-context.jsx";
 import { ConfirmationPopUp } from "../../../components/confirmation-popup";
@@ -285,7 +286,7 @@ export const Profile = () => {
   };
 
   return (
-    <div className="profile">
+    <div className="container profile">
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
       <form className="user" onSubmit={handleSubmit}>
