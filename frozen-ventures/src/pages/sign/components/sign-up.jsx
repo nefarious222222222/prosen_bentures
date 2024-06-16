@@ -64,11 +64,38 @@ export const SignUp = () => {
   }, [address.barangay, barangays]);
 
   const handleNext = () => {
-    setCurrentStep((prevStep) => prevStep + 1);
+    if (validateStep()) {
+      setCurrentStep((prevStep) => prevStep + 1);
+    }
   };
 
   const handleBack = () => {
     setCurrentStep((prevStep) => prevStep - 1);
+  };
+
+  const validateStep = () => {
+    if (currentStep === 1) {
+      if (!userRole || !inputEmail || !inputPhone || !inputPass || !inputCPass) {
+        setErrorMessage("All fields are required in this step");
+        return false;
+      }
+      if (inputPass !== inputCPass) {
+        setErrorMessage("Passwords do not match.");
+        return false;
+      }
+    } else if (currentStep === 2) {
+      if (!firstName || !lastName || !gender || !birthdate) {
+        setErrorMessage("All fields are required in this step");
+        return false;
+      }
+    } else if (currentStep === 3) {
+      if (!address.street || !address.municipality || !address.barangay) {
+        setErrorMessage("All fields are required in this step");
+        return false;
+      }
+    }
+    setErrorMessage("");
+    return true;
   };
 
   const handleSubmit = (e) => {
@@ -123,7 +150,7 @@ export const SignUp = () => {
     if (selectedDate <= minBirthdate) {
       setBirthdate(e.target.value);
     } else {
-      console.error("User must be at least 12 years old.");
+      console.error("User must be at least 12 years old");
     }
   };
 
