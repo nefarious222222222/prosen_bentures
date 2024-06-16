@@ -75,7 +75,13 @@ export const SignUp = () => {
 
   const validateStep = () => {
     if (currentStep === 1) {
-      if (!userRole || !inputEmail || !inputPhone || !inputPass || !inputCPass) {
+      if (
+        !userRole ||
+        !inputEmail ||
+        !inputPhone ||
+        !inputPass ||
+        !inputCPass
+      ) {
         setErrorMessage("All fields are required in this step");
         return false;
       }
@@ -270,13 +276,19 @@ export const SignUp = () => {
 
               <div className="input-field">
                 <label htmlFor="gender">Gender:</label>
-                <input
-                  type="text"
+                <select
                   id="gender"
                   name="gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                />
+                >
+                  <option value="" disabled>
+                    Select Gender
+                  </option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Rather Not Say">Rather not say</option>
+                </select>
               </div>
               <div className="input-field">
                 <label htmlFor="birthdate">Birthdate:</label>

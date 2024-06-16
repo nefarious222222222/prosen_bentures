@@ -53,7 +53,7 @@ switch ($method) {
             }
         }
 
-        if (!in_array($accountInfo->gender, ['Male', 'Female', 'Other'])) {
+        if (!in_array($accountInfo->gender, ['Male', 'Female', 'Rather Not Say'])) {
             $response = ["status" => 0, "message" => "Invalid gender"];
             echo json_encode($response);
             exit();
