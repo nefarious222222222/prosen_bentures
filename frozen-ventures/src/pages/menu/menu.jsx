@@ -11,6 +11,8 @@ import {
   SignOut as SignOutIcon,
   UserCircle,
   Storefront,
+  HouseSimple,
+  Money
 } from "phosphor-react";
 
 export const Menu = forwardRef((props, ref) => {
@@ -43,6 +45,18 @@ export const Menu = forwardRef((props, ref) => {
 
   const handleSignOutCancel = () => {
     setShowSignOutPopup(false);
+  };
+  
+  const handleHomeClick = () => {
+    navigate("/home-seller");
+  }
+
+  const handleShopClick = () => {
+    if (user.userRole === "customer") {
+      navigate("/shop");
+    } else {
+      navigate("/seller-shop");
+    }
   };
 
   const handleYourShopClick = () => {
@@ -118,12 +132,26 @@ export const Menu = forwardRef((props, ref) => {
             <p>Show Profile</p>
           </li>
         )}
+        {(user.userRole === "retailer" || user.userRole === "distributor") && (
+          <li onClick={handleHomeClick}>
+            <HouseSimple size={40} />
+            <p>Home</p>
+          </li>
+        )}
+        {(user.userRole === "customer" ||
+          user.userRole === "retailer" ||
+          user.userRole === "distributor") && (
+          <li onClick={handleShopClick}>
+            <Storefront size={40} />
+            <p>Shop</p>
+          </li>
+        )}
         {(user.userRole === "retailer" ||
           user.userRole === "distributor" ||
           user.userRole === "manufacturer") && (
           <li onClick={handleYourShopClick}>
-            <Storefront size={40} />
-            <p>Your Shop</p>
+            <Money size={40} />
+            <p>Manage Shop</p>
           </li>
         )}
         {user.userRole == "customer" && (

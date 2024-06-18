@@ -12,6 +12,12 @@
   background-color: var(--color-violet);
   z-index: 999;
 
+  .user-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-white);
+  }
+
   .link-container {
     display: flex;
     align-items: center;

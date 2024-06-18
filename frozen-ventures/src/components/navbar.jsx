@@ -18,6 +18,8 @@ import {
 export const Navbar = () => {
   const { user } = useContext(UserContext);
   const location = useLocation();
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -33,6 +35,8 @@ export const Navbar = () => {
       )
       .then((response) => {
         const userData = response.data;
+        setFirstName(userData.firstName);
+        setLastName(userData.lastName);
         setProfileImage(userData.profileImage);
       })
       .catch((error) => {
@@ -127,30 +131,10 @@ export const Navbar = () => {
       <input type="text" placeholder="Search" />
 
       <div className="links">
-        {userRole == null || userRole == "customer" ? (
+        {userRole == null ? (
           <Link to="/shop" title="Shop">
             <Storefront className="link fake-button" size={32} color={"#fff"} />
           </Link>
-        ) : null}
-
-        {userRole === "retailer" || userRole === "distributor" ? (
-          <>
-            <Link to="/home-seller" title="Home">
-              <HouseSimple
-                className="link fake-button"
-                size={32}
-                color={"#fff"}
-              />
-            </Link>
-
-            <Link to="/seller-shop" title="Shop">
-              <Storefront
-                className="link fake-button"
-                size={32}
-                color={"#fff"}
-              />
-            </Link>
-          </>
         ) : null}
 
         {user?.userRole === "retailer" ||
@@ -182,6 +166,9 @@ export const Navbar = () => {
 
         {userRole != null ? (
           <>
+            <p className="user-name">
+              {firstName} {lastName}
+            </p>
             {profileImage ? (
               <img
                 src={`http://localhost/prosen_bentures/api/profileImages/${profileImage}`}
@@ -208,4 +195,3 @@ export const Navbar = () => {
     </div>
   );
 };
-
