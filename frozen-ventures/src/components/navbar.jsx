@@ -137,33 +137,6 @@ export const Navbar = () => {
           </Link>
         ) : null}
 
-        {user?.userRole === "retailer" ||
-        user?.userRole === "distributor" ||
-        user?.userRole === "manufacturer" ? (
-          <>
-            <div
-              className={`notif-container ${
-                productsBelow20.length > 0 ? "has-notifications" : ""
-              }`}
-            >
-              <Bell
-                className={"link fake-button"}
-                size={30}
-                color={"#fff"}
-                onClick={toggleNotifications}
-              />
-              {productsBelow20.length > 0 && <div className="red-dot"></div>}
-            </div>
-
-            {showNotifications && (
-              <Notifications
-                ref={notifContainerRef}
-                productsBelow20={productsBelow20}
-              />
-            )}
-          </>
-        ) : null}
-
         {userRole != null ? (
           <>
             <p className="user-name">
@@ -191,6 +164,33 @@ export const Navbar = () => {
             <button>Sign In</button>
           </Link>
         )}
+
+        {user?.userRole === "retailer" ||
+        user?.userRole === "distributor" ||
+        user?.userRole === "manufacturer" ? (
+          <>
+            <div
+              className={`notif-container ${
+                productsBelow20.length > 0 ? "has-notifications" : ""
+              }`}
+            >
+              <Bell
+                className={"link fake-button"}
+                size={30}
+                color={"#fff"}
+                onClick={toggleNotifications}
+              />
+              {productsBelow20.length > 0 && <div className="red-dot"></div>}
+            </div>
+
+            {showNotifications && (
+              <Notifications
+                ref={notifContainerRef}
+                productsBelow20={productsBelow20}
+              />
+            )}
+          </>
+        ) : null}
       </div>
     </div>
   );
