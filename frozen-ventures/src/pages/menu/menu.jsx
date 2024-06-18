@@ -12,7 +12,7 @@ import {
   UserCircle,
   Storefront,
   HouseSimple,
-  Money
+  Money,
 } from "phosphor-react";
 
 export const Menu = forwardRef((props, ref) => {
@@ -46,10 +46,10 @@ export const Menu = forwardRef((props, ref) => {
   const handleSignOutCancel = () => {
     setShowSignOutPopup(false);
   };
-  
+
   const handleHomeClick = () => {
     navigate("/home-seller");
-  }
+  };
 
   const handleShopClick = () => {
     if (user.userRole === "customer") {
@@ -72,19 +72,11 @@ export const Menu = forwardRef((props, ref) => {
   };
 
   const handleCartClick = () => {
-    if (user.userRole == "customer") {
-      navigate("/cart");
-    } else if (user.userRole == "retailer" || user.userRole == "distributor") {
-      navigate("/seller-cart");
-    }
+    navigate("/cart");
   };
 
   const handleHistoryClick = () => {
-    if (user.userRole == "customer") {
-      navigate("/history");
-    } else if (user.userRole == "retailer" || user.userRole == "distributor") {
-      navigate("/seller-history");
-    }
+    navigate("/history");
   };
 
   const handleSignOutClick = () => {
@@ -141,10 +133,20 @@ export const Menu = forwardRef((props, ref) => {
         {(user.userRole === "customer" ||
           user.userRole === "retailer" ||
           user.userRole === "distributor") && (
-          <li onClick={handleShopClick}>
-            <Storefront size={40} />
-            <p>Shop</p>
-          </li>
+          <>
+            <li onClick={handleShopClick}>
+              <Storefront size={40} />
+              <p>Shop</p>
+            </li>
+            <li onClick={handleCartClick}>
+              <ShoppingCart size={40} />
+              <p>Cart</p>
+            </li>
+            <li onClick={handleHistoryClick}>
+              <ClockCounterClockwise size={40} />
+              <p>Purchase History</p>
+            </li>
+          </>
         )}
         {(user.userRole === "retailer" ||
           user.userRole === "distributor" ||
@@ -160,14 +162,6 @@ export const Menu = forwardRef((props, ref) => {
             <p>Customize Order</p>
           </li>
         )}
-        <li onClick={handleCartClick}>
-          <ShoppingCart size={40} />
-          <p>Cart</p>
-        </li>
-        <li onClick={handleHistoryClick}>
-          <ClockCounterClockwise size={40} />
-          <p>Purchase History</p>
-        </li>
         <li onClick={handleSignOutClick}>
           <SignOutIcon size={40} />
           <p>Sign Out</p>

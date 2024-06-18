@@ -23,6 +23,7 @@ export const Cart = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+  const linkTo = (user.userRole === "retailer" || user.userRole === "distributor") ? "/seller-shop" : "/shop";
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -343,7 +344,7 @@ export const Cart = () => {
                 <span>Venture</span> into the <span>product catalog</span>, and
                 maybe you'll find something <span>frosty</span>.
               </p>
-              <Link to="/shop">
+              <Link to={linkTo}>
                 <button>
                   <Storefront size={32} />
                   Browse Shop

@@ -19,8 +19,6 @@ import { HomeSeller } from "./pages/seller/home-seller";
 import { IndividualShop } from "./pages/seller/components/individual-shop";
 import { CustomizeOrder } from "./pages/customize/customize-order";
 import { SellerShop } from "./pages/seller/components/seller-shop";
-import { SellerCart } from "./pages/seller/components/seller-cart";
-import { SellerHistory } from "./pages/seller/components/seller-history";
 
 function App() {
   return (
@@ -44,8 +42,6 @@ function App() {
                 <Route path="/home-admin" element={<HomeAdmin />} />
                 <Route path="/home-seller" element={<HomeSeller />} />
                 <Route path="/seller-shop" element={<SellerShop />} />
-                <Route path="/seller-cart" element={<SellerCart />} />
-                <Route path="/seller-history" element={<SellerHistory />} />
                 <Route
                   path="/individual-shop/:shopId/:shopName"
                   element={<IndividualShop />}
