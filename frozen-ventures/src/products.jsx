@@ -60,7 +60,7 @@ export const Products = ({ products }) => {
           />
         </div>
       )}
-      {displayedProducts.map((product) => (
+      {displayedProducts?.map((product) => (
         <div
           className="product-item-individual"
           key={product.productID}
